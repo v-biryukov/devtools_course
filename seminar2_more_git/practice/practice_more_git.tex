@@ -114,14 +114,14 @@
 \subsection*{Подготовка. Генерация репозитория, который будет использоваться в задачах.}
 Для решения следующих задач вам потребуется создать простой репозиторий, состоящий из четырёх коммитов, с помощью bash-скрипта. Для этого сделайте следующее:
 \begin{enumerate}
-\item Зайдите в репозиторий \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course}{\texttt{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools\_course}}, пройти в папку\\ 
-\texttt{seminar2\_git\_advanced/practice}, открыть файл \texttt{create\_animals.sh} и скачать его.
+\item Зайдите в репозиторий \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course}{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools\_course}, пройдите в папку\\ 
+\texttt{seminar2\_git\_advanced/practice}, откройте файл \texttt{create\_animals.sh} и скачайте его.
 
-\item Скопируйте скрипт в папку, в которой вы будете его запускать. Убедитесь, что папка, куда вы копируете скрипт не является частью другого репозитория, а также не содержит внутри себя папку \texttt{animals}.
+\item Скопируйте скрипт в папку, в которой вы будете его запускать. Убедитесь, что папка, куда вы копируете скрипт, не является частью другого репозитория, а также не содержит внутри себя папку \texttt{animals}.
 
 \item Откройте терминал и зайти в папку, содержащую скрипт
 \begin{lstlisting}
-$ cd 
+$ cd имяпапки
 \end{lstlisting}
 
 \item Добавьте скрипту права на исполнение
@@ -148,25 +148,25 @@ $ git log --oneline --graph --all
 
 
 \subsection{Отмена индексации}
-Предположим, что вы создали новый файл и добавили его в область индексирования.
+Предположим, что вы создали новый файл и добавили его в область индексирования, используя команды:
 \begin{lstlisting}[style=csMiptBash]
 $ touch emu.txt
 $ git add emu.txt
 \end{lstlisting}
-Однако затем передумали и хотите убрать этот файл из области индексирования.
+Однако, затем передумали и хотите убрать этот файл из области индексирования.
 Выполните команду, которая бы убирала этот файл из области индексирования, но оставляла бы файл в рабочей папке. Добавлять новые коммиты в этой задаче нельзя.
 
 \subsection{Отмена коммита}
-Предположим, что вы создали новый файл и добавили его в область индексирования и в локальный репозиторий.
+Предположим, что вы создали новый файл и добавили его в область индексирования и в локальный репозиторий:
 \begin{lstlisting}[style=csMiptBash]
 $ touch emu.txt
 $ git add emu.txt
-$ git commit -m "add emu.txt"
+$ git commit -m "CE: add emu.txt"
 \end{lstlisting}
-Однако затем передумали и хотите отменить коммит. При этом вы хотите, чтобы файл \texttt{emu.txt} продолжал находиться и в рабочей папке и в области индексирования. Выполните команду, которая отменит коммит, оставив рабочую папку и область индексирования неизменными.
+Однако, затем передумали и хотите отменить коммит. При этом вы хотите, чтобы файл \texttt{emu.txt} продолжал находиться и в рабочей папке и в области индексирования. Выполните команду, которая отменит коммит, оставив рабочую папку и область индексирования неизменными.
 
 \subsection{Отмена \texttt{reset}}
-Предположим, что вы решили удалить все коммиты, кроме первого и, находясь на коммите \texttt{CD} (\textit{add dog}) выполнили:
+Предположим, что вы решили удалить все коммиты, кроме первого и, находясь на коммите \texttt{CD} (\textit{add dog}), выполнили:
 \begin{lstlisting}
 $ git reset --hard HEAD~4
 \end{lstlisting}
@@ -216,7 +216,7 @@ $ git reset --hard HEAD~4
 
 
 \subsection{Отмена слияния}
-Создайте новый репозиторий с помощью скрипта \texttt{create\_branch\_animals.sh}. В этом репозитории есть 2 ветки: \texttt{main} и \texttt{other}. Предположим, что вы сделали слияние с помощью команд:
+Создайте новый репозиторий с помощью скрипта \texttt{create\_branch\_animals.sh} (его можно скачать оттуда же, где находился предыдущий скрипт). В этом репозитории будет 2 ветки: \texttt{main} и \texttt{other}. Предположим, что вы сделали слияние с помощью команд:
 \begin{lstlisting}[style=csMiptBash]
 $ git switch main
 $ git merge other -m "CM: merging"
@@ -257,13 +257,13 @@ $ git remote add имя ссылка
 \begin{lstlisting}[style=csMiptBash]
 $ git remote -v
 \end{lstlisting}
-\item Отправьте ваш локальный репозиторий на GitLab.
+\item Отправьте ветки \texttt{main} и \texttt{other} вашего локального репозитория на удалённый репозиторий GitLab.
 \begin{lstlisting}[style=csMiptBash]
-$ git push -u origin main
+$ git push -u origin main other
 \end{lstlisting}
 \end{enumerate}
 
-\noindent Предположим, что вы создали новый файл и добавили его в область индексирования, в локальный репозиторий, а затем и в улалённый репозиторий.
+\noindent Предположим, что вы создали новый файл и добавили его в область индексирования, в локальный репозиторий, а затем и в удалённый репозиторий.
 \begin{lstlisting}[style=csMiptBash]
 $ touch emu.txt
 $ git add emu.txt
@@ -275,6 +275,21 @@ $ git push
 \item Используя \texttt{git push}.
 \item Используя \texttt{git revert}.
 \end{itemize}
+
+\subsection{Форк}
+Зайдите на GitLab и сделайте форк репозитория \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/branch_animals}{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/branch\_animals}. Клонируйте этот репозиторий на свой компьютер. Создайте новую ветку на коммите \texttt{HEAD}. Добавьте в этой ветке новый коммит, содержащий файл с новым животным (на ваш выбор). Отправьте изменения на ваш форк. Сделайте merge request, чтобы добавить изменения в изначальный репозиторий (\texttt{v.biryukov/branch\_animals}).
+
+
+\subsection{Pre-commit hook}
+Напишите pre-commit хук, который будет проверять, что все файлы имеют расширение \texttt{.txt}. Проверьте работу этого хука, закоммитив файл с другим расширением.
+
+
+\subsection{Тэги}
+Создайте 2 новых тэга в репозитории \texttt{branch\_animals}: один на коммите \texttt{CA} -- \texttt{v0.1.0}, второй на коммите \texttt{CD} -- \texttt{v0.1.0}. Проверьте, что тэги созданы:
+\begin{lstlisting}
+git log --oneline --graph --all
+\end{lstlisting}
+Отправьте теги на удалённый сервер.
 
 
 \end{document}
