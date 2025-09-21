@@ -24,7 +24,7 @@ commit_names_branch=("CE" "CF" "CG")
 animals_branch=("emu" "fox" "giraffe")
 
 git switch -c other HEAD~3
-for i in {0..1}
+for i in {0..2}
 do
     a=${animals_branch[i]}
     echo "I am $a" > $a.txt

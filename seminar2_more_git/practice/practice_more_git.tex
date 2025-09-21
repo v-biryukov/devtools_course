@@ -12,6 +12,7 @@
 \usepackage{listings}
 \usepackage{pmboxdraw}
 \usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
 \pagenumbering{gobble}
 
 \lstdefinestyle{csMiptCppStyle}{
@@ -98,24 +99,31 @@
 
 \begin{document}
 \title{Семинар \#2: git, продолжение. Практика. \vspace{-5ex}}\date{}\maketitle
-Для сдачи этого и будущих ДЗ вам нужно создать репозиторий на GitLab (если он ещё не создан) под названием \texttt{devtools-homework}. Структура репозитория должна иметь вид:
+
+\subsection*{Как сдавать задачи}
+Для сдачи ДЗ вам нужно создать репозиторий на GitLab (если он ещё не создан) под названием \texttt{devtools-homework}. Структура репозитория должна иметь вид:
 \begin{center}
 \begin{BVerbatim}
 ├── seminar2_more_git/
-│   ├── 01.sh
+│   ├── 01.txt
 │   ├── 02.sh
+│   ├── 03.sh
+│   ├── 04.txt
+│   ├── 05a.sh
 │   └── ...
 └── ...
 \end{BVerbatim}
 \end{center}
-
+Для каждой задачи необходимо создать bash-скрипт, содержащий решение, и отправить его в ваш репозиторий. Название скрипта должно соответствовать номеру задачи (например \texttt{02.sh}, \texttt{05a.sh}). Если в задаче используется интерактивное перебазирования, то помимо скрипта вам нужно будет отправить файл \texttt{git-rebase-todo}. Название этого файла тоже должно начинаться с номера задачи, например \texttt{05b-git-rebase-todo.txt}. Если в задаче требуется что-то иное, это будет указано в конце самой задачи.
 
 
 \subsection*{Подготовка. Генерация репозитория, который будет использоваться в задачах.}
-Для решения следующих задач вам потребуется создать простой репозиторий, состоящий из четырёх коммитов, с помощью bash-скрипта. Для этого сделайте следующее:
+
+\begin{minipage}{0.65\linewidth}
+Для решения некоторых задач вам потребуется создать простой репозиторий, состоящий из четырёх коммитов, с помощью bash-скрипта. Для этого сделайте следующее:
 \begin{enumerate}
-\item Зайдите в репозиторий \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course}{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools\_course}, пройдите в папку\\ 
-\texttt{seminar2\_git\_advanced/practice}, откройте файл \texttt{create\_animals.sh} и скачайте его.
+\item Зайдите в репозиторий \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course}{v.biryukov/devtools\_course}, пройдите в папку
+\texttt{seminar2\_more\_git/practice}, откройте файл \texttt{create\_animals.sh} и скачайте его.
 
 \item Скопируйте скрипт в папку, в которой вы будете его запускать. Убедитесь, что папка, куда вы копируете скрипт, не является частью другого репозитория, а также не содержит внутри себя папку \texttt{animals}.
 
@@ -134,18 +142,62 @@ $ chmod +x create_animals.sh
 $ ./create_animals.sh
 \end{lstlisting}
 
-\item Перейдите в папку \texttt{animals} и убедитесь, что репозиторий создался корректно, напечатав дерево его коммитов:
+\item Перейдите в папку \texttt{animals} и убедитесь, что репозиторий создался корректно, напечатав дерево коммитов:
 \begin{lstlisting}[style=csMiptBash]
 $ cd animals
 $ git log --oneline --graph --all
 \end{lstlisting}
 \end{enumerate}
-
+\end{minipage}
+\hspace{1cm}
+\begin{minipage}{0.3\linewidth}
 \begin{center}
-\includegraphics[scale=0.9]{../images/animals.png}
+\includegraphics[scale=0.8]{../images/animals.png}
 \end{center}
+\end{minipage}
 
 
+\newpage
+\subsection{Способы адресации коммитов}
+\definecolor{hashcolor}{RGB}{193, 156, 0}
+\definecolor{headcolor}{RGB}{85, 214, 214}
+\definecolor{branchcolor}{RGB}{22, 198, 12}
+
+Пусть граф коммитов выглядит так, как это изображено на рисунке:
+\begin{center}
+\includegraphics[scale=0.8]{../images/graph_with_merges.png}
+\end{center}
+Коммит \texttt{C4} -- это коммит слияния ветки \texttt{featureA} в ветку \texttt{main}, а \texttt{C7} -- это коммит слияния \texttt{featureB} в \texttt{main}. \\
+После этого вызвали команду \texttt{git log} вот так:
+\begin{lstlisting}[style=csMiptBash,escapeinside={<@}{@>}]
+$ git log --oneline --all --graph
+*  <@\textcolor{hashcolor}{cc17ea1}@> (<@\textcolor{headcolor}{HEAD}@> -> <@\textcolor{branchcolor}{main}@>) C7
+|\
+| * <@\textcolor{hashcolor}{9e18dac}@> (<@\textcolor{branchcolor}{featureB}@>) C6
+| * <@\textcolor{hashcolor}{eace0bf}@> C3
+* | <@\textcolor{hashcolor}{00d7b4b}@> C5
+* |   <@\textcolor{hashcolor}{38d17da}@> C4
+|\ \
+| |/
+|/|
+| * <@\textcolor{hashcolor}{4ed9ec3}@> (<@\textcolor{branchcolor}{featureA}@>) C2
+* | <@\textcolor{hashcolor}{3599341}@> C1
+|/
+* <@\textcolor{hashcolor}{7afecc8}@> C0
+\end{lstlisting}
+Для каждого пункта ниже напишите команду или выражение, которое идентифицирует указанный коммит.
+\begin{enumerate}
+\item Хэш-адрес коммита \texttt{C0}
+\item Адрес коммита \texttt{C0}, используя символы относительной адресации (\texttt{$\sim$} и \texttt{\textsuperscript{$\wedge$}}) от текущего положения \texttt{HEAD}.
+\item Адрес коммита \texttt{C0}, используя относительную адресацию от указателя ветки \texttt{main}.
+\item Хэш-адрес коммита \texttt{C3}
+\item Адрес коммита \texttt{C3}, используя относительную адресацию от указателя ветки \texttt{featureB}.
+\item Адрес коммита \texttt{C3}, используя относительную адресацию от указателя \texttt{HEAD}.
+\item Хэш-адрес коммита \texttt{C2}
+\item Адрес коммита \texttt{C2}, используя относительную адресацию от указателя ветки \texttt{featureA}.
+\item Адрес коммита \texttt{C2}, используя относительную адресацию от указателя \texttt{HEAD}.
+\end{enumerate}
+Для того чтобы сдать эту задачу, создайте файл \texttt{01.txt} со всеми ответами и отправьте его в ваш репозиторий для сдачи заданий.
 
 \subsection{Отмена индексации}
 Предположим, что вы создали новый файл и добавили его в область индексирования, используя команды:
@@ -170,7 +222,8 @@ $ git commit -m "CE: add emu.txt"
 \begin{lstlisting}
 $ git reset --hard HEAD~4
 \end{lstlisting}
-Но потом передумали, и решили вернуть всё обратно. Что для этого нужно сделать?
+Но потом передумали, и решили вернуть всё обратно. Что для этого нужно сделать?\\
+Для того, чтобы сдать эту задачу вам нужно создать текстовый файл \texttt{04.txt}, в котором нужно будет описать словами алгоритм действий для восстановления после \texttt{reset}.
 
 
 \subsection{Обратить коммиты}
@@ -179,7 +232,7 @@ $ git reset --hard HEAD~4
 \includegraphics[scale=0.8]{../images/reverse_animals.png}
 \end{center}
 Решите эту задачу двумя способами:
-\begin{enumerate}
+\begin{enumerate}[(a)]
 \item Создав новую ветку на начальном коммите и добавляя коммиты с помощью \texttt{git cherry-pick}. После этого нужно будет удалить старую ветку и переименовать новую.
 \item Используя интерактивное перебазирование.
 \end{enumerate}
@@ -191,7 +244,7 @@ $ git reset --hard HEAD~4
 \includegraphics[scale=0.8]{../images/squash_animals.png}
 \end{center}
 Решите эту задачу двумя способами:
-\begin{enumerate}
+\begin{enumerate}[(a)]
 \item Используя \texttt{reset}.
 \item Используя интерактивное перебазирование.
 \end{enumerate}
@@ -203,7 +256,7 @@ $ git reset --hard HEAD~4
 \includegraphics[scale=0.8]{../images/delete_commits_animals.png}
 \end{center}
 Решите эту задачу двумя способами:
-\begin{enumerate}
+\begin{enumerate}[(a)]
 \item Используя \texttt{cherry-pick}.
 \item Используя интерактивное перебазирование.
 \end{enumerate}
@@ -267,7 +320,7 @@ $ git push -u origin main other
 \begin{lstlisting}[style=csMiptBash]
 $ touch emu.txt
 $ git add emu.txt
-$ git commit -m "add emu.txt"
+$ git commit -m "CE: add emu.txt"
 $ git push
 \end{lstlisting}
 Однако затем передумали и хотите отменить коммит. Вы хотите, чтобы изменения пропали везде -- как на вашем компьютере, так и в последнем состоянии удалённого репозитория. Решите эту задачу двумя способами:
@@ -276,20 +329,53 @@ $ git push
 \item Используя \texttt{git revert}.
 \end{itemize}
 
+
+
+\subsection{Игнорирование}
+Вы работаете над проектом на языке C и используете Git для контроля версий. В процессе разработки, компиляции и работы в разных средах создаются файлы, которые не должны попадать в репозиторий. А именно, в репозиторий не должно попадать следующее:
+
+\begin{itemize}
+\item \textbf{Логи проекта}\\
+Папки с названием \texttt{logs}, в какой бы директории проекта они не находились.
+
+\item \textbf{Служебные файлы операционных систем}\\
+Файлы с названиями \texttt{Thumbs.db} и \texttt{.DS\_Store}, в какой бы директории проекта они не находились. Это скрытые служебные файлы, которые генерируются операционными системами Windows и macOS соответственно.
+
+\item \textbf{Файлы IDE}\\
+Папки с названием \texttt{.vscode} и \texttt{.idea}, в какой бы директории проекта они не находились. Эти папки генерируются при использовании IDE Visual Studio и IDE от JetBrains соответственно.
+
+\item \textbf{Файлы, создаваемые при компиляции}\\
+Любые файлы с расширениями \texttt{.exe}, \texttt{.a}, \texttt{.lib} \texttt{.dll}, \texttt{.o}, \texttt{.so}, в какой бы директории они не находились.
+
+\item \textbf{Папка сборки}\\
+Папка \texttt{build} в корневой директории проекта. Но в поддиректориях папка с таким названием игнорироваться не должна.
+
+\item \textbf{Конфигурационные файлы}\\
+Файлы с расширением \texttt{.cfg}, в какой бы директории проекта они не находились. За исключением файла \texttt{config/settings.cfg}, который не должен игнорироваться.
+\end{itemize}
+Напишите файл \texttt{.gitignore} для такого проекта. Протестируйте этот файл на одном из созданных ранее репозиториев.
+Для сдачи этого задания поместите файл \texttt{.gitignore} в ваш репозиторий для сдачи заданий.
+
+
 \subsection{Форк}
-Зайдите на GitLab и сделайте форк репозитория \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/branch_animals}{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/branch\_animals}. Клонируйте этот репозиторий на свой компьютер. Создайте новую ветку на коммите \texttt{HEAD}. Добавьте в этой ветке новый коммит, содержащий файл с новым животным (на ваш выбор). Отправьте изменения на ваш форк. Сделайте merge request, чтобы добавить изменения в изначальный репозиторий (\texttt{v.biryukov/branch\_animals}).
+Зайдите на GitLab и сделайте форк репозитория \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/branch_animals}{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/branch\_animals}. Клонируйте форк на свой компьютер. Создайте новую ветку на коммите \texttt{HEAD}. Добавьте в этой ветке новый коммит, содержащий файл с новым животным (на ваш выбор). Отправьте изменения на ваш форк. Сделайте merge request, чтобы добавить изменения в изначальный репозиторий (\texttt{v.biryukov/branch\_animals}).
 
-
-\subsection{Pre-commit hook}
-Напишите pre-commit хук, который будет проверять, что все файлы имеют расширение \texttt{.txt}. Проверьте работу этого хука, закоммитив файл с другим расширением.
+\noindent Для сдачи этого задания убедитесь, что ваш форк является публичным.
 
 
 \subsection{Тэги}
-Создайте 2 новых тэга в репозитории \texttt{branch\_animals}: один на коммите \texttt{CA} -- \texttt{v0.1.0}, второй на коммите \texttt{CD} -- \texttt{v0.1.0}. Проверьте, что тэги созданы:
+Создайте 2 новых тэга в репозитории \texttt{branch\_animals}: один на коммите \texttt{CA} -- \texttt{v0.0.1}, второй на коммите \texttt{CD} -- \texttt{v0.1.0}. Проверьте, что тэги созданы:
 \begin{lstlisting}
 git log --oneline --graph --all
 \end{lstlisting}
-Отправьте теги на удалённый сервер.
+Для сдачи этого задания отправьте теги на удалённый сервер на GitLab.
+
+
+
+\iffalse
+\subsection{Pre-commit hook}
+Напишите pre-commit хук, который будет проверять, что все файлы имеют расширение \texttt{.txt}. Проверьте работу этого хука, закоммитив файл с другим расширением.
+\fi
 
 
 \end{document}
