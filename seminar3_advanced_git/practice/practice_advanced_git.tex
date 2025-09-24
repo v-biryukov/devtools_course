@@ -1,0 +1,227 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\pagenumbering{gobble}
+
+\lstdefinestyle{csMiptCppStyle}{
+  language=C++,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCppLinesStyle}{
+  style=csMiptCppStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCppBorderStyle}{
+  style=csMiptCppStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+  	style=csMiptCppStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-, \{, \}},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
+}
+
+\lstset{style=csMiptCppStyle}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
+
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
+\newcommand\section@cntformat{}     
+\newcommand\subsection@cntformat{Задача \thesubsection.\space} 
+\newcommand\subsubsection@cntformat{\thesubsubsection.\space}
+\makeatother
+
+
+
+\begin{document}
+\title{Семинар \#3: git, продвинутый. Практика. \vspace{-5ex}}\date{}\maketitle
+
+\subsection*{Задачи с прошлого семинара}
+Решите новые задачи с прошлого семинара. Задача 1 и задача 12.
+
+
+
+\subsection*{Подготовка. Генерация репозитория, который будет использоваться в задачах.}
+
+Для решения некоторых задач вам потребуется создать репозиторий коммитов. 
+Его можно найти по адресу:
+\href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/utils}{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/utils}. Клонируйте этот репозиторий себе. Решите следующие задачи:
+
+\subsection*{Задачи}
+\begin{enumerate}
+\item \textbf{Просмотрите граф коммитов}:\\
+Это можно сделать на GitLab во вкладке \texttt{Code -> Repository Graph} или у вас на машине, с помощью команды:
+\begin{lstlisting}
+git log --oneline --all --graph
+\end{lstlisting}
+
+\item \textbf{Новый alias}:\\
+Добавьте новый \texttt{alias} для этой команды, назовите его \texttt{lg}. То есть теперь, при вызове: 
+\begin{lstlisting}
+git lg
+\end{lstlisting}
+Должно печататься то же, что и при вызове 
+\begin{lstlisting}
+git log --oneline --all --graph
+\end{lstlisting}
+
+
+
+\item \textbf{Слияние с конфликтом}:\\
+Слейте ветку \texttt{bob} в ветку \texttt{main}. Для этого вам нужно перейти в ветку \texttt{main} и вызвать \texttt{git merge bob}. При этом могут возникнуть конфликты. Разрешите их. (в этой и последующих задачах необязательно, чтобы код после слияния был корректным, так как это задание на git, а не на язык программирования).
+
+\item \textbf{Отмена слияния}:\\
+Отмените, сделанное только что слияние.
+
+\item \textbf{Перебазирование с конфликтом}:\\
+Перебазируйте ветку \texttt{bob} на ветку \texttt{main}. При этом могут возникнуть конфликты. Разрешите их.
+
+\item \textbf{Отмена перебазирования}:\\
+Отмените, сделанное только что перебазирование.
+
+\item \textbf{Копия коммита с конфликтом}:\\
+Перейдите на ветку \texttt{main} и скопируйте в неё один коммит (\texttt{git cherry-pick}) с хэшем \texttt{893e28d} из ветки \texttt{bob}. При этом могут возникнуть конфликты. Разрешите их.
+
+\item \textbf{Отмена \texttt{cherry-pick}}:\\
+Отмените, сделанный только что \texttt{cherry-pick}.
+
+\item \textbf{Слияние быстрой перемоткой}:\\
+Перейдите на ветку \texttt{alice} и слейте в ветку \texttt{alice} ветку \texttt{main}, используя быструю перемотку.
+
+\item \textbf{Отмена быстрой перемотки}:\\
+Отмените, сделанную только что быструю перемотку.
+
+\item \textbf{Слияние без быстрой перемоткой}:\\
+Перейдите на ветку \texttt{alice} и слейте в ветку \texttt{alice} ветку \texttt{main}, без быстрой перемотки.
+
+\item \textbf{Отмена последнего слияния}:\\
+Отмените, сделанное только что слияние.
+
+\item \textbf{Разница}:\\
+Перейдите в ветку \texttt{casper} и найдите \texttt{diff} последних двух коммитов.
+
+\item \textbf{Патч-файл}:\\
+Создайте патч-файл, содержащий \texttt{diff} последних двух коммитов ветки \texttt{casper}.
+Перейдите в ветку \texttt{main} и примените этот патч. Закоммите изменения в ветке \texttt{main}.
+
+\item \textbf{Разница одного файла}:\\
+Напечатайте \texttt{diff} файла \texttt{integration.py} в ветках \texttt{main} и \texttt{casper}.
+
+\item \textbf{git bisect}:\\
+Перейдите в ветку \texttt{casper} и запустите скрипт \texttt{sorting.py}
+\begin{lstlisting}
+python ./sorting.py
+\end{lstlisting}
+Вы увидите, что одна из сортировок работает неправильно, хотя в других ветках эта сортировка работала правильно. Значит в одном из коммитов ветки \texttt{casper} була допущена ошибка. Найдите коммит, в котором была допущена ошибка с помощью \texttt{git bisect}. Исправьте эту ошибку.
+
+\item \textbf{Интерактивный \texttt{rebase}}:\\
+Сделайте интерактивный \texttt{rebase} ветки \texttt{casper} с момента отсоединения её от других веток. Склейте вместе коммиты ветки \texttt{casper}, так чтобы там осталось 4 коммита.
+
+\item \textbf{Отмена интерактивного \texttt{rebase}}:\\
+Отмените только что сделанный интерактивный \texttt{rebase}.
+
+\item \textbf{\textbf{git add -p}}:\\
+Перейдите на ветку \texttt{casper} и добавьте изменения в рабочую папку и в область индексирования. Изменить функции \texttt{add}, \texttt{factorial} и \texttt{is\_prime} в файле \texttt{arithmetic.py}, а также сортировку \texttt{bubble\_sort} в файле \texttt{sorting.py}. Добавьте в индекс только изменения функций \texttt{add} и \texttt{is\_prime}. Остальные изменения добавлять не нужно. Добавлять новый коммит не нужно.
+
+\item \textbf{\textbf{git stash}}:\\
+После изменений, сделанных в прошлой задаче, попробуйте переключиться на ветку \texttt{main}. Произойдёт ошибка, так как есть изменения в рабочей директории и в индексе. Используйте \texttt{git stash}, чтобы спрятать изменения. Перейдите на ветку \texttt{main} и сделайте там какой-нибудь коммит на ваш выбор. Вернитесь на ветку \texttt{casper} и вытащите изменения из \texttt{stash}.
+
+\item \textbf{Перенос \textbf{git stash}}:\\
+Снова добавьте эти же изменения в \texttt{stash}. Перейдите на ветку \texttt{bob} и вытащите изменения, сделанные на ветке \texttt{casper}, в ветку \texttt{bob}. Возможны конфликты. Сделайте коммит с этими изменениями в ветке \texttt{bob}.
+\end{enumerate}
+
+
+\subsection*{Низкоуровневый git}
+В этом задании нельзя использовать команды, которые мы изучали прежде (кроме \texttt{git init}). Можно использовать только следующие низкоуровневые команды:
+\begin{itemize}
+\item git init
+\item git hash-object
+\item git cat-file
+\item git ls-files
+\item git mktree
+\item git commit-tree
+\item git update-ref 
+\item git ls-tree
+\end{itemize}
+А также команды для проверки результатов:
+\begin{itemize}
+\item git status
+\item git log
+\item git show
+\item git diff
+\end{itemize}
+Создайте репозиторий, состоящий из 3-х коммитов и 2-х веток, используя только эти команды.
+
+\subsection*{* Ещё более низкоуровневый git}
+Решите предыдущую задачу вообще без использования команд git. Можно только использовать команды для проверки результатов:
+\begin{itemize}
+\item git status
+\item git log
+\item git show
+\item git diff
+\end{itemize}
+\end{document}
