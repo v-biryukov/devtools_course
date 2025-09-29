@@ -79,11 +79,10 @@
 	frame=none
 }
 
-\lstset{style=csMiptCppStyle}
+\lstset{style=csMiptBash}
 \lstset{
         literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
 }
-
 
 \renewcommand{\thesubsection}{\arabic{subsection}}
 \makeatletter
@@ -100,102 +99,199 @@
 \begin{document}
 \title{Семинар \#3: git, продвинутый. Практика. \vspace{-5ex}}\date{}\maketitle
 
-\subsection*{Задачи с прошлого семинара}
-Решите новые задачи с прошлого семинара. Задача 1 и задача 12.
+\subsection*{Как сдавать задачи}
+Для сдачи ДЗ вам нужно создать репозиторий на GitLab (если он ещё не создан) под названием \texttt{devtools-homework}. Структура репозитория должна иметь вид:
+\begin{center}
+\begin{BVerbatim}
+├── seminar3_advanced_git/
+│   ├── 01.txt
+│   ├── 02.sh
+│   ├── 03.sh
+│   └── ...
+└── ...
+\end{BVerbatim}
+\end{center}
+Если не указано что-то другое, то для каждой задачи нужно будет создать текстовый файлы с расширением \texttt{.txt} или \texttt{.sh}, в котором нужно написать команды, которые использовались при решении данной задачи. 
 
-
-
-\subsection*{Подготовка. Генерация репозитория, который будет использоваться в задачах.}
-
-Для решения некоторых задач вам потребуется создать репозиторий коммитов. 
-Его можно найти по адресу:
-\href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/utils}{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/utils}. Клонируйте этот репозиторий себе. Решите следующие задачи:
-
-\subsection*{Задачи}
-\begin{enumerate}
-\item \textbf{Просмотрите граф коммитов}:\\
-Это можно сделать на GitLab во вкладке \texttt{Code -> Repository Graph} или у вас на машине, с помощью команды:
+\subsection{Работа с репозиторием}
+\subsubsection*{Как сдать эту задачу}
+Создайте файл \texttt{01.txt} и записывайте в него команды, которые нужно выполнить для той или иной подзадачи. В некоторых задачах могут возникнуть конфликты слияния, которые необходимо исправлять вручную. Чтобы указать, что возник конфликт оставьте комментарий \texttt{"Конфликт, разрешаю вручную"}. После некоторых команд может открыться текстовый редактор и попросить что-то ввести. Чтобы отметить это в ответе напишите комментарии, содержащие следующуе строки: \texttt{"Открылся редактор, ввожу:"} и дальше то, что вы вводите в редактор. Выглядеть это должно примерно так:
 \begin{lstlisting}
-git log --oneline --all --graph
+# Подзадача d
+git merge bob
+# Конфликт, разрешаю вручную
+git add имена файлов
+git merge --continue
+# Открылся редактор, ввожу:
+# This is my merge commit!
+
+# Подзадача e
+git reset --hard main~
+
+# Подзадача f
+\end{lstlisting}
+В некоторых задачах может понадобиться обратиться к \texttt{git reflog}. Чтобы указать это создайте комментарий, в котором напишите следующее: \texttt{"Открываю reflog и ищу нужный коммит"}, примерно вот так:
+\begin{lstlisting}
+git reset --hard HEAD~2
+# Открываю reflog и ищу нужный коммит
+git reset --hard 24e1f51
 \end{lstlisting}
 
-\item \textbf{Новый alias}:\\
+\subsubsection*{Подготовка. Генерация репозитория, который будет использоваться в подзадачах}
+Для решения этой задачи вам потребуется создать репозиторий коммитов. 
+Его можно найти по адресу:
+\href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/utils}{mipt-hsse.gitlab.yandexcloud.net/v.biryukov/utils}. Клонируйте этот репозиторий себе:
+\begin{lstlisting}
+git clone git@mipt-hsse.gitlab.yandexcloud.net:v.biryukov/utils.git
+cd utils
+\end{lstlisting}
+
+\subsubsection*{Подзадачи}
+\begin{enumerate}[a.]
+
+\item \textbf{Просмотр содержимого репозитория}\\
+Перейдите на все ветки и просмотрите, какие файлы содержатся в их последних коммитах:
+\begin{lstlisting}
+$ git switch alice
+$ git switch bob
+$ git switch casper
+$ git switch main
+\end{lstlisting}
+Это важно сделать ещё и потому что при клонировании репозитория создаются только remote-ветки (вроде \texttt{origin/alice}), а обычные локальные ветки (вроде  \texttt{alice}) не создаются. Их можно создать вручную или они создаются автоматически при переходе на них.
+
+\item \textbf{Просмотрите граф коммитов}\\
+Это можно сделать на GitLab во вкладке \texttt{Code -> Repository Graph} или у вас на машине, с помощью команды:
+\begin{lstlisting}
+$ git log --oneline --all --graph
+\end{lstlisting}
+Для вывода на экран, если вывод не помещается на экран полностью, команда \texttt{git log} используется программу \texttt{less}. Чтобы показать следующую строчку используйте \texttt{Enter}. Чтобы выйти из программы \texttt{less} просто нажмите клавишу \texttt{Q}.
+
+\iffalse
+В этом выводе будут отображаться как обычные ветки (вроде \texttt{alice}), так и удалённые ветки (вроде \texttt{origin/alice}). Чтобы удалённые ветки не отображались будем использовать следующую команду:
+\begin{lstlisting}
+$ git log --oneline --all --graph --decorate-refs-exclude=refs/remotes/*
+\end{lstlisting}
+\fi
+
+\item \textbf{Новый alias}\\
 Добавьте новый \texttt{alias} для этой команды, назовите его \texttt{lg}. То есть теперь, при вызове: 
 \begin{lstlisting}
-git lg
+$ git lg
 \end{lstlisting}
 Должно печататься то же, что и при вызове 
 \begin{lstlisting}
-git log --oneline --all --graph
+$ git log --oneline --all --graph
 \end{lstlisting}
 
 
 
-\item \textbf{Слияние с конфликтом}:\\
-Слейте ветку \texttt{bob} в ветку \texttt{main}. Для этого вам нужно перейти в ветку \texttt{main} и вызвать \texttt{git merge bob}. При этом могут возникнуть конфликты. Разрешите их. (в этой и последующих задачах необязательно, чтобы код после слияния был корректным, так как это задание на git, а не на язык программирования).
+\item \textbf{Слияние с конфликтом}\\
+Слейте ветку \texttt{bob} на ветку \texttt{main}. Для этого вам нужно перейти в ветку \texttt{main} и вызвать:
+\begin{lstlisting}
+$ git merge bob
+\end{lstlisting}
+При этом могут возникнуть конфликты. Разрешите их. (в этой и последующих задачах необязательно, чтобы код после слияния был корректным, так как это задание на git, а не на язык программирования). Посмотрите как выглядит граф коммитов после слияния с помощью \texttt{git lg}.
 
-\item \textbf{Отмена слияния}:\\
-Отмените, сделанное только что слияние.
+\item \textbf{Отмена слияния}\\
+Отмените только что выполненное слияние.
 
-\item \textbf{Перебазирование с конфликтом}:\\
-Перебазируйте ветку \texttt{bob} на ветку \texttt{main}. При этом могут возникнуть конфликты. Разрешите их.
+\item \textbf{Перебазирование с конфликтом}\\
+Перебазируйте ветку \texttt{bob} на ветку \texttt{main}. Для этого вам нужно перейти в ветку \texttt{bob} и вызвать:
+\begin{lstlisting}
+$ git rebase main
+\end{lstlisting}
+При этом могут возникнуть конфликты. Разрешите их. Посмотрите как выглядит граф коммитов после перебазирования с помощью \texttt{git lg}.
 
-\item \textbf{Отмена перебазирования}:\\
-Отмените, сделанное только что перебазирование.
+\item \textbf{Отмена перебазирования}\\
+Отмените только что выполненное перебазирование.
 
-\item \textbf{Копия коммита с конфликтом}:\\
-Перейдите на ветку \texttt{main} и скопируйте в неё один коммит (\texttt{git cherry-pick}) с хэшем \texttt{893e28d} из ветки \texttt{bob}. При этом могут возникнуть конфликты. Разрешите их.
+\item \textbf{Копия коммита с конфликтом}\\
+Перейдите на ветку \texttt{main} и скопируйте (\texttt{git cherry-pick}) в неё один коммит с хэшем \texttt{893e28d} из ветки \texttt{bob}. При этом могут возникнуть конфликты. Разрешите их. Посмотрите как выглядит граф коммитов с помощью \texttt{git lg}.
 
-\item \textbf{Отмена \texttt{cherry-pick}}:\\
-Отмените, сделанный только что \texttt{cherry-pick}.
+\item \textbf{Отмена \texttt{cherry-pick}}\\
+Отмените только что сделанный \texttt{cherry-pick}.
 
-\item \textbf{Слияние быстрой перемоткой}:\\
-Перейдите на ветку \texttt{alice} и слейте в ветку \texttt{alice} ветку \texttt{main}, используя быструю перемотку.
+\item \textbf{Слияние с помощью перемотки}\\
+Перейдите на ветку \texttt{alice} и слейте в ветку \texttt{alice} ветку \texttt{main}, используя \textit{перемотку} (\textit{fast-forward merge}). Посмотрите как выглядит граф коммитов с помощью \texttt{git lg}.
 
-\item \textbf{Отмена быстрой перемотки}:\\
-Отмените, сделанную только что быструю перемотку.
+\item \textbf{Отмена слияния перемоткой}\\
+Отмените только что выполненное слияние перемоткой.
 
-\item \textbf{Слияние без быстрой перемоткой}:\\
-Перейдите на ветку \texttt{alice} и слейте в ветку \texttt{alice} ветку \texttt{main}, без быстрой перемотки.
+\item \textbf{Слияние без быстрой перемоткой}\\
+Перейдите на ветку \texttt{alice} и слейте в ветку \texttt{alice} ветку \texttt{main}, без перемотки. Посмотрите как выглядит граф коммитов с помощью \texttt{git lg}.
 
-\item \textbf{Отмена последнего слияния}:\\
-Отмените, сделанное только что слияние.
+\item \textbf{Отмена последнего слияния}\\
+Отмените только что выполненное слияние.
 
-\item \textbf{Разница}:\\
-Перейдите в ветку \texttt{casper} и найдите \texttt{diff} последних двух коммитов.
+\item \textbf{Просмотр файлов}\\
+Напишите команды, которые печатают файлы на экран:
+\begin{itemize}
+\item файл \texttt{arithmetic.py} из ветки \texttt{main}
+\item файл \texttt{arithmetic.py} из ветки \texttt{casper}
+\item файл \texttt{arithmetic.py} из коммита \texttt{casper$\sim$5}
+\end{itemize}
 
-\item \textbf{Патч-файл}:\\
+\item \textbf{Разница}\\
+Напишите команды, которые печатают на экран разницу (\texttt{diff}) между следующими коммитами или отдельными файлами:
+\begin{itemize}
+\item между ветками \texttt{main} и \texttt{casper}
+\item между коммитами \texttt{casper} и \texttt{casper$\sim$5}
+\item между файлом \texttt{integration.py} в ветке \texttt{main} и файлом \texttt{integration.py} ветки \texttt{casper}.
+\item между файлом \texttt{misc.py} коммита \texttt{fe2e890} и файлом \texttt{arithmetic.py} коммита \texttt{765df07}.
+\end{itemize}
+
+\item \textbf{Патч-файл}\\
 Создайте патч-файл, содержащий \texttt{diff} последних двух коммитов ветки \texttt{casper}.
-Перейдите в ветку \texttt{main} и примените этот патч. Закоммите изменения в ветке \texttt{main}.
+Перейдите в ветку \texttt{main} и примените этот патч с помощью команды \texttt{git apply}. При этом могут возникнуть конфликты. Используйте команду \texttt{git apply} с опцией  \texttt{-{}-3way} для разрешения конфликтов. Закоммите изменения, созданные патчем, в ветке \texttt{main}. Сам патч-файл удалите.
 
-\item \textbf{Разница одного файла}:\\
-Напечатайте \texttt{diff} файла \texttt{integration.py} в ветках \texttt{main} и \texttt{casper}.
-
-\item \textbf{git bisect}:\\
+\item \textbf{git bisect}\\
 Перейдите в ветку \texttt{casper} и запустите скрипт \texttt{sorting.py}
 \begin{lstlisting}
 python ./sorting.py
 \end{lstlisting}
-Вы увидите, что одна из сортировок работает неправильно, хотя в других ветках эта сортировка работала правильно. Значит в одном из коммитов ветки \texttt{casper} була допущена ошибка. Найдите коммит, в котором была допущена ошибка с помощью \texttt{git bisect}. Исправьте эту ошибку.
+Вы увидите, что одна из сортировок работает неправильно, хотя в других ветках эта сортировка работала правильно. Значит в одном из коммитов ветки \texttt{casper} была допущена ошибка. Найдите коммит, в котором была допущена ошибка с помощью \texttt{git bisect}.\\
+Для сдачи этой задачи укажите в файле \texttt{01.txt} коммит, файл и строчку в которой впервые возникает ошибка.
 
-\item \textbf{Интерактивный \texttt{rebase}}:\\
-Сделайте интерактивный \texttt{rebase} ветки \texttt{casper} с момента отсоединения её от других веток. Склейте вместе коммиты ветки \texttt{casper}, так чтобы там осталось 4 коммита.
+\item \textbf{Интерактивный \texttt{rebase}}\\
+Сделайте интерактивный \texttt{rebase} ветки \texttt{casper} с момента отсоединения её от других веток. Склейте вместе коммиты ветки \texttt{casper}, так чтобы там осталось 4 коммита. Выберете коммиты так, чтобы они были примерно равномерно распределены по истории ветки \texttt{casper}.
 
-\item \textbf{Отмена интерактивного \texttt{rebase}}:\\
+\item \textbf{Отмена интерактивного \texttt{rebase}}\\
 Отмените только что сделанный интерактивный \texttt{rebase}.
 
-\item \textbf{\textbf{git add -p}}:\\
-Перейдите на ветку \texttt{casper} и добавьте изменения в рабочую папку и в область индексирования. Изменить функции \texttt{add}, \texttt{factorial} и \texttt{is\_prime} в файле \texttt{arithmetic.py}, а также сортировку \texttt{bubble\_sort} в файле \texttt{sorting.py}. Добавьте в индекс только изменения функций \texttt{add} и \texttt{is\_prime}. Остальные изменения добавлять не нужно. Добавлять новый коммит не нужно.
+\item \textbf{\textbf{git add -p}}\\
+Перейдите на ветку \texttt{casper} и добавьте изменения. В рабочей папке добавьте комментарии к функциям \texttt{add}, \texttt{factorial}, \texttt{is\_prime} и \texttt{is\_perfect\_number} из файла \texttt{arithmetic.py}. Комментарии должны выглядеть примерно так:
+\begin{lstlisting}[language=Python]
+# This function adds two numbers
+def add(a: float, b: float) -> float:
+    return a + b
+\end{lstlisting}
 
-\item \textbf{\textbf{git stash}}:\\
-После изменений, сделанных в прошлой задаче, попробуйте переключиться на ветку \texttt{main}. Произойдёт ошибка, так как есть изменения в рабочей директории и в индексе. Используйте \texttt{git stash}, чтобы спрятать изменения. Перейдите на ветку \texttt{main} и сделайте там какой-нибудь коммит на ваш выбор. Вернитесь на ветку \texttt{casper} и вытащите изменения из \texttt{stash}.
+Добавьте в индекс только изменения, связанные с функциями \texttt{add} и \texttt{is\_prime}. Остальные изменения добавлять не нужно. Добавлять новый коммит не нужно. Используйте команду \texttt{git add} с опцией \texttt{-p}.
 
-\item \textbf{Перенос \textbf{git stash}}:\\
-Снова добавьте эти же изменения в \texttt{stash}. Перейдите на ветку \texttt{bob} и вытащите изменения, сделанные на ветке \texttt{casper}, в ветку \texttt{bob}. Возможны конфликты. Сделайте коммит с этими изменениями в ветке \texttt{bob}.
+\item \textbf{\textbf{git stash}}\\
+После изменений, сделанных в прошлой подзадаче, попробуйте переключиться на ветку \texttt{main}. Произойдёт ошибка, так как есть изменения в рабочей директории и в индексе. Используйте \texttt{git stash}, чтобы спрятать изменения. Перейдите на ветку \texttt{main} и сделайте там какой-нибудь коммит на ваш выбор. Вернитесь на ветку \texttt{casper} и вытащите изменения из \texttt{stash}. Вытащить изменения нужно таким образом, чтобы те изменения, которые были в индексе, остались в индексе, а те изменения, которые были в рабочей папке, остались в рабочей папке.
+
+\item \textbf{Перенос \textbf{git stash}}\\
+Снова добавьте эти же изменения в \texttt{stash}. Перейдите на ветку \texttt{bob} и вытащите изменения, сделанные на ветке \texttt{casper}, в ветку \texttt{bob}. Возможен конфликт. Исправьте конфликт и сделайте коммит с этими изменениями в ветке \texttt{bob}.
+
+\item \textbf{Фильтрация репозитория}\\
+\texttt{git filter-repo} это не команда самого git, а сторонняя программа. Для решения этой подзадачи необходимо установить её. Перед выполнением этой подзадачи на всякий случай скопируйте весь репозиторий. 
+
+Напишите команды, используя \texttt{git filter-repo}, которые делают следующее:
+\begin{itemize}
+\item переименовывают файл \texttt{arithmetic.py} в файл \texttt{ar.py} во всех коммитах репозитория
+\item удаляют файл \texttt{sorting.py} во всех коммитах репозитория
+\end{itemize}
 \end{enumerate}
 
 
-\subsection*{Низкоуровневый git}
+\subsection{\texttt{autocrlf}}
+\subsection{\texttt{.gitattributes}}
+\subsection{Хуки git}
+Напишите pre-commit хук, который будет проверять, что все файлы имеют расширение \texttt{.txt}. Проверьте работу этого хука, закоммитив файл с другим расширением.
+
+
+\subsection{Низкоуровневый git}
 В этом задании нельзя использовать команды, которые мы изучали прежде (кроме \texttt{git init}). Можно использовать только следующие низкоуровневые команды:
 \begin{itemize}
 \item git init
@@ -216,7 +312,10 @@ python ./sorting.py
 \end{itemize}
 Создайте репозиторий, состоящий из 3-х коммитов и 2-х веток, используя только эти команды.
 
-\subsection*{* Ещё более низкоуровневый git}
+
+
+
+\subsection{Ещё более низкоуровневый git}
 Решите предыдущую задачу вообще без использования команд git. Можно только использовать команды для проверки результатов:
 \begin{itemize}
 \item git status
@@ -224,4 +323,15 @@ python ./sorting.py
 \item git show
 \item git diff
 \end{itemize}
+
+
+
+
+
+
+
+\iffalse
+\section*{Необязательные задачи (не будут учитываться при оценивании)}
+\fi
+
 \end{document}
