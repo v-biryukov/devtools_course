@@ -9,3 +9,5 @@
 - Визуальный тренажер: https://learngitbranching.js.org/
 - Pro Git. Авторы: Чакон С., Штрауб Б. https://git-scm.com/book/ru/v2
 
+### bash
+- https://www.commandlinefu.com/commands/browse

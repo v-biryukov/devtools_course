@@ -1,0 +1,476 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\pagenumbering{gobble}
+
+\lstdefinestyle{csMiptCppStyle}{
+  language=C++,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCppLinesStyle}{
+  style=csMiptCppStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCppBorderStyle}{
+  style=csMiptCppStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+  	style=csMiptCppStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-, \{, \}},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
+}
+
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
+\newcommand\section@cntformat{}     
+\newcommand\subsection@cntformat{Задача \thesubsection.\space} 
+\newcommand\subsubsection@cntformat{\thesubsubsection.\space}
+\makeatother
+
+
+
+\begin{document}
+\title{Семинар \#4: Linux. Потоки, перенаправление. Практика. \vspace{-5ex}}\date{}\maketitle
+
+
+\subsection{Простые команды}
+\begin{enumerate}[a.]
+\item \textbf{Привет мир}\\
+Введите команду, которая будет печатать на экран \texttt{"Hello world"}. Используйте команду \texttt{echo}.
+
+\item \textbf{Привет мир 2}\\
+Введите команду, которая будет печатать \texttt{"Hello world"}. Используйте команду \texttt{printf}. Вывод должен быть аналогичен предыдущей команде, то есть в конце строки нужно печатать перевод на новую строку.
+
+\item \textbf{Where am I?}\\
+Введите команду, которая будет печатать на экран текущую директорию, в которой вы находитесь.
+
+\item \textbf{Who am I?}\\
+Введите команду, которая будет печатать на экран ваше имя пользователя.
+
+\item \textbf{Время и дата}\\
+Введите команду, которая будет печатать текущие время и дату.
+
+\item \textbf{Календарь}\\
+Введите команду, которая будет печатать календарь текущего месяца.
+
+\item \textbf{Информация о системе}\\
+Введите команду, которая будет печатать полную информацию о системе. Используйте команду \texttt{uname -a}.
+
+\item \textbf{cat}\\
+Выполните команду, которая печатает на экран содержимое файла \texttt{happiness.txt}.
+
+\item \textbf{tac}\\
+Выполните команду, которая печатает на экран строки файла \texttt{happiness.txt} в обратном порядке.
+
+\item \textbf{Начало}\\
+Выполните команду, которая печатает на экран первые 5 строк файла \texttt{happiness.txt}.
+
+\item \textbf{Конец}\\
+Выполните команду, которая печатает на экран последние 5 строк файла \texttt{happiness.txt}.
+
+\item \textbf{Строки, слова и символы}\\
+Используйте программу \texttt{wc}, чтобы найти количество строк, слов и символов в файле \texttt{happiness.txt}.
+Что делают опции \texttt{-l}, \texttt{-w} и \texttt{-c} этой команды?
+
+\item \textbf{less}\\
+Используйте команду \texttt{less} для просмотра файла \texttt{invisible\_man.txt}.\\
+Стрелочки вверх/вниз, \texttt{PageUp}/\texttt{PageDown} -- перемещение, \texttt{g}/\texttt{G} -- начало/конец файла, \texttt{q} -- выйти из \texttt{less}.
+\item \textbf{Опции ls}
+\begin{enumerate}
+\item Введите команду \texttt{ls}, чтобы напечатать файлы в текущей директории.
+\item Введите команду \texttt{ls -1}, чтобы напечатать файлы в текущей директории. Один файл на строку.
+\item Введите команду \texttt{ls -a}, чтобы напечатать все файлы в текущей директории, в том числе скрытые.
+\item Введите команду \texttt{ls -l}. Подробная информация о файлах в текущей директории.
+\item Введите команду, которая бы печатала все файлы подробно, но так, чтобы они были отсортированы по их размеру.
+\item Введите команду, которая бы печатала все файлы подробно, но так, чтобы они были отсортированы по дате последнего изменения.
+\item Введите команду, которая бы печатала все файлы подробно, но так, чтобы они были отсортированы по их расширению.
+\item Введите команду, которая бы печатала все файлы текущей директории, а потом все файлы поддиректорий и так далее.
+\end{enumerate}
+\end{enumerate}
+
+\subsection{Простое перенаправление в файл}
+\begin{enumerate}[a.]
+\item \textbf{Запись в файл}\\
+Введите команду, которая будет будет создавать файл \texttt{2a.txt} и записывать туда строку \texttt{"Sapere Aude"}. Если файл с таким именем уже существует, то сначала всё его содержимое должно удаляться, а потом уже производиться запись.
+
+\item \textbf{Запись времени в файл}\\
+Введите команду, которая будет создавать файл \texttt{2b.txt} и записывать туда текущее время. Если файл с таким именем уже существует, то сначала всё его содержимое должно удаляться, а потом уже производиться запись. Текущее время можно напечатать командой:
+\begin{lstlisting}
+date +%H:%M:%S
+\end{lstlisting}
+
+\item \textbf{Дозапись времени в файл}\\
+Введите команду, которая будет создавать файл \texttt{2c.txt} и записывать туда текущее время. Если файл с таким именем уже существует, время должно записывать в новую строку в конец файла.
+
+\item \textbf{Сортировка строк}\\
+Используйте программу \texttt{sort}, чтобы отсортировать все строки в файле \texttt{names.txt}. Сохраните отсортированные имена в файле \texttt{2d.txt}.
+
+\item \textbf{Обращение каждой строки}\\
+Используйте программу \texttt{rev}, чтобы обратить каждую строку в файле \texttt{names.txt}. Сохраните обращённый файл в имена в файле \texttt{2e.txt}.
+
+\item \textbf{Конкатенация}\\
+Используйте программу \texttt{cat}, чтобы конкатенировать два файла: \texttt{dream.txt} и \texttt{happiness.txt}. Результат конкатенации запишите а файл \texttt{2f.txt}.
+
+\item \textbf{Две строки}\\
+Напишите команду (одну строку), которая будет печатать в файл \texttt{2g.txt} две строки:
+\begin{lstlisting}
+first
+second
+\end{lstlisting}
+\end{enumerate}
+
+
+\subsection{Синтаксис \texttt{\$(...)}}
+\begin{enumerate}[a.]
+
+
+\item \textbf{Ссылка}\\
+В файле \texttt{ref.txt} хранится название некоторого файла. Вам нужно выполнить команду, которая читает файл \texttt{ref.txt}, считывает оттуда название другого файла и печатает содержимое этого файла на экран.
+
+\item \textbf{Привет user}\\
+Введите команду, которая будет будет создавать файл \texttt{3b.txt} и записывать туда строку \texttt{"Hello <user>"}, где вместо \texttt{<user>} будет записано ваше имя пользователя. Решите эту задачу четыремя способами:
+\begin{enumerate}[i.]
+\item С использование опции \texttt{-e} команды \texttt{echo}.
+\item С использование команды \texttt{printf}.
+\item С использование синтаксиса \texttt{\$(...)}.
+\item С использование опции \texttt{-n} команды \texttt{echo} и объединения нескольких команд.
+\end{enumerate}
+
+\item \textbf{alice.txt}\\
+Выполните команду (одна строка), которая бы создавала файл по имени \texttt{<user>-<seconds>.txt}, где вместо \texttt{<user>} команда должна подставить имя пользователя, а вместо \texttt{<seconds>} команда должна подставить количество секунд, прошедших с 1 января 1970 года (команда \texttt{date +\%s}). Команда должна записывать в новый файл календарь за текущий месяц.
+
+\end{enumerate}
+
+
+\subsection{Стандартный вход}
+\begin{enumerate}[a.]
+\item \textbf{cat из stdin в stdout}\\
+Запустите программу \texttt{cat}, не указывая файл. В результате \texttt{cat} будет требовать ввести текст через стандартный вход. После ввода строки и нажатия \texttt{Enter}, \texttt{cat} будет печать на экран строку, которую вы ввели. Введите строки:
+\begin{lstlisting}
+one
+two
+three
+\end{lstlisting}
+После каждой строки \texttt{cat} будет печатать её же в стандартный выход \texttt{stdout}. Для завершения ввода введите \texttt{Ctrl-D}.
+
+\item \textbf{cat из stdin в файл}\\
+Запустите программу \texttt{cat} не указывая названия файла как аргумента, а просто перенаправив вывод в файл:
+\begin{lstlisting}
+$ cat > 3b.txt
+\end{lstlisting}
+В результате \texttt{cat} будет требовать ввести текст через стандартный вход (\texttt{stdin}). Введите строки:
+\begin{lstlisting}
+one
+two
+three
+\end{lstlisting}
+и нажмите \texttt{Ctrl-D}. Посмотрите на содержимое файла \texttt{3b.txt}.
+
+\item \textbf{Сортировка строк из stdin}\\
+Запустите программу \texttt{sort}, не указав файл в качестве аргумента. В результате \texttt{sort} будет требовать ввести текст через стандартный вход. Введите:
+\begin{lstlisting}
+one
+two
+three
+four
+\end{lstlisting}
+и нажмите \texttt{Ctrl-D}. Эти строки должны напечататься в алфавитном порядке.
+
+\item \textbf{Программы, которые читают из stdin}\\
+Протестируйте, какие из следующих программ читают из \texttt{stdin}, если им не передать аргументы, а какие не читают:
+\begin{lstlisting}
+echo ls wc cp mkdir touch tac head tail rev
+\end{lstlisting}
+
+\item \textbf{Аргумент или перенаправление}\\
+Что делают следующие команды и чем они отличаются?
+\begin{lstlisting}
+$ cat dream.txt
+$ cat < dream.txt
+$ wc dream.txt
+$ wc < dream.txt
+\end{lstlisting}
+
+
+\item \textbf{Перенаправление из файла в stdin}\\
+Введите команду bash (одну строку), которая будет вычислять и печатать на экран количество строк файла \texttt{invisible\_man.txt} в следующем формате:
+\begin{lstlisting}
+file has <number> lines
+\end{lstlisting}
+где вместо \texttt{<number>} будет поставляться количество строк.
+
+\end{enumerate}
+
+
+\newpage
+\subsection{Pipe (из stdout одной программы в stdin другой)}
+\begin{enumerate}[a.]
+\item \textbf{Полное обращение}\\
+Выполните команду (одна строка bash), которая делает следующее:
+\begin{itemize}
+\item Сортирует строки файла \texttt{names.txt}. 
+\item Обращает полученные отсортированные строки. Первая строка должна стать последней, вторая -- предпоследней и так далее.
+\item Обращает каждую строку этого же файла.
+\item Сохраняет результат в файл \texttt{totally\_reversed.txt}.
+\end{itemize}
+Первые строки результирующего файла должны иметь следующий вид:
+\begin{lstlisting}
+yrahcaZ
+araY
+reivaX
+...
+\end{lstlisting}
+Используйте программы \texttt{sort}, \texttt{tac} и \texttt{rev}.
+
+\item \textbf{Удаление дубликатов}\\
+Файл \texttt{logs.txt} содержит список сайтов, при этом некоторые строки повторяются.
+Необходимо выполнить команду (одна строка), которая:
+\begin{itemize}
+\item Отбирает только уникальные строки.
+\item Сортирует их в алфавитном порядке.
+\item Сохраняет результат в файл \texttt{uniq\_logs.txt}.
+\end{itemize}
+В итоговом файле должно остаться ровно 20 строк.
+
+\item \textbf{Количество файлов}\\
+Выполните команду, которая будет печатать количество файлов в текущей директории.
+
+\item \textbf{Просмотр файлов}\\
+Напишите команду, для просмотра подробной информации (\texttt{ls -l}) о всех файлах из директории \texttt{/usr/bin} с использованием команды \texttt{less}.
+
+\item \textbf{Самые часто посещаемые сайты}\\
+Введите команду (одна строка), которая будет печатать топ-5 самых часто встречающихся строк в \texttt{logs.txt}.
+\end{enumerate}
+
+
+\subsection{Перенаправление из stderr}
+Файл \texttt{printerr.py} -- это python скрипт, который печатает одну строку в stdout и одну строку в stderr. Если запустить этот скрипт:
+\begin{lstlisting}
+$ python printerr.py
+\end{lstlisting}
+то оба сообщения напечатаются на экран, так как по умолчанию stdout и stderr выводятся на экран терминала.
+\begin{enumerate}[a.]
+\item \textbf{Перенаправление в файлы}\\
+Выполните команду, которая будет перенаправлять поток stdout в файл \texttt{out.txt}, в поток stderr в файл \texttt{err.txt}.
+
+\item \textbf{Перенаправление в /dev/null}\\
+Выполните команду, которая будет печатать на экран только поток stderr, а поток stdout игнорировать.
+
+\item \textbf{Перенаправление в один файл}\\
+Выполните команду, которая будет перенаправлять оба потока в файл \texttt{all.txt}.
+
+\item \textbf{Pipe stderr}\\
+По умолчанию pipe работает с stdout.
+Выполните команду, которая будет перенаправлять поток stderr на вход программе \texttt{rev}. Поток stdout должен игнорироваться. В результате на экране должно быть напечатано:
+\begin{lstlisting}
+.rredts ot seog sihT
+\end{lstlisting}
+\end{enumerate}
+
+\subsection{Wildcards}
+В директории \texttt{wild} содержится набор различных файлов. Выполните команды, которые делают следующее:
+
+\begin{enumerate}[a.]
+\item Печатает на экран все файлы (то есть имена всех файлов).
+\item Печатает все файлы, с именами, начинающимися на \texttt{article}.
+\item Печатает все файлы, с расширением \texttt{.txt}.
+\item Печатает все файлы, с именем в формате \texttt{article?.txt}, где вместо вопроса расположена цифра.
+\item Печатает все файлы, с именем в формате \texttt{article?.txt}, где вместо вопроса расположена заглавная буква.
+\item Печатает все файлы, начинающиеся на \texttt{backup} и имеющие в своём названии дату, соответствующую октябрю 2024-го года.
+\item Печатает все файлы, начинающиеся на \texttt{backup} и имеющие в своём названии дату, соответствующую 2023-му или 2025-му году.
+\item Печатает все файлы, начинающиеся на букву \texttt{a} или на букву \texttt{c}.
+\item Печатает все файлы, имена которых содержат хотя бы один символ подчёркивания.
+\item Печатает все файлы, имена которых содержат хотя бы одну цифру.
+
+\item Удаляет все файлы, заканчивающиеся на \texttt{.bin}.
+\item Создаёт папку \texttt{logs} и копирует туда все файлы, заканчивающиеся на \texttt{.log}.
+\item Создаёт файл \texttt{filenames.txt} и записывает туда все файлы, которые начинаются на \texttt{a} или на \texttt{c}.
+\end{enumerate}
+
+
+\subsection{Brace expansion}
+\begin{enumerate}[a.]
+\item Создайте папку \texttt{brace} и создайте файлы с именами:
+\begin{verbatim}
+hello.txt hello.log hello.xml hello.md hello.json hello.cfg
+\end{verbatim}
+Создать все файлы нужно, используя только одну строку. Сделайте эту строку как можно короче, использую brace expansion.
+
+\item Перейдите в папку \texttt{brace} и создайте файлы с именами:
+\begin{verbatim}
+alice1.txt alice2.txt alice3.txt bob1.txt bob2.txt bob3.txt casper1.txt casper2.txt casper3.txt
+\end{verbatim}
+Создать все файлы нужно, используя только одну строку. Сделайте эту строку как можно короче, использую brace expansion.
+
+\item Выполните команду, которая бы печатала на экран все числа от 1 до 100 с шагом 5. Используйте brace expansion.
+
+\item Перейдите в папку \texttt{brace} и создайте файлы с именами:
+\begin{verbatim}
+file001.txt file002.txt file003.txt ... file100.txt
+\end{verbatim}
+Создать все файлы нужно, используя только одну строку. Сделайте эту строку как можно короче, использую brace expansion.
+
+\item Создайте следующую структуру файлов в папке \texttt{brace}:
+\begin{center}
+\begin{BVerbatim}
+├── dir_a/
+│   ├── 1.txt
+│   ├── 2.txt
+│   └── 3.txt
+├── dir_b/
+│   ├── 1.txt
+│   ├── 2.txt
+│   └── 3.txt
+└── dir_c/
+    ├── 1.txt
+    ├── 2.txt
+    └── 3.txt
+\end{BVerbatim}
+\end{center}
+Создать все файлы нужно, используя только одну строку. Сделайте эту строку как можно короче, использую brace expansion.
+
+\item Перейдите в папку \texttt{wild} и напечатайте имена всех файлов с расширениями \texttt{.jpg} или \texttt{.png}, 
+\end{enumerate}
+
+
+\subsection{find}
+В этой задаче, под термином "все файлы в директории" подразумевается все файлы в этой директории плюс все файлы в поддиректориях плюс все файлы в поддиректориях поддиректорий и так далее. Если не сказано иначе, при выполнении команд данной задачи вывод в stderr нужно игнорировать и не отображать его на экран.
+
+\begin{enumerate}[a.]
+\item \textbf{Печать всех файлов}\\
+Перейдите в директорию \texttt{files}. Напечатайте все файлы в текущей директории, используя программу \texttt{find}.
+
+\item \textbf{Печать файлов папки /etc}\\
+Выполните команду, которая бы печатала все файлы внутри папки \texttt{/etc}.
+
+\item \textbf{Поиск файла}\\
+Напечатайте все файлы по имени \texttt{README.txt} в директории \texttt{/usr}.
+
+\item \textbf{Поиск файлов с определённым расширением}\\
+Напечатайте все файлы с расширением \texttt{.sh} (скрипты) в директории \texttt{/usr}.
+
+\item \textbf{Поиск директорий}\\
+Напечатайте все директории, внутри папки \texttt{/opt}. Все ошибки, возникшие при выполнении этой команды перенаправьте в файл \texttt{errors.log}.
+
+\item \textbf{Поиск больших файлов}\\
+Напечатайте рекурсивно все файлы внутри папки \texttt{/usr}, чей размер составляет больше 50-ти мегабайт.
+
+\item \textbf{Поиск и копирование}\\
+Создайте папку \texttt{scripts}. Скопируйте в эту папку все файлы с расширением \texttt{.sh} из директории \texttt{/usr}. 
+
+\item \textbf{Поиск и отображение подробной информации}\\
+Найти все файлы с расширением \texttt{.conf} в директории \texttt{/etc} и вывести подробную информацию о каждом из них с помощью команды \texttt{ls -l}.
+
+
+\end{enumerate}
+
+
+\subsection{xargs (из stdin в аргументы другой программы)}
+\begin{enumerate}[a.]
+\item \textbf{Программа xargs}
+Перейдите в папку \texttt{files} и выполните команду:
+\begin{lstlisting}
+$ xargs cp
+\end{lstlisting}
+В результате команда будет требовать ввести текст через стандартный вход. Введите строку:
+\begin{lstlisting}
+dream.txt copy.txt
+\end{lstlisting}
+и нажмите \texttt{Ctrl-D}. Программа \texttt{xargs} считает строку из стандартного входа и сама вызовет программу \texttt{cp} передав ей строку \texttt{"dream.txt copy.txt"} в качестве аргументов. Затем программа \texttt{cp} скопирует файл \texttt{dream.txt} в файл \texttt{copy.txt}.
+
+\item \textbf{Программа xargs вместе с pipe}
+Перейдите в папку \texttt{files} и выполните команду:
+\begin{lstlisting}
+$ echo "dream.txt copy2.txt" | xargs cp
+\end{lstlisting}
+В результате выполнения этой команды файл \texttt{dream.txt} должен быть скопирован в файл \texttt{copy2.txt}.
+
+\item \textbf{Количество строк}\\
+Выполните команду, которая бы считала количество строк во всех файлах папки \texttt{/etc} и рекурсивно всех файлах всех поддиректорий.
+
+\item \textbf{Массовое изменение прав}\\
+Выполните команду, которая будет забирать права на выполнение у все скриптов из папки \texttt{scripts}. Проверьте результат с помощью \texttt{ls -l}. Выполните команду, которая будет давать права на выполнение у все скриптов из папки \texttt{scripts}.
+
+\item \textbf{Подробная информация об определённых файлах}\\
+Найдите все файлы в папке \texttt{/etc}, в названии которых встречается дефис и выведете подробную информацию о всех этих файлах. Для просмотра используйте \texttt{less}.
+
+\item \textbf{Самые большие скрипты}\\
+Введите команду, которая будет печатать топ-5 самых больших файлов с расширением \texttt{.sh} в директории \texttt{/usr}.
+\end{enumerate}
+\subsection{grep}
+
+
+\newpage
+\begin{itemize}
+\item  Использование дефиса (-)
+\item \textbf{base64/shasum}
+\end{itemize}
+
+\end{document}
