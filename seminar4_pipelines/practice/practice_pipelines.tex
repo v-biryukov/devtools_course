@@ -401,7 +401,7 @@ file001.txt file002.txt file003.txt ... file100.txt
 
 
 \subsection{find}
-В этой задаче, под термином "все файлы в директории" подразумевается все файлы в этой директории плюс все файлы в поддиректориях плюс все файлы в поддиректориях поддиректорий и так далее. Если не сказано иначе, при выполнении команд данной задачи вывод в stderr нужно игнорировать и не отображать его на экран.
+В этой задаче, под термином "все файлы в директории"{} подразумевается все файлы в этой директории плюс все файлы в поддиректориях плюс все файлы в поддиректориях поддиректорий и так далее. Если не сказано иначе, при выполнении команд данной задачи вывод в stderr нужно игнорировать и не отображать его на экран.
 
 \begin{enumerate}[a.]
 \item \textbf{Печать всех файлов}\\
@@ -423,7 +423,7 @@ file001.txt file002.txt file003.txt ... file100.txt
 Напечатайте рекурсивно все файлы внутри папки \texttt{/usr}, чей размер составляет больше 50-ти мегабайт.
 
 \item \textbf{Поиск и копирование}\\
-Создайте папку \texttt{scripts}. Скопируйте в эту папку все файлы с расширением \texttt{.sh} из директории \texttt{/usr}. 
+Создайте папку \texttt{scripts}. Выполните команду, которая будет копировать в эту папку все файлы с расширением \texttt{.sh} из директории \texttt{/usr}. 
 
 \item \textbf{Поиск и отображение подробной информации}\\
 Найти все файлы с расширением \texttt{.conf} в директории \texttt{/etc} и вывести подробную информацию о каждом из них с помощью команды \texttt{ls -l}.
@@ -433,8 +433,9 @@ file001.txt file002.txt file003.txt ... file100.txt
 
 
 \subsection{xargs (из stdin в аргументы другой программы)}
+В этой задаче печать в stderr должна игнорироваться.
 \begin{enumerate}[a.]
-\item \textbf{Программа xargs}
+\item \textbf{Программа xargs}\\
 Перейдите в папку \texttt{files} и выполните команду:
 \begin{lstlisting}
 $ xargs cp
@@ -443,9 +444,9 @@ $ xargs cp
 \begin{lstlisting}
 dream.txt copy.txt
 \end{lstlisting}
-и нажмите \texttt{Ctrl-D}. Программа \texttt{xargs} считает строку из стандартного входа и сама вызовет программу \texttt{cp} передав ей строку \texttt{"dream.txt copy.txt"} в качестве аргументов. Затем программа \texttt{cp} скопирует файл \texttt{dream.txt} в файл \texttt{copy.txt}.
+и нажмите \texttt{Ctrl-D}. Программа \texttt{xargs} считает строку из стандартного входа и сама вызовет программу \texttt{cp} передав ей \texttt{"dream.txt copy.txt"} в качестве аргументов. Затем программа \texttt{cp} скопирует файл \texttt{dream.txt} в файл \texttt{copy.txt}.
 
-\item \textbf{Программа xargs вместе с pipe}
+\item \textbf{Программа xargs вместе с pipe}\\
 Перейдите в папку \texttt{files} и выполните команду:
 \begin{lstlisting}
 $ echo "dream.txt copy2.txt" | xargs cp
@@ -464,13 +465,62 @@ $ echo "dream.txt copy2.txt" | xargs cp
 \item \textbf{Самые большие скрипты}\\
 Введите команду, которая будет печатать топ-5 самых больших файлов с расширением \texttt{.sh} в директории \texttt{/usr}.
 \end{enumerate}
+
 \subsection{grep}
+В этой задаче печать в stderr должна игнорироваться.
+\begin{enumerate}[a.]
+\item \textbf{Поиск в файле}\\
+Выполните команду, которая будет выводить на экран все строку в файле \texttt{urls.txt}, которые содержат подстроку \texttt{data}.
 
+\item \textbf{Поиск во всех файлах директории}\\
+Выполните команду, которая бы искала строку "debug" во всех строках всех файлов директории \texttt{/etc}. 
 
+\item \textbf{Количество во всех файлах директории}\\
+Выполните команду, которая бы печатала количество строк "config" во всех строках всех файлов директории \texttt{/etc}. 
+
+\item \textbf{grep через stdin}\\
+Выполните команду
+\begin{lstlisting}
+$ grep "hello"
+\end{lstlisting}
+В результате команда будет требовать ввести текст через стандартный вход. Введите строки:
+\begin{lstlisting}
+hello, alice
+i am bob
+ok, hello, bob
+nice to meet you
+\end{lstlisting}
+затем нажмите \texttt{Ctrl-D}. Команда должна вывести все строки из stdin, содержащие подстроку \texttt{"hello"}.
+
+\item \textbf{Список файлов}\\
+Напечатайте все файлы из папки \texttt{wild}, которые имеют расширение \texttt{.log}. Используя команды \texttt{ls} и \texttt{grep}.
+
+\item \textbf{Поиск в истории}\\
+Напечатайте все команды в истории (команда \texttt{history}), которые содержат подстроку \texttt{cat}.
+
+\item \textbf{Поиск ip-адресов}\\
+Выполните команду, которая бы искала все записи ip-адресов во всех строках всех файлов директории \texttt{/etc}. 
+\end{enumerate}
+
+\subsection{Системные вызовы для работы с файлами}
+В следующий задачах нужно использовать системные вызовы \texttt{open}, \texttt{close}, \texttt{read}, \texttt{write}, \texttt{dup2}.
+\begin{enumerate}[a.]
+\item \textbf{Копирование}\\
+Напишите программу на C -- простой аналог программы \texttt{cp}.
+\item \textbf{Конкатенация}\\
+Напишите программу на C -- простой аналог программы \texttt{cat}.
+\item \textbf{tee}\\
+Напишите программу на C -- простой аналог программы \texttt{tee}.
+\end{enumerate}
+
+\iffalse
+\newpage
+~
 \newpage
 \begin{itemize}
 \item  Использование дефиса (-)
 \item \textbf{base64/shasum}
 \end{itemize}
+\fi
 
 \end{document}
