@@ -1,0 +1,509 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\pagenumbering{gobble}
+
+\lstdefinestyle{csMiptCppStyle}{
+  language=C++,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCppLinesStyle}{
+  style=csMiptCppStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCppBorderStyle}{
+  style=csMiptCppStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+  	style=csMiptCppStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-, \{, \}},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
+}
+
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
+\newcommand\section@cntformat{}     
+\newcommand\subsection@cntformat{Задача \thesubsection.\space} 
+\newcommand\subsubsection@cntformat{\thesubsubsection.\space}
+\makeatother
+
+
+
+\begin{document}
+\title{Семинар \#5: Управление доступом. Практика. \vspace{-5ex}}\date{}\maketitle
+\subsection*{Предварительные замечания}
+\begin{itemize}
+\item \textbf{Важно! Резервное клонирование ВМ.} \\
+При выполнении данного задания придётся выполнять задания от имени суперпользователя (\texttt{root}), используя команды \texttt{su} и \texttt{sudo}. Выполняя такие команды можно случайно сломать систему. Поэтому перед выполнением данного задания на всякий случай клонируйте вашу виртуальную машину. В VirtualBox для этого нужно нажать правой кнопкой мыши на виртуальной машине и выбрать клонировать.
+
+
+\item \textbf{Активация root} \\
+В только что установленной системе суперпользователь \texttt{root} может быть не активирован. Если это так и/или вы не знаете пароля от \texttt{root}, выполните:
+\begin{lstlisting}
+$ sudo passwd root
+\end{lstlisting}
+Команда \texttt{sudo} сначала попросит ввести ваш пароль, а потом выполнит команду \texttt{passwd root}, которая устанавливает пароль пользователя \texttt{root}.
+
+\item \textbf{Простые пароли} \\
+В процессе выполнения задания придётся часто переключаться между пользователями, поэтому советую в рамках этого задания устанавливать пользователям простые, запоминающиеся пароли.
+
+\item \textbf{Начинайте каждую задачу, работая под своим основным аккаунтом} \\
+Убедитесь, что вы переключились на основную учетную запись, прежде чем приступить к новой задаче.
+
+\iffalse
+\item \textbf{Создание нового пользователя} \\
+Для проверки работы команд нам понадобится ещё один пользователь, помимо вашего основного пользователя и суперпользователя \texttt{root}. Создайте нового пользователя \texttt{alice}, используя следующие команды:
+\begin{lstlisting}
+sudo adduser -m alice
+sudo passwd alice
+\end{lstlisting}
+\fi
+\end{itemize}
+
+\subsection{Просмотр системных файлов о пользователях и группах}
+\begin{enumerate}[a.]
+\item \textbf{Просмотр информации о пользователях}\\
+Просмотрите файл \texttt{/etc/passwd}, содержащий информацию о пользователях:
+\begin{lstlisting}
+$ cat /etc/passwd
+\end{lstlisting}
+\item \textbf{Просмотр информации об одном пользователе}\\
+Отфильтруйте информацию из файла \texttt{/etc/passwd} с помощью \texttt{grep} так, чтобы отобразить информацию только об одном пользователе \texttt{root}.
+
+\item \textbf{Просмотр информации о группах}\\
+Просмотрите файл \texttt{/etc/group}, содержащий информацию о группах пользователей.
+
+\item \textbf{Просмотр информации о паролях пользователей}\\
+Просмотрите файл \texttt{/etc/shadow}, содержащий информацию о паролях пользователей. В этом файле хранятся хэши паролей пользователей, а также сроки из действия.
+У обычных пользователей нет прав даже на просмотр этого файла.
+Поэтому его нужно просматривать от имени \texttt{root}, используя \texttt{sudo}:
+\begin{lstlisting}
+$ sudo cat /etc/shadow
+\end{lstlisting}
+
+\item \textbf{Просмотр информации о паролях групп}\\
+Просмотрите файл \texttt{/etc/gshadow}, содержащий информацию о паролях групп.
+
+\item \textbf{Просмотр настроек команды \texttt{sudo}}\\
+Просмотрите файл \texttt{/etc/sudoers}, содержащий настройки команды \texttt{sudo}.
+
+\item \textbf{Просмотр skeleton-директории}\\
+Просмотрите директорию \texttt{/etc/skel}, используя \texttt{ls -la}. Эта директория содержит файлы-шаблоны, который копируются в домашний каталог нового пользователя. Просмотрите содержимое файла \texttt{.bashrc}, используя \texttt{less}. Это скрипт, который выполняется каждый раз при открытии окна терминала.
+
+\item \textbf{Просмотр UID и GID}\\
+Используйте команду \texttt{id}, чтобы просмотреть UID текущего пользователя и GID-ы всех его групп.
+
+\item \textbf{Группы пользователя}\\
+Используйте команду \texttt{groups}, чтобы просмотреть названия всех групп текущего пользователя.
+\end{enumerate}
+
+\subsection{Создание пользователей}
+\begin{enumerate}[a.]
+\item \textbf{Создание}\\
+Создайте нового пользователя \texttt{alice} вместе с домашней директории \texttt{/home/alice} для этого пользователя. Используйте команду:
+\begin{lstlisting}
+$ sudo useradd alice -m
+\end{lstlisting}
+Просмотрите изменения, который произошли при выполнении этой команды:
+\begin{itemize}
+\item Новая запись в файле \texttt{/etc/passwd}.
+\item Новая запись в файле \texttt{/etc/group}. Так как при создании пользователя создаётся новая группа из одного участника с таким же названием. Поэтому при создании пользователя \texttt{alice} автоматически создастся новая группа по имени \texttt{alice}, состоящая из одного участника -- \texttt{alice}.
+\item Новая запись в файле \texttt{/etc/shadow}. Так как у пользователя ещё не установлен пароль, то учётная запись ещё считается заблокированной. На это будет указывать восклицательный знак после имени пользователя.
+\item Новая папка в директории \texttt{/home} -- домашняя папка пользователя \texttt{alice}.
+\item Содержимое папки \texttt{/home/alice} должно соответствовать скелетон-директории \texttt{/etc/skel}. Для просмотра директории \texttt{/home/alice} понадобятся права суперпользователя.
+\item Используйте команду \texttt{id} чтобы более удобно посмотреть UID \texttt{alice} и \texttt{GID}-ы её групп. Используйте команду \texttt{groups}, чтобы посмотреть все группы, в которых состоит \texttt{alice}. Она пока должна состоять в одной группе -- \texttt{alice}.
+\end{itemize}
+
+\item \textbf{Установка пароля}\\
+Установите пароль пользователя \texttt{alice}, используя команду:
+\begin{lstlisting}
+$ sudo passwd alice
+\end{lstlisting}
+Просмотрите файл \texttt{/etc/shadow} и убедитесь, что учётная запись \texttt{alice} стала активна (должен пропасть символ \texttt{!} у пользователя \texttt{alice}).
+
+\item \textbf{Вход за нового пользователя}\\
+Переключитесь на третий виртуальный терминал (\texttt{tty3}), используя комбинацию \texttt{Ctrl-Alt-F3}. Когда потребуется вернуться обратно, нужно будет переключиться на второй виртуальный терминал -- \texttt{Ctrl-Alt-F2}.
+
+В \texttt{tty3} зайдите за нового пользователя \texttt{alice}. Сделайте следующее:
+\begin{itemize}
+\item Выполните \texttt{whoami}, чтобы убедится, что вы зашли за \texttt{alice}.
+\item Выполните \texttt{pwd}, чтобы убедится, что вы находитесь в домашней папке \texttt{alice}.
+\item Выполните команды \texttt{id} и \texttt{groups}, чтобы посмотреть UID пользователя и GID-ы и названия групп.
+\item Выполните команду \texttt{w}, чтобы посмотреть всех работающих в данный момент на машине пользователей.
+\item Выполните команду \texttt{echo \$SHELL}, чтобы посмотреть, какая оболочка используется.
+\item Просмотрите файл \texttt{/etc/passwd}, используя \texttt{cat}.
+\item Попробуйте просмотреть файл \texttt{/etc/shadow}, используя \texttt{sudo} и \texttt{cat}. У вас не удастся этого сделать, так как \texttt{alice} не находится в группе \texttt{sudo} (или \texttt{wheel}).
+\item Создайте несколько файлов в домашней директории \texttt{alice}.
+\item Создайте файл \texttt{alice.txt} в директории \texttt{/tmp}. Это директория временных файлов в которой все пользователи могут создавать файлы. Файлы в этой директории удаляются после перезагрузки системы.
+\item Выйдите из оболочки, используя \texttt{exit} или \texttt{Ctrl-D}, и вернитесь на второй виртуальный терминал.
+\end{itemize}
+\end{enumerate}
+
+
+\newpage
+\subsection{Модификация пользователя}
+\begin{enumerate}[a.]
+\item \textbf{Изменение оболочки}\\
+Измените оболочку пользователя \texttt{alice}. Если \texttt{alice} использует оболочку \texttt{/bin/sh}, то измените её на \texttt{/bin/bash}. Если же используется оболочка \texttt{/bin/bash}, то измените её наоборот на \texttt{/bin/sh}. Используйте команду \texttt{usermod}. После изменения сделайте следующее:
+\begin{itemize}
+\item Посмотрите файл \texttt{/etc/passwd} и убедитесь, что оболочка изменилась.
+\item Перейдите на пользователя \texttt{alice} в \texttt{tty3} и убедитесь, что используется другая оболочка. После этого вернитесь обратно на \texttt{tty2}.
+\end{itemize}
+
+\item \textbf{Изменение имени пользователя}\\
+Измените имя пользователя с \texttt{alice} на \texttt{bob}, используя \texttt{usermod}.
+\begin{itemize}
+\item Посмотрите файл \texttt{/etc/passwd} и убедитесь, что имя изменилось.
+\item Проверьте, изменилась ли при этом основная группа пользователя (используйте \texttt{id} и \texttt{groups}).
+\item Проверьте, изменилась ли при этом домашняя директория пользователя.
+\item Зайдите в пользователь \texttt{bob} через \texttt{tty3} и убедитесь, что всё работает. Проверьте в какой директории вы оказались. Проверьте кто является владельцем файлов в этой директории. После этого вернитесь обратно на \texttt{tty2}.
+\end{itemize}
+
+
+\item \textbf{Изменение домашней директории}\\
+Измените домашнюю директорию пользователя \texttt{bob} на \texttt{/home/bob} с переносом всех файлов из старой директории.
+
+\item \textbf{Изменение основной группы пользователя}\\
+Можно было бы переименовать группу \texttt{alice} на \texttt{bob} с помощью \texttt{groupmod}, но предположим, что мы хотим оставить группу \texttt{alice} существующей и с тем же именем.
+\begin{itemize}
+\item Создайте новую группу по имени \texttt{bobg}:
+\begin{lstlisting}
+$ sudo groupadd bobg
+\end{lstlisting}
+
+\item Проверьте, что группа создалась, просмотрев файл \texttt{/etc/group}.
+\item Измените основную группу пользователя \texttt{bob} на группу \texttt{bobg}.
+\item Проверьте, что группа \texttt{bobg} теперь является основной группой \texttt{bob}, просмотрев файлы \texttt{/etc/passwd} и \texttt{/etc/group}. Обратите внимание, что основная группа указывается именно в файле \texttt{/etc/passwd} через её GID. А в файле \texttt{/etc/group} не указано, что \texttt{bob} входит в группу \texttt{bobg}. Там указывается принадлежность только к дополнительным группам.
+\item Проверьте, что группа \texttt{bobg} теперь является основной группой \texttt{bob}, используя команды \texttt{id} и \texttt{groups}.
+\end{itemize}
+
+\item \textbf{Изменение дополнительных групп пользователя}
+\begin{itemize}
+\item Создайте новые группы по имени \texttt{students} и \texttt{devs}.
+\item Добавьте эти группы как дополнительные группы пользователя \texttt{bob}.
+\item Проверьте результат в файле \texttt{/etc/group}.
+\item Проверьте результат используя \texttt{id} и \texttt{groups}.
+\end{itemize}
+
+
+\item \textbf{Добавление ещё одной дополнительной группы}\\
+Пользователь \texttt{bob} сейчас не может использовать \texttt{sudo}, так как не входит в группу \texttt{sudo} (или \texttt{wheel}, в зависимости от того, какая группа используется на вашей системе) и не указан в файле \texttt{/etc/sudoers}.
+\begin{itemize}
+\item Добавьте пользователя \texttt{bob} в ещё одну дополнительную группу \texttt{sudo} (или \texttt{wheel}).
+\item Используйте команду \texttt{groups}, чтобы проверить, что \texttt{bob} входит во все группы:
+\begin{lstlisting}
+$ groups
+bobg students devs sudo
+\end{lstlisting}
+\end{itemize}
+Переключитесь на пользователя \texttt{bob} и попробуйте посмотреть файл \texttt{/etc/shadow}, используя \texttt{sudo}.
+
+\item \textbf{Изменение UID}\\
+Проверьте владельца файла \texttt{/tmp/alice.txt}. Измените \texttt{uid} пользователя \texttt{bob}. Проверьте, изменился ли владелец у файла \texttt{/tmp/alice.txt}.
+После изменения UID нужно будет изменить UID владельца у всех файлов в системе у которых владельцем был \texttt{bob}. Используйте команду \texttt{find} с опцией \texttt{-exec}.
+
+
+
+
+\end{enumerate}
+
+\subsection{Удаление и создание}
+\begin{enumerate}[a.]
+\item \textbf{Удаление группы}\\
+Удалите группу \texttt{alice} из прошлой задачи используя \texttt{groupdel}.
+
+\item \textbf{Удаление пользователя}\\
+Удалите пользователя \texttt{bob} из прошлой задачи используя \texttt{userdel}.
+\begin{lstlisting}
+$ sudo userdel -r bob
+\end{lstlisting}
+Тут используем опцию \texttt{-r}, чтобы удалить не только пользователя, но и домашнюю директорию и некоторые другие файлы пользователя \texttt{bob}. 
+\begin{itemize}
+\item Проверьте, удалилась ли домашняя директория \texttt{/home/bob} в этом случае.
+\item Проверьте, удалилась ли группа \texttt{bobg}. Это была основная группа пользователя \texttt{bob}, при этом больше никто в эту группу не входил. Если она не удалилась, удалите её.
+\item Проверьте, удалились ли группа \texttt{students} и \texttt{devs}. Это были дополнительные группы пользователя \texttt{bob}, при этом больше никто в эти группы не входил. Их пока не удаляйте.
+\end{itemize}
+
+\item \textbf{Создание пользователя с опциями}\\
+Создайте пользователя \texttt{alice} и сразу же при создании нужно сделать следующее:
+\begin{itemize}
+\item Задать путь до домашней папки как \texttt{/home/alices\_place}.
+\item Создать домашнюю папку \texttt{/home/alices\_place}.
+\item Задать оболочку пользователя \texttt{/bin/bash}.
+\item Записать пользователя \texttt{alice} в дополнительные группы \texttt{students} и \texttt{devs}.
+\item Задать UID пользователя значением 1234.
+\end{itemize}
+Всё это нужно сделать одной командой. После создания пользователя, просмотрите файл \texttt{/etc/passwd} и убедитесь, что все поля были заданы корректно. Убедитесь, что папка \texttt{/home/alices\_place} была создана. Также убедитесь, что автоматически была создана новая группа \texttt{alice}. 
+
+\item \textbf{Ещё одно удаление пользователя}\\
+Удалите пользователя \texttt{alice}, используя команду \texttt{sudo userdel -r alice}.
+\begin{itemize}
+\item Проверьте, удалилась ли группа \texttt{alice}. Это была основная группа пользователя \texttt{alice}, при этом больше никто в эту группу не входил. Если она не удалилась, удалите её.
+\item Проверьте, удалились ли группа \texttt{students} и \texttt{devs}. Это были дополнительные группы пользователя \texttt{bob}, при этом больше никто в эти группы не входил. Если она не удалились, удалите их.
+\end{itemize}
+
+\end{enumerate}
+
+
+\subsection{Блокировка}
+\begin{itemize}
+\item Создайте нового пользователя \texttt{alice} и установите пароль:
+\begin{lstlisting}
+$ sudo useradd -s /bin/bash -m alice
+$ sudo passwd alice
+\end{lstlisting}
+\item Проверьте, что учётная запись \texttt{alice} активна, зайдя под пользователем \texttt{alice} на \texttt{tty3}. Вернитесь обратно.
+\item Заблокируйте пользователя \texttt{alice}, используя \texttt{usermod}.
+\item Посмотрите файл \texttt{/etc/shadow}. В записи \texttt{alice} должен появиться восклицательный знак. При этом хэш пароля должен всё ещё хранится в файле.
+\item Попробуйте вновь зайти под пользователем \texttt{alice}.
+\item Разблокируйте пользователя \texttt{alice}.
+\item Снова проверьте файл \texttt{/etc/shadow}. Восклицательный знак в записи \texttt{alice} должен появиться исчезнуть.
+\item Попробуйте вновь зайти под пользователем \texttt{alice}.
+\end{itemize}
+
+
+\subsection{su и sudo}
+\begin{enumerate}[a.]
+
+\item \textbf{Просмотр переменных среды}
+\begin{itemize}
+\item Просмотрите все переменные среды, используя команду \texttt{env}.
+\item Просмотрите переменную среды \texttt{USER}:
+\begin{lstlisting}
+$ echo $USER
+\end{lstlisting}
+\item Просмотрите также переменные среды \texttt{LOGNAME}, \texttt{HOME} и \texttt{PATH}.
+\end{itemize}
+
+\item \textbf{Неполное переключение}
+\begin{itemize}
+\item Переключитесь на пользователя \texttt{root}, используя команду \texttt{su}.
+Введите пароль пользователя \texttt{root}.
+\item Выполните команду \texttt{whoami}, чтобы напечатать имя текущего пользователя.
+\item Просмотрите переменные среды \texttt{LOGNAME} и \texttt{PATH}.
+\item Выйдите из под \texttt{root} выполнив \texttt{exit} или нажав \texttt{Ctrl-D}.
+\end{itemize}
+
+\item \textbf{Полное переключение}
+\begin{itemize}
+\item Переключитесь на пользователя \texttt{root}, используя команду \texttt{su -}.
+Введите пароль пользователя \texttt{root}.
+\item Выполните команду \texttt{whoami}, и просмотрите переменную среды \texttt{LOGNAME}.
+\item Выйдите из под \texttt{root}.
+\end{itemize}
+
+\item \textbf{Полное переключение через \texttt{sudo}}
+\begin{itemize}
+\item Переключитесь на пользователя \texttt{root}, используя команду \texttt{sudo -i}.
+Введите пароль вашего текущего пользователя.
+\item Выполните команду \texttt{whoami}, и просмотрите переменную среды \texttt{LOGNAME}.
+\item Выйдите из под \texttt{root}.
+\end{itemize}
+
+\item \textbf{Полное переключение на пользователя \texttt{alice}}
+\begin{itemize}
+\item Сделайте полное переключение на пользователя \texttt{alice}
+\item Выполните команду \texttt{whoami}, и просмотрите переменную среды \texttt{LOGNAME}.
+\item Выйдите из под \texttt{alice}.
+\end{itemize}
+
+\item \textbf{Выполнение одной команды от имени другого пользователя}
+В этой подзадачи нужно не переключаться на других пользователей, а использовать \texttt{sudo} для выполнения команд от имени другого пользователя.
+\begin{itemize}
+\item Выполните команду \texttt{cat /etc/shadow} от имени пользователя \texttt{root}:
+\begin{lstlisting}
+$ sudo cat /etc/shadow
+\end{lstlisting}
+
+\item Перейдите в папку \texttt{/tmp} и создайте там файл \texttt{a.txt}. Используйте \texttt{ls -l}, чтобы посмотреть владельца этого файла и группу-владельца этого файла.
+
+\item Создайте файл \texttt{b.txt} от имени \texttt{root}. Посмотрите владельца этого файла и группу-владельца.
+
+\item Создайте файл \texttt{c.txt} от имени \texttt{alice}. Посмотрите владельца этого файла и группу-владельца.
+
+\item Измените владельца файла \texttt{a.txt} на \texttt{alice}.
+\item Измените группу владельца файла \texttt{a.txt} на \texttt{root}.
+\end{itemize}
+
+\item \textbf{Запрещённая команда}\\
+Вы пытаетесь создать новый файл в системной директории \texttt{/etc}:
+\begin{lstlisting}
+$ touch /etc/myfile
+\end{lstlisting}
+но у вас ничего не выходит, так как у вас нет прав на это. Выполните эту команду, используя \texttt{sudo}.
+
+\item \textbf{Запрещённая команда 2}\\
+Вы пытаетесь записать в новый файл в системной директории \texttt{/etc}:
+\begin{lstlisting}
+$ echo "Hello" > /etc/myfile
+\end{lstlisting}
+но у вас ничего не выходит, так как у вас нет прав на это. Выполните эту команду, используя \texttt{sudo}.
+
+
+\end{enumerate}
+
+\subsection{Права доступа}
+\begin{enumerate}[a.]
+\item \textbf{Конвертация из символьного представления в числовое}\\
+Конвертируйте запись следующих прав доступа из символьного представления в числовое:
+\begin{lstlisting}
+---------
+rwx------
+r--r--r--
+r---w---x
+rw-r--r--
+rwxr-xr-x
+rwxrwxrwx
+\end{lstlisting}
+Для решение этой подзадачи нужно создать файл \texttt{07a.txt} и записать туда все ответы в виде:
+\begin{lstlisting}
+000
+700
+...
+\end{lstlisting}
+
+\item \textbf{Просмотр прав файла}\\
+В своей домашней директории создайте два файла \texttt{a.txt} и \texttt{b.txt}:
+\begin{lstlisting}
+touch a.txt b.txt
+\end{lstlisting}
+Используйте команду \texttt{ls}, чтобы просмотреть права файла (и другую информацию) только файла \texttt{a.txt}.
+
+\item \textbf{Просмотр прав директории}\\
+Создайте директорию \texttt{test}:
+\begin{lstlisting}
+mkdir test
+\end{lstlisting}
+Используйте команду \texttt{ls}, чтобы просмотреть права только директории \texttt{test}. Другие файлы при этом отображаться не должны.
+
+
+\item \textbf{Изменение прав доступа}\\
+Измените права доступа файлов \texttt{a.txt} и \texttt{b.txt} на нулевые:
+\begin{lstlisting}
+chmod 000 a.txt b.txt
+\end{lstlisting}
+После этого дайте файлу \texttt{a.txt} права доступа: \texttt{rwxr-xr-{}-}, используя синтаксис символьного представления прав доступа. Задачу нужно решить в одну строку.\\
+Файлу \texttt{b.txt} также дайте права доступа: \texttt{rwxr-xr-{}-}, но используя числовое представление прав доступа. 
+
+\item \textbf{Изменение прав доступа директории}\\
+Измените права директории \texttt{test} на \texttt{-wx-wx-wx}. После этого ответьте на вопросы:
+\begin{itemize}
+\item Можете ли вы просматривать директорию, используя \texttt{ls test}?
+\item Можете ли вы создавать файлы в директории, используя \texttt{echo hello > test/h.txt}?
+\item Можете ли вы заходить в директорию, используя \texttt{cd test}?
+\item Можете ли вы зайти в директорию и просмотреть там файлы, используя \texttt{ls}?
+\end{itemize}
+Просмотрите содержимое директории \texttt{test}, используя \texttt{sudo}.
+
+\item \textbf{Права вложенных директорий}\\
+Создайте директорию \texttt{one/} и вложенную в неё директорию \texttt{one/two/}.
+Дайте директории \texttt{two} права \texttt{rwxrwxrwx} (полные права), а директории \texttt{one} права \texttt{-{}-{}-{}-{}-{}-{}-{}-{}-} (нулевые права). После этого ответьте на вопросы:
+\begin{itemize}
+\item Можете ли вы просматривать директорию \texttt{two}?
+\item Можете ли вы создавать файлы в директории \texttt{two}?
+\item Можете ли вы заходить в директорию \texttt{two}?
+\end{itemize}
+
+\item \textbf{Права вложенных директорий 2}\\
+Измените права директории \texttt{one} на \texttt{-{}-x-{}-x-{}-x} и заново ответьте на те же вопросы.
+
+\end{enumerate}
+
+
+\iffalse
+\newpage
+~
+\newpage
+\subsection*{Идеи}
+\begin{enumerate}[a.]
+
+\item \textbf{Изменение UID}\\
+Выполните команду, которая изменяет UID пользователя + переписывает UID всех файлов в системе, принадлежащие этому пользователю. 
+
+\item \textbf{Владелец, группа владельца}\\
+Два пользователя \texttt{alice} и \texttt{bob} с одноименными основными группами. \texttt{alice} не входит в группу \texttt{bob}, а \texttt{bob} не входит в группу \texttt{alice}. Создайте файл, такой чтобы её владельцем была \texttt{alice}, а группа-владелец была группа \texttt{bob}.
+
+\item \textbf{Папки /one/two}\\
+--- rwx
+--x rwx
+
+\item \textbf{Программа stat}\\
+Используйте \texttt{stat} чтобы напечатать информацию о файле \texttt{a.txt}.
+
+\item \textbf{Просмотр прав с помощью stat}\\
+Используйте \texttt{stat} чтобы напечатать: 
+\begin{itemize}
+\item только права пользователя в символьном представлении
+\item только права пользователя в числовом представлении
+\end{itemize}
+\end{enumerate}
+\fi
+
+\end{document}

@@ -1,0 +1,187 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\pagenumbering{gobble}
+
+\lstdefinestyle{csMiptCppStyle}{
+  language=C++,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCppLinesStyle}{
+  style=csMiptCppStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCppBorderStyle}{
+  style=csMiptCppStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+breaklines=true,
+frame=tb,
+language=bash,
+breakatwhitespace=true,
+alsoletter={*()"'0123456789.},
+alsoother={\{\=\}},
+basicstyle={\ttfamily},
+keywordstyle={\bfseries},
+literate={{=}{{{=}}}1},
+prebreak={\textbackslash},
+sensitive=true,
+stepnumber=1,
+tabsize=4,
+morekeywords={echo, function},
+otherkeywords={-, \{, \}},
+literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+upquote=true,
+frame=none
+}
+
+
+\lstset{style=csMiptCppLinesStyle}
+\lstset{literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}}
+
+
+\renewcommand{\thesection}{\arabic{section}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}%    default
+   {\csname #1@cntformat\endcsname}}% enable individual control
+\newcommand\section@cntformat{Часть \thesection:\space}
+\makeatother
+
+
+
+\begin{document}
+\title{Семинар \#5: Права доступа \vspace{-5ex}}\date{}\maketitle
+
+\subsection*{Просмотр информации в системных файлах}
+\texttt{
+\begin{flushleft}
+\begin{tabular}{ p{4cm} | l }
+ cat /etc/passwd & просмотр файла с пользователями \\ 
+ cat /etc/group  & просмотр файла с группами \\ 
+ sudo cat /etc/shadow  & просмотр файла с хэшированными паролями пользователей \\ 
+ sudo cat /etc/gshadow  & просмотр файла с хэшированными паролями групп \\ 
+ sudo cat /etc/sudoers  & просмотр файла с настройками sudo \\ 
+ ls -la /etc/skel       & просмотр файлов, создаваемых в домашней директории нового пользователя
+\end{tabular}
+\end{flushleft}
+}
+
+\subsection*{Создание и удаление пользователей}
+Все эти команды требуют прав \texttt{root}. Нужно использовать \texttt{sudo} или \texttt{su}.
+\texttt{
+\begin{flushleft}
+\begin{tabular}{ p{4cm} | l }
+ useradd alice 		& создаёт пользователя alice без создание домашней папки\\ \hline
+ опции:~ -m      	& создаёт пользователя alice и домашнюю папку /home/alice\\ 
+ ~~~~~~~ -s оболочка & указать оболочку \\
+ ~~~~~~~ -g группа  & указать основную группу (по имени или GID) \\
+ ~~~~~~~ -G группы  & указать дополнительные группы (через запятую, по имени или GID) \\
+ ~~~~~~~ -d папка   & задать нестандартный путь до домашней папки\\
+ ~~~~~~~ -k папка   & задать нестандартный skeleton-каталог\\ 
+ ~~~~~~~ -u число   & задаёт UID пользователя\\ 
+ ~~~~~~~ -e 2024-12-31 & задать срок действия учётной записи\\ \hline
+ userdel alice		& удаляет пользователя alice, без удаления домашней папки\\ \hline
+ userdel -r alice	& удаляет пользователя alice и домашнюю папку\\ 
+ 					& также удаляет файлы почты из /var/mail/alice\\
+ 					& также удаляет временные файлы из /tmp и /var/tmp\\\hline
+\end{tabular}
+\end{flushleft}
+}
+\noindent Например, \texttt{sudo useradd -s /bin/bash -m alice} создаст \texttt{alice} с домашней директорией и оболочкой \texttt{/bin/bash}.
+
+\subsection*{Изменение пользователей}
+Все эти команды требуют прав \texttt{root}. Нужно использовать \texttt{sudo} или \texttt{su}.
+\texttt{
+\begin{flushleft}
+\begin{tabular}{ p{4cm} | l }
+ usermod 			& \\ \hline
+ опции:~ -s оболочка	& изменяет оболочку пользователя\\ 
+ ~~~~~~~ -l имя 		& изменяет имя пользователя\\ 
+ ~~~~~~~ -d папка 		& изменяет расположение домашней папки\\ 
+ ~~~~~~~ -d папка -m 	& изменяет домашнюю папку и переносит туда файлы из старой\\
+ ~~~~~~~ -g группа 		& изменяет основную группу\\ 
+ ~~~~~~~ -G группы 		& изменяет дополнительные группы, группы перечисляются через запятую\\ 
+ ~~~~~~~ -aG группы 	& добавляет дополнительные группы\\ 
+ ~~~~~~~ -u число 		& изменяет UID\\ \hline
+\end{tabular}
+\end{flushleft}
+}
+\noindent Например, \texttt{sudo usermod -s /bin/bash} изменит оболочку на \texttt{/bin/bash}.
+
+\subsection*{Удобные команды для создания и удаления пользователей}
+Все эти команды требуют прав \texttt{root}. Нужно использовать \texttt{sudo} или \texttt{su}.
+\texttt{
+\begin{flushleft}
+\begin{tabular}{ p{4cm} | l }
+ adduser alice		& интерактивное создание пользователя, создаёт домашнюю папку\\ \hline	
+ deluser alice		& удаляет пользователя alice, но не домашнюю папку\\
+ deluser -{}-remove-home alice & удаляет пользователя alice с домашней папкой\\
+\end{tabular}
+\end{flushleft}
+}
+
+\subsection*{Выполнение команд от имени другого пользователя}
+\texttt{
+\begin{flushleft}
+\begin{tabular}{ p{4cm} | l }
+ su				& переключиться на пользователя root (Ctrl-D или exit для выхода)\\
+ 				& сохраняется текущее окружение \\
+ 				& нужно будет ввести пароль root\\
+ su -			& Как su, но сбрасывает и загружает новое окружение \\ \hline
+ su	alice 		& переключиться на пользователя alice\\
+ 				& нужно будет ввести пароль alice\\
+ su - alice		& Как su alice, но сбрасывает и загружает новое окружение \\ \hline
+ sudo команда 	& выполнить команду от имени пользователя root, \\
+ 				& нужно будет ввести пароль текущего пользователя\\
+ sudo -u alice команда 	& выполнить команду от имени пользователя alice\\
+ 				& нужно будет ввести пароль текущего пользователя\\ \hline
+ sudo -i 		& переключиться на пользователя root\\
+ 				& похоже на su -, но нужно вводить пароль текущего пользователя, а не root\\
+ sudo -i -u alice 		& переключиться на пользователя alice\\
+\end{tabular}
+\end{flushleft}
+}
+\noindent \texttt{sudo} для текущего пользователя будет работать только если это указано в файле \texttt{/etc/sudoers}.
+
+\end{document}
