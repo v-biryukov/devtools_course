@@ -79,7 +79,7 @@
 	frame=none
 }
 
-\lstset{style=csMiptCppStyle}
+\lstset{style=csMiptBash}
 \lstset{
         literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
 }
@@ -104,41 +104,52 @@
 Для сдачи ДЗ вам нужно создать репозиторий на GitLab (если он ещё не создан) под названием \texttt{devtools-homework}. Структура репозитория должна иметь вид:
 \begin{center}
 \begin{BVerbatim}
+├── seminar1_git/
+│   ├── ...
 ├── seminar2_more_git/
 │   ├── 01.txt
 │   ├── 02.sh
-│   ├── 03.sh
-│   ├── 04.txt
-│   ├── 05a.sh
 │   └── ...
 └── ...
 \end{BVerbatim}
 \end{center}
-Для каждой задачи необходимо создать bash-скрипт, содержащий решение, и отправить его в ваш репозиторий. Название скрипта должно соответствовать номеру задачи (например \texttt{02.sh}, \texttt{05a.sh}). Если в задаче используется интерактивное перебазирования, то помимо скрипта вам нужно будет отправить файл \texttt{git-rebase-todo}. Название этого файла тоже должно начинаться с номера задачи, например \texttt{05b-git-rebase-todo.txt}. Если в задаче требуется что-то иное, это будет указано в конце самой задачи.
+Для каждой задачи, если не сказано иное, необходимо создать bash-скрипт, содержащий решение, и отправить его в ваш репозиторий. Название скрипта должно соответствовать номеру задачи (например \texttt{02.sh} или \texttt{05a.sh}). 
 
+\subsubsection*{Как сдавать задачи с интерактивным перебазированием}
+Если в задаче используется интерактивное перебазирование, то помимо скрипта вам нужно будет отправить файл \texttt{git-rebase-todo} (после сделанных вами изменений). Название этого файла тоже должно начинаться с номера задачи, например \texttt{05b-git-rebase-todo.txt}.
+Например, для решения задачи 5b вам надо отправить:
+\begin{itemize}
+\item Файл \texttt{05b.sh}, содержащий строки:
+\begin{lstlisting}
+#!/bin/bash
+git rebase -i HEAD~4
+\end{lstlisting}
+\item Файл \texttt{05b-git-rebase-todo.txt}, содержащий строки:
+\begin{lstlisting}
+pick 6093969 CD: add dog.txt
+pick 5804b31 CC: add cat.txt
+pick 47a3a85 CB: add bat.txt
+pick 7e06a13 CA: add axolotl.txt
+\end{lstlisting}
+\end{itemize}
 
+\vspace{-3mm}
 \subsection*{Подготовка. Генерация репозитория, который будет использоваться в задачах.}
 
-\begin{minipage}{0.65\linewidth}
 Для решения некоторых задач вам потребуется создать простой репозиторий, состоящий из четырёх коммитов, с помощью bash-скрипта. Для этого сделайте следующее:
+
+\begin{minipage}{0.65\linewidth}
 \begin{enumerate}
-\item Зайдите в репозиторий \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course}{v.biryukov/devtools\_course}, пройдите в папку
+\item Зайдите в репозиторий \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course}{\texttt{v.biryukov/devtools\_course}}, пройдите в папку
 \texttt{seminar2\_more\_git/practice}, откройте файл \texttt{create\_animals.sh} и скачайте его.
 
-\item Скопируйте скрипт в папку, в которой вы будете его запускать. Убедитесь, что папка, куда вы копируете скрипт, не является частью другого репозитория, а также не содержит внутри себя папку \texttt{animals}.
+\item Скопируйте скрипт в папку для запуска. Убедитесь, что эта папка не является частью другого репозитория и не содержит папку \texttt{animals}.
 
-\item Откройте терминал и зайти в папку, содержащую скрипт
+
+\item Откройте терминал. Зайдите в папку для запуска, добавьте скрипту права на исполнение и запустите его. Используйте команды:
 \begin{lstlisting}
 $ cd имяпапки
-\end{lstlisting}
-
-\item Добавьте скрипту права на исполнение
-\begin{lstlisting}[style=csMiptBash]
 $ chmod +x create_animals.sh
-\end{lstlisting}
-
-\item Запустите скрипт, он создаст папку \texttt{animals} с репозиторием внутри
-\begin{lstlisting}[style=csMiptBash]
 $ ./create_animals.sh
 \end{lstlisting}
 
@@ -152,7 +163,7 @@ $ git log --oneline --graph --all
 \hspace{1cm}
 \begin{minipage}{0.3\linewidth}
 \begin{center}
-\includegraphics[scale=0.8]{../images/animals.png}
+\includegraphics[scale=0.75]{../images/animals.png}
 \end{center}
 \end{minipage}
 
