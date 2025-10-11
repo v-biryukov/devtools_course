@@ -312,18 +312,18 @@ $ git rebase main
 \item Создать новый локальный репозиторий на вашем компьютере с помощью скрипта \texttt{create\_animals.sh}.
 \item Создать новый пустой репозиторий на GitLab.
 \item Скопировать ссылку на GitLab репозиторий (протокол SSH).
-\item Добавить новый remote на вашем локальном репозитории. 
+\item Добавить новый ремоут по имени \texttt{origin} на вашем локальном репозитории. 
 \begin{lstlisting}[style=csMiptBash]
-$ git remote add имя ссылка
+$ git remote add origin ссылка
 \end{lstlisting}
 Имя можно выбрать любое, но часто выбирают \texttt{origin}.
-\item Проверьте, что новый remote добавился:
+\item Проверьте, что новый ремоут добавился:
 \begin{lstlisting}[style=csMiptBash]
 $ git remote -v
 \end{lstlisting}
-\item Отправьте ветки \texttt{main} и \texttt{other} вашего локального репозитория на удалённый репозиторий GitLab.
+\item Отправьте ветку \texttt{main} из вашего локального репозитория на удалённый репозиторий, соответствующий ремоуту \texttt{origin}.
 \begin{lstlisting}[style=csMiptBash]
-$ git push -u origin main other
+$ git push -u origin main
 \end{lstlisting}
 \end{enumerate}
 
@@ -335,10 +335,10 @@ $ git commit -m "CE: add emu.txt"
 $ git push
 \end{lstlisting}
 Однако затем передумали и хотите отменить коммит. Вы хотите, чтобы изменения пропали везде -- как на вашем компьютере, так и в последнем состоянии удалённого репозитория. Решите эту задачу двумя способами:
-\begin{itemize}
+\begin{enumerate}[(a)]
 \item Используя \texttt{git push}.
 \item Используя \texttt{git revert}.
-\end{itemize}
+\end{enumerate}
 
 
 
