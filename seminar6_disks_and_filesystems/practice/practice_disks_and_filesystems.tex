@@ -1,0 +1,311 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\pagenumbering{gobble}
+
+\lstdefinestyle{csMiptCStyle}{
+  language=C,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCLinesStyle}{
+  style=csMiptCStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCBorderStyle}{
+  style=csMiptCStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+  	style=csMiptCStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-, \{, \}},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
+}
+
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
+\newcommand\section@cntformat{}     
+\newcommand\subsection@cntformat{Задача \thesubsection.\space} 
+\newcommand\subsubsection@cntformat{\thesubsubsection.\space}
+\makeatother
+
+
+
+\begin{document}
+\title{Семинар \#6: Диски и файловые системы. Практика. \vspace{-5ex}}\date{}\maketitle
+\subsection*{Как сдавать задачи}
+Для сдачи ДЗ вам нужно создать репозиторий на GitLab (если он ещё не создан) под названием \texttt{devtools-homework}. Структура репозитория должна иметь вид:
+\begin{center}
+\begin{BVerbatim}
+├── seminar6_disks_and_filesystems/
+│   ├── 01.sh
+│   ├── 02.sh
+│   └── ...
+└── ...
+\end{BVerbatim}
+\end{center}
+Для каждой задачи нужно создать 1 файл решения с расширением \texttt{.sh}. Подзадачи внутри каждого из файлов нужно оформлять в следующем формате:
+\begin{lstlisting}
+# Subtask a
+lsblk
+# Subtask b
+lsblk
+# Subtask c
+...
+\end{lstlisting}
+Для каждой подзадачи нужно прописать все команды, которые исполняются в ходе выполнения этой подзадачи.\\
+
+
+
+\subsection*{Предварительные действия}
+\begin{itemize}
+\item \textbf{Важно! Резервное клонирование ВМ.} \\
+При выполнении данного задания придётся работать от имени суперпользователя (\texttt{root}), используя команды \texttt{su} и \texttt{sudo}. Выполняя такие команды, можно случайно сломать систему. Поэтому перед выполнением данного задания на всякий случай клонируйте вашу виртуальную машину. В VirtualBox для этого нужно нажать правой кнопкой мыши на виртуальной машине и выбрать "Клонировать".
+
+\item \textbf{Создание диска для виртуальной машины.} \\
+Это задание нужно выполнять в виртуальной машине. Для выполнения этого задания вам понадобиться создать новый виртуальный диск. В \texttt{Virtual Box} это сделать можно следующим образом:
+\begin{itemize}
+\item Выключите виртуальную машину, если она включена.
+\item Выберите вашу виртуальную машину и нажмите настроить.
+\item Выберите вкладку "Носители". В
+\item Выберите "Контроллер SATA"{} и нажмите "Создать жёсткий диск".
+\item В верхней панели выберите "Создать".
+\item Установите размер жёсткого диска в 5 гигабайт. 
+\item Добавьте новый диск к вашей виртуальной машине (он должен отображаться на вкладке носители). 
+\item Запустите виртуальную машину и выполните \texttt{lsblk}, чтобы посмотреть, что создался новый диск размером 5 Гб. Скорей всего он будет иметь имя \texttt{sdb}.
+\end{itemize}
+\end{itemize}
+
+
+
+\newpage
+
+
+\subsection{Просмотр информации о дисках и разделах}
+Некоторые из этих команд требуют прав суперпользователя, используйте \texttt{sudo}, чтобы запустить их.
+\begin{enumerate}[a.]
+\item \textbf{Просмотр информации о дисках и разделах}\\
+Просмотрите ваши текущие диски и разделы, используя команду \texttt{lsblk}.
+
+\item \textbf{Просмотр информации о UUID и файловых системах}\\
+Просмотрите ваши уникальные идентификаторы дисков и разделов, а также используемые на этих разделах файловые системы. Используйте команду \texttt{lsblk -f} или \texttt{sudo blkid}.
+
+\item \textbf{Просмотр всех смонтированных файловых систем}\\
+Просмотрите все смонтированные на данный момент файловые системы, используя команду \texttt{findmnt}. Команда \texttt{findmnt} показывает не только физические разделы и диски, но и виртуальные (\texttt{proc}, \texttt{sysfs}) и другие.
+
+\item \textbf{Просмотр использованного места}\\
+Просмотрите использованное место на различных разделах, используя команду \texttt{df -h}.
+
+\item \textbf{Просмотр таблицы разделов}\\
+Просмотрите подробную информацию о разделах, используя \texttt{fdisk -l} или \texttt{parted -l}.
+
+
+\item \textbf{Просмотрите директорию, содержащую файлы устройств}\\
+Просмотрите директорию \texttt{/dev}, используя подробный вывод \texttt{ls -la}. Обратите внимание на типы файлов \texttt{/dev/sda}, \texttt{/dev/sda1} и других.
+
+\item \textbf{Просмотрите системный файл /etc/fstab}\\
+Файл \texttt{/etc/fstab} хранит в себе файловых системах, которые должны быть автоматически смонтированы при загрузке системы. Для просмотра этого файла используйте команду:
+\begin{lstlisting}
+$ cat /etc/fstab
+\end{lstlisting}
+\end{enumerate}
+
+
+
+\subsection{Разметка диска, файловой системы и монтирование}
+\begin{enumerate}[a.]
+\item \textbf{Новый диск}\\
+Найдите как в системе называется новый диск, созданный в части \texttt{Предварительные действия}. Далее будет предполагаться, что он называется \texttt{sdb} и его файл устройства находится в \texttt{/dev/sdb}.
+
+\item \textbf{Новый раздел}\\
+Используйте программу \texttt{fdisk}, чтобы создать новый раздел на диске \texttt{sdb}. Раздел должен занимать весь диск. Раздел будет иметь имя \texttt{sdb1}, а файл устройства этого раздела будет \texttt{/dev/stb1}. Посмотрите, что новый раздел создался, используя \texttt{lsblk}.
+
+\item \textbf{Создаём файловую систему}\\
+Создайте файловую систему \texttt{ext4} на разделе \texttt{stb1}, используя команду \texttt{mkfs}. Используйте \texttt{lsblk -f}, чтобы посмотреть, что в разделе \texttt{sdb1} используется файловая система \texttt{ext4}.
+
+\item \textbf{Монтируем файловую систему}\\
+Создайте новую папку \texttt{/mnt/myfs}. Измените владельца этой папки на вашего пользователя, чтобы можно было работать с папкой без использования \texttt{sudo}. Используйте команду \texttt{mount}, чтобы примонтировать файловую систему к директории \texttt{/mnt/myfs}. Используйте команду \texttt{findmnt}, чтобы убедиться, что файловая система была примонтирована.
+
+\item \textbf{Используем файловую систему}\\
+Перейдите в директорию \texttt{/mnt/myfs} и создайте там два файла: \texttt{a.txt}, который будет содержать строку \texttt{"Axolotl"} и \texttt{b.txt}, который будет содержать строку \texttt{"Bison"}. Создайте большой пустой файл под названием \texttt{large}, размером 100 Мб, используя команду:
+\begin{lstlisting}
+dd if=/dev/zero of=./large bs=1M count=100
+\end{lstlisting}
+Выполните команду \texttt{df -h}, чтобы убедиться что количество занятого места на разделе увеличилось.
+
+\item \textbf{Перемонтирование в другом месте}\\
+Создайте новую директорию \texttt{/home/shared}. Дайте этой папке полные права (\texttt{rwxrwxrwx}), чтобы можно было работать с ней без использования \texttt{sudo}.  Размонтируйте файловую систему с раздела \texttt{stb1} из папки \texttt{/mnt/myfs} и примонтируйте её к новой директории \texttt{/home/shared}. Зайдите в эту директорию и убедитесь, что все файлы сохранились. 
+
+\item \textbf{Перезагрузка}\\
+Перезагрузите виртуальную машину и проверьте файлы в директории \texttt{/home/shared}.
+Заново примонтируйте файловую систему в папку \texttt{/home/shared} и убедитесь, что все файлы сохранились.
+
+\item \textbf{Запись в /etc/fstab}\\
+Файловая система в \texttt{/home/shared} была примонтирована временно. После перезагрузки системы её придётся монтировать снова. Чтобы указать, что эту систему нужно монтировать автоматически при загрузке системы, нужно добавить новую запись в \texttt{/etc/fstab}. Этот файл нужно редактировать очень осторожно, так как ошибка в этом файле может привести к тому, что система не запустится.
+\begin{itemize}
+\item Укажите файловую систему по UUID раздела, на который она установлена. UUID можно найти, используя команду \texttt{lsblk -f}.
+\item Для поля \texttt{options} укажите значение \texttt{defaults}.
+\item Для полей \texttt{dump} и \texttt{pass} укажите значение 0.
+\end{itemize}
+
+\item \textbf{Проверьте, что запись в /etc/fstab корректна}\\
+Размонтируйте вашу файловую систему и выполните \texttt{mount -a}. Эта команда проверит запись в \texttt{/etc/fstab} на корректность и, если запись корректна, она смонтирует её. Команда не будет работать, если файловая система уже смонтирована.
+\begin{lstlisting}
+$ sudo umount /home/shared
+$ sudo mount -a
+\end{lstlisting}
+Перезагрузите виртуальную машину и убедитесь, что файловая система в \texttt{/home/shared} была автоматически примонтирована.
+
+\end{enumerate}
+
+\subsection{Несколько разделов (\texttt{fdisk}, таблица разделов MBR)}
+Для создания таблицы разделов и удаления/создания разделов в этой задаче используйте программу \texttt{fdisk}. Размонтируйте файловую систему на \texttt{sdb} и удалите раздел \texttt{sdb1}. Создайте на диске таблицу разделов \texttt{MBR}. Создайте на диске 5+1 разделов (3 основных, 1 расширенный и 2 логических). Затем создайте в этих разделах файловые системы в соответствии со следующей таблицей:
+\begin{center}
+\begin{tabular}{lll}
+ раздел & размер  	& файловая система   \\
+ \texttt{sdb1} 	& 2G 		& xsf   \\
+ \texttt{sdb2} 	& 1G 		& btrfs \\
+ \texttt{sdb3} 	& 1G 		& ext4 \\
+ \texttt{sdb4} 	& --	    & расширенный раздел \\
+ \texttt{sdb5} 	& 500M 		& ext2 \\
+ \texttt{sdb6} 	& 500M 		& fat16 \\
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item Проверьте, что созданный диск использует таблицу разделов \texttt{MBR}. Для этого выполните \texttt{sudo fdisk -l}. В выводе должна присутствовать строка:
+\begin{lstlisting}
+Disklabel type: dos
+\end{lstlisting}
+\item Проверьте, что все разделы были созданы вместе с соответствующими файловыми системами, используя команду \texttt{lsblk -f}.
+\end{itemize}
+
+
+\subsection{Несколько разделов (\texttt{fdisk}, таблица разделов GPT)}
+Для создания таблицы разделов и удаления/создания разделов в этой задаче используйте программу \texttt{fdisk}. Размонтируйте файловую систему на \texttt{sdb} и удалите все раздел. Создайте на диске таблицу разделов \texttt{GPT}. Создайте на диске 5 разделов. Затем создайте в этих разделах файловые системы в соответствии со следующей таблицей:
+\begin{center}
+\begin{tabular}{lll}
+ раздел & размер  	& файловая система   \\
+ \texttt{sdb1} 	& 2G 		& xsf   \\
+ \texttt{sdb2} 	& 1G 		& btrfs \\
+ \texttt{sdb3} 	& 1G 		& ext4 \\
+ \texttt{sdb4} 	& 500M 		& ext2 \\
+ \texttt{sdb5} 	& 500M 		& fat16 \\
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item Проверьте, что созданный диск использует таблицу разделов \texttt{GPT}. Для этого выполните \texttt{sudo fdisk -l}. В выводе должна присутствовать строка:
+\begin{lstlisting}
+Disklabel type: gpt
+\end{lstlisting}
+\item Проверьте, что все разделы были созданы вместе с соответствующими файловыми системами, используя команду \texttt{lsblk -f}.
+\end{itemize}
+
+\subsection{Программа dd}
+
+\begin{enumerate}[a.]
+\item \textbf{Файл из нулевых байт}\\
+Создайте файл из нулевых байт размером в 10 килобайт, используя программу \texttt{dd} и псевдоустройство \texttt{/dev/zero}. Используйте программу \texttt{xxd}, чтобы просмотреть все байты созданного файла.
+
+\item \textbf{Файл из случайных байт}\\
+Создайте файл из случайных байт размером в 10 килобайт, используя программу \texttt{dd} и псевдоустройство \texttt{/dev/urandom}. Используйте программу \texttt{xxd}, чтобы просмотреть все байты созданного файла.
+
+\item \textbf{Вывод на экран}\\
+Создайте файл \texttt{a.txt}, содержащий фразу \texttt{Sapere Aude}.
+\begin{enumerate}
+\item Используйте программу \texttt{dd}, чтобы вывести содержимое этого файла на экран (\texttt{stdout}).
+\item Используйте \texttt{dd}, чтобы вывести первые 6 символов файла на экран.
+\end{enumerate}
+
+\item \textbf{Копирование файла}\\
+Используйте программу \texttt{dd}, чтобы скопировать файл \texttt{a.txt} в файл \texttt{b.txt}.
+\end{enumerate}
+
+
+\subsection{Несколько разделов (\texttt{parted}, таблица разделов GPT)}
+Сделайте задачу 4, но с использованием программы \texttt{parted} вместо \texttt{fdisk}.
+
+
+\iffalse
+\newpage
+~
+\newpage
+
+\subsection*{Идеи}
+\begin{itemize}
+\item Вопросы по ext2
+\begin{itemize}
+\item Сколько памяти может занимать 1 файл в ext2 (block=4kb, размер указателя = 4 или 8).
+\end{itemize}
+\end{itemize}
+
+
+\fi
+
+\end{document}
