@@ -1,0 +1,496 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{upquote}
+\usepackage{chngcntr}
+\pagenumbering{gobble}
+\counterwithout{subsection}{section}
+
+\lstdefinestyle{csMiptCStyle}{
+  language=C,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCLinesStyle}{
+  style=csMiptCStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCBorderStyle}{
+  style=csMiptCStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+  	style=csMiptCStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-, \{, \}},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
+}
+
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
+\newcommand\section@cntformat{}     
+\newcommand\subsection@cntformat{Задача \thesubsection.\space} 
+\newcommand\subsubsection@cntformat{\thesubsubsection.\space}
+\makeatother
+
+
+
+\begin{document}
+\title{Семинар \#7: Скрипты языка Bash. Практика. \vspace{-5ex}}\date{}\maketitle
+\subsection*{Как сдавать задачи}
+Для сдачи ДЗ вам нужно создать репозиторий на GitLab (если он ещё не создан) под названием \texttt{devtools-homework}. Структура репозитория должна иметь вид:
+\begin{center}
+\begin{BVerbatim}
+├── seminar7_bash_scripting/
+│   ├── 01.sh
+│   ├── 02.sh
+│   └── ...
+└── ...
+\end{BVerbatim}
+\end{center}
+Для каждой задачи, если в самой задаче не сказано иное, нужно создать 1 скрипт с расширением \texttt{.sh} и шебангом в начале скрипта. Если задача делится на подзадачи нужно, если в самой задаче не сказано иное, создать скрипт для каждой подзадачи. Названия файлов решений для всех задач/подзадач должны начинаться с номера задачи, например \texttt{01.sh} или \texttt{04b.sh}, даже если в условии задачи используется другое имя для скрипта.  \\
+
+
+
+\section{Переменные}
+
+\subsection{Новая переменная}
+Пусть есть следующая простая программа на языке Bash:
+\begin{lstlisting}
+#!/bin/bash
+echo "Hello, my name is Alice."
+echo "Alice, welcome to the world of bash scripts!"
+echo "Today Alice will learn about bash scripting."
+\end{lstlisting}
+Это скрипт можно найти в \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course/seminar7_bash_scripting/practice/hello_alice.sh}{\texttt{seminar7\_bash\_scripting/practice/hello\_alice.sh}}. Измените этот скрипт, добавив переменную \texttt{name} со значением \texttt{"Alice"} и три раза используйте эту переменную в командах \texttt{echo}.
+
+
+\subsection{Печатаем переменные среды}
+Напишите скрипт, который будет печатать следующие переменные среды, используя команду \texttt{echo}:
+\begin{itemize}
+\item \texttt{PATH} -- переменная среды, которая содержит список каталогов, в которых оболочка ищет исполняемые файлы (команды).
+\item \texttt{USER} -- переменная среды, которая содержит имя текущего пользователя.
+\item \texttt{UID} -- переменная среды, которая содержит UID текущего пользователя.
+\item \texttt{HOME} -- имя домашней директории текущего пользователя.
+\item \texttt{SHELL} -- имя текущей используемой оболочки.
+\item \texttt{SHLVL} -- уровень текущей оболочки.
+\item \texttt{HOSTNAME} -- имя компьютера на котором исполняется программа.
+\item \texttt{LANG} -- язык и локаль для сообщений программ, например \texttt{en\_US.UTF-8} или \texttt{ru\_RU.UTF-8}.
+\item \texttt{PS1} -- переменная, которая содержит строку перед вводом команды. Что будет, если присвоить этой переменной значение \texttt{"\$ "}? Перезайдите в терминал, если хотите восстановить старое значение переменной.
+\end{itemize}
+Используйте команду \texttt{env}, чтобы напечатать все переменные среды и убедиться, что ваш скрипт печатает корректные значения.
+
+\subsection{Создаём свою переменную среды}
+Выполните последователь следующие команды в терминале. Для каждой команды, определите, что будет печататься на экран.
+\begin{enumerate}[(a)]
+\item Создайте новую переменную по имени \texttt{ALPACA} со значением \texttt{apple}.
+\begin{lstlisting}
+$ ALPACA=apple
+\end{lstlisting}
+
+\item Распечатайте значение переменной \texttt{ALPACA}:
+\begin{lstlisting}
+$ echo "This is $ALPACA"
+\end{lstlisting}
+
+\item Создайте новый файл \texttt{print\_alpaca.sh}, который будет содержать следующий код:
+\begin{lstlisting}
+#!/bin/bash
+echo "This is $ALPACA"
+\end{lstlisting}
+После этого дайте этому файлу права на исполнение:
+\begin{lstlisting}
+$ chmod +x print_alpaca.sh
+\end{lstlisting}
+
+\item Определите, что напечатает следующая последовательность команд:
+\begin{lstlisting}
+$ unset ALPACA
+$ ALPACA=apple
+$ ./print_alpaca.sh
+\end{lstlisting}
+Команда \texttt{unset} удаляет переменную \texttt{ALPACA}. После этого создаётся новая переменная со значением \texttt{apple}. Это делается для чистоты эксперимента.
+
+\item При исполнении скрипта в оболочке создаётся новый процесс и обычные переменные оболочки в этом процессе не видны. Но видны экспортированные переменные, создаваемые командой \texttt{export}. Определите, что напечатает следующая последовательность команд:
+\begin{lstlisting}
+$ unset ALPACA
+$ export ALPACA=apple
+$ ./print_alpaca.sh
+\end{lstlisting}
+
+
+\item Можно задать экспортированные переменные для одной команды, с помощью специального синтаксиса:
+\begin{lstlisting}
+$ VAR1=value1 VAR2=value2 command
+\end{lstlisting}
+Определите, что напечатает следующая последовательность команд:
+\begin{lstlisting}
+$ unset ALPACA
+$ ALPACA=apple ./print_alpaca.sh
+$ ALPACA=apple; ./print_alpaca.sh
+$ ALPACA=apple && ./print_alpaca.sh
+\end{lstlisting}
+
+\item Команда \texttt{source} нужна для того, чтобы выполнить команды из скрипта в текущей оболочке, не создавая новый процесс. Определите, что будет печать следующие команды:
+\begin{lstlisting}
+$ unset ALPACA
+$ ALPACA=apple
+$ source ./print_alpaca.sh
+\end{lstlisting}
+
+\item Создайте экспортируемую переменную и убедитесь, что она работает:
+\begin{lstlisting}
+$ export ALPACA=apple
+$ ./print_alpaca.sh
+\end{lstlisting}
+После этого закройте терминал и заново его откройте. Что теперь напечатают команды:
+\begin{lstlisting}
+$ ./print_alpaca.sh
+$ source ./print_alpaca.sh
+\end{lstlisting}
+
+\item Добавьте создание переменной среды \texttt{ALPACA} в файл \texttt{$\sim$/.bashrc}. В этом файле нужно добавить строку:
+\begin{lstlisting}
+export ALPACA=apple
+\end{lstlisting}
+Скрипт \texttt{.bashrc} выполняется в процессе текущей оболочки при каждом запуске терминала. После этого закройте терминал и заново его откройте. Что теперь напечатает команда:
+\begin{lstlisting}
+$ ./print_alpaca.sh
+\end{lstlisting}
+
+\item Распечатайте все переменные среды, с помощью команды \texttt{printenv} и убедитесь, что добавилась новая переменная среды \texttt{ALPACA}.
+\end{enumerate}
+Для того, чтобы сдать эту задачу создайте файл \texttt{03.txt} в котором будут печататься выводы команд на каждом шаге в следующем формате:
+\begin{lstlisting}
+# Subtask a
+$ ALPACA=apple
+# Subtask b
+$ echo "This is $ALPACA"
+This is apple
+# Subtask c
+...
+\end{lstlisting}
+
+
+
+\subsection{Внутренняя или внешняя}
+Часть команд, которые используются в bash являются встроенными командами \texttt{bash} (например, команды \texttt{cd}, \texttt{echo} и другие), а некоторые команды являются отдельными программами (например, \texttt{ls}, \texttt{cp} и другие). Некоторые команды реализованы обоими способами, в этом случае при выполнении команды обычно выбирается встроенная версия. Чтобы понять какая команда является встроенной, а какая команда является отдельной программой, можно использовать команду \texttt{type -a}. Определите, как реализованы следующие команды:
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{cd}
+\item \texttt{cp}
+\item \texttt{pwd}
+\item \texttt{ls}
+\item \texttt{touch}
+\item \texttt{mkdir}
+\item \texttt{echo}
+\item \texttt{source}
+\item \texttt{type}
+\item \texttt{which}
+\end{itemize}
+\end{multicols}
+\noindent Для решения этой задачи создайте файл \texttt{04.txt} в котором будут представлены ответы в следующем формате:
+\begin{lstlisting}
+cd - shell builtin
+cp - programm /usr/bin/cp
+...
+\end{lstlisting}
+Если команда реализована несколькими способами, то выбирайте первый -- наиболее приоритетный.
+
+
+\subsection{Создаём новую команду}
+\begin{enumerate}[(a)]
+\item Когда вы запускаете команду, если она не является встроенной, bash ищет эту программу в стандартных путях, задаваемых переменной \texttt{PATH}. Переменная \texttt{PATH} является строкой, в которой перечислены директории, разделённые символом \texttt{:}. Очистите переменную \texttt{PATH}, присвоив ей пустую строку.
+\begin{lstlisting}
+$ export PATH=""
+\end{lstlisting}
+убедитесь, что после этого внешние команды перестали работать. \textbf{Перезайдите в терминал, чтобы восстановить значение переменной \texttt{PATH}}.
+
+\item Создайте простой скрипт \texttt{hello.sh}, который будет содержать следующий код:
+\begin{lstlisting}
+#!/bin/bash
+echo "Hello, Bash"
+\end{lstlisting}
+Дайте этому файлу права на исполнение и исполните его
+\begin{lstlisting}
+$ chmod +x ./hello.sh
+$ ./hello.sh
+\end{lstlisting}
+
+\item Попробуйте исполнить этот файл, без указания текущей директории:
+\begin{lstlisting}
+$ hello.sh
+\end{lstlisting}
+Без указания пути до файла bash будет искать такой файл в стандартных путях. Так как такого файла там не будет, данная команда не будет найдена.
+
+\item Переместите данный скрипт в один из стандартных путей из переменной \texttt{PATH}, например, в \texttt{/usr/local/bin}. Для этой операции понадобятся права суперпользователя. Убедитесь, что у скрипта есть право на исполнение для текущего пользователя, и, желательно, для всех пользователей. После этого запустите скрипт без указания директории:
+\begin{lstlisting}
+$ hello.sh
+\end{lstlisting}
+Теперь этот файл должен найтись и скрипт запустится.
+
+\item Измените имя скрипта в системной директории с \texttt{hello.sh} на \texttt{hello}. Теперь скрипт можно будет запустить, как любую другую команду.
+\begin{lstlisting}
+$ hello
+\end{lstlisting}
+\end{enumerate}
+Для того, чтобы сдать эту задачу создайте файл \texttt{05.txt} в котором нужно будет напечатать все команды, которые были исполнены при выполнении данного задания в следующем формате:
+\begin{lstlisting}
+# Subtask a
+$ export PATH=""
+# Subtask b
+...
+\end{lstlisting}
+
+
+\subsection{Подмена ls}
+
+
+
+
+\newpage
+\section{Аргументы}
+
+\subsection{Привет скрипт}
+Напишите программу на языке bash, которая будет печатать имя своего файла. Например, если скрипт вызывается как \texttt{./script.sh}, то он должен печатать на экран строку  \texttt{"Hello ./script.sh"}.
+\begin{lstlisting}
+$ ./script.sh
+Hello ./script.sh
+$ mv script.sh 07.sh
+$ ./07.sh
+Hello ./07.sh
+\end{lstlisting}
+
+\subsection{Количество аргументов}
+Напишите программу, которая будет печатать количество переданных ей аргументов.
+\begin{lstlisting}
+$ ./script.sh
+0
+$ ./script.sh apple
+1
+$ ./script.sh apple banana cherry durian
+4
+\end{lstlisting}
+
+
+
+
+\section{Кавычки}
+
+\subsection{Одинарные или двойные кавычки}
+Определите, что сделают следующие команды в bash:
+\begin{multicols}{2}
+\begin{enumerate}[(a)]
+\item \begin{verbatim}
+touch alpha beta gamma
+\end{verbatim}
+
+\item \begin{verbatim}
+touch "alpha beta gamma"
+\end{verbatim}
+
+\item \begin{verbatim}
+touch 'alpha beta gamma'
+\end{verbatim}
+
+\item \begin{verbatim}
+echo /var/*
+\end{verbatim}
+
+\item \begin{verbatim}
+echo "/var/*"
+\end{verbatim}
+
+\item \begin{verbatim}
+echo '/var/*'
+\end{verbatim}
+
+\item \begin{verbatim}
+user=alice
+echo hello $user
+\end{verbatim}
+
+\item \begin{verbatim}
+user=alice
+echo "hello $user"
+\end{verbatim}
+
+\item \begin{verbatim}
+user=alice
+echo 'hello $user'
+\end{verbatim}
+
+\vfill\null
+\columnbreak
+
+\item \begin{verbatim}
+echo I am in $(pwd) folder
+\end{verbatim}
+
+\item \begin{verbatim}
+echo "I am in $(pwd) folder"
+\end{verbatim}
+
+\item \begin{verbatim}
+echo 'I am in $(pwd) folder'
+\end{verbatim}
+
+\item \begin{verbatim}
+echo I have $100
+echo I have \$100
+\end{verbatim}
+
+\item \begin{verbatim}
+echo "I have $100"
+echo "I have \$100"
+\end{verbatim}
+
+\item \begin{verbatim}
+echo 'I have $100'
+echo 'I have \$100'
+\end{verbatim}
+
+\item \begin{verbatim}
+touch hello.sh
+find /usr -name *.sh
+\end{verbatim}
+
+\item \begin{verbatim}
+touch hello.sh
+find /usr -name "*.sh"
+\end{verbatim}
+
+\end{enumerate}
+\end{multicols}
+
+
+
+\section{Работа со строками}
+\subsection{Базовое имя}
+В linux есть команда \texttt{basename}, которая принимает на вход полный путь до некоторого файла, а возвращает только имя этого файла.
+\begin{lstlisting}
+$ basename /etc/passwd
+passwd
+$ basename /home/user/workspace/file.txt
+file.txt
+\end{lstlisting}
+Вам нужно написать скрипт, который будет делать то же самое, но без использования программы \texttt{basename}.
+
+\section{Коды возврата}
+
+\subsection{Коды возврата базовых программ}
+Какой код возврата будет в следующих строках кода.
+
+\subsection{Коды возврата базовых программ}
+В каких случаях следующие программы возвращают ненулевой код возврата:
+\begin{enumerate}[a.]
+\item \texttt{ls}
+\item \texttt{curl}
+\item \texttt{diff}
+\item \texttt{find}
+\item \texttt{grep}
+\end{enumerate}
+
+
+
+\section{Ветвление}
+\subsection{Существует ли файл}
+Напишите скрипт, который принимает название файл, через аргумент и печатает \texttt{Yes}, если такой файл (любого типа) существует в данной директории или \texttt{No}, если не существует. Решите эту задачу тремя способами:
+\begin{enumerate}[(a)]
+\item С использованием \texttt{if} и ключа \texttt{-e}.
+\item С использованием \texttt{if} и программы \texttt{ls}.
+\item С использованием операторов \texttt{\&\&}, \texttt{||} и программы \texttt{ls}.
+\end{enumerate}
+Скрипт должен принимать ровно один аргумент. Если количество передаваемых аргументов меньше или больше одного, то программа должна завершаться с текстом:
+\begin{lstlisting}
+Usage: $0 <filename>
+\end{lstlisting}
+Скрипт не должен выводить на экран никакого дополнительного текста, не указанного в условии задачи.
+
+
+\subsection{Удаление с сообщением}
+Пытается удалить файл, если его не существует, то должна напечатать \texttt{File not exists}.
+\begin{enumerate}[(a)]
+\item С использованием \texttt{if} и ключа \texttt{-f}.
+\item С использованием оператора \texttt{||} и программы \texttt{ls}.
+\end{enumerate}
+
+
+\subsection{Проверка пользователя}
+grep /etc/passwd.
+\begin{enumerate}[(a)]
+\item С использованием \texttt{if}.
+\item С использованием оператора \texttt{||}.
+\end{enumerate}
+
+
+\subsection{Массовое переименование}
+
+\subsection{Бэкап всех файлов в текущей директории}
+Создать backup копию для каждого файла в этой директории в скрытой папке. Делает новый backup только есть файл изменился. Названия файлов \texttt{.backup/file.txt.0}, \texttt{.backup/file.txt.1}, и т.д.
+
+\end{document}

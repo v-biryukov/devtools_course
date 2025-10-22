@@ -1,0 +1,129 @@
+ДЗ git:
+
+-) cd ..
+source 
+
+-) Подстановка процесса
+<(...)
+>(...)
+
+-) Применение в ДЗ
+git show fix_a:dev/python_zen.txt
+
+git diff fix_a:dev/python_zen.txt fix_b:dev/python_zen.txt
+git show fix_a:dev/python_zen.txt
+cat <(fix_a:dev/python_zen.txt) <(fix_b:dev/python_zen.txt) > dev/python_zen.txt
+
+
+-) Перенос строки в конце файла
+-) Многие редакторы (но не все) добавляют перенос в конце файла, если его нет.
+требование стандарта Posix
+
+-) wc -l считает количество '\n' в файле
+Если переноса в конце нет, то wc напечатает на одну меньше количество строк 
+
+-) GitLab показывает не совсем тот файл
+
+
+ДЗ pipelines:
+
+cal 2 2001
+
+
+-) mkdir -p
+-) ls -X нет на macOS
+-) 'EOF'
+-) 4d - можно ещё учесть аргументы
+-) ls -l выводит на одну строку больше чем файлов
+-) find . -type f
+Файлы - это все файлы или только обычные файлы
+-) sort | uniq  или  sort -u
+
+
+-) Спросить про python и python3
+-) Создать слабую ссылку /usr/bin/python
+-) Что напечатает (ловушка):
+python printerr.py 2>&1 >/dev/null
+
+
+-) wildcards ls/echo
+-) файлы backup....tar.gz были проигнорированы (
+-) с logs то же ошибка
+-) rm -- *.bin
+-) ls a* c*  или  ls [ac]*
+-) ls backup*202[35]*   или  ls -1 backup*202{3,5}*  или   ls backup*@(2023|2025)*   
+расширенные шаблоны (shopt -s extglob)
+-) Программа tree
+-) $_ последний аргумент последней команды
+-) find /usr -name "*.sh" - важность кавычек
+-) find -exec:
+    Если бы мы использовали просто ;, оболочка (Bash/Zsh) интерпретировала бы его как конец команды find, а не как часть аргументов, передаваемых самой утилите find.
+-) find vs locate
+-) cp -n
+-) cp --update - смотрит на время модификации
+   cp --update=none   cp --update=all
+-) locate -r 
+
+-) Неверный синтаксис
+find /usr -name "*.sh" -exec cp {} ./scripts/ +
+cp -t brace happiness.txt
+find /usr -name "*.sh" -exec cp {} ./scripts/ +
+find /usr -name "*.sh" -exec cp --update -t ./scripts/ {} +
+
+
+-) xargs - задачи можно было решить без xargs
+find scripts -name "*.sh" | xargs chmod -x
+chmod -x scripts/*.sh
+find scripts -name "*.sh" -exec chmod -x {} +
+НО
+xargs можно использовать в конвейере:
+find scripts -name "*.sh" | grep "file" | ... | xargs chmod -x
+find scripts -name "*.sh" | xargs grep "file" | ... | xargs chmod -x
+find scripts -name "*.sh" | grep "l" | xargs grep "command"
+
+-) find -print0 | xargs -0
+
+-) Для тестирования xargs:  | xargs rm ...   ->   | xargs echo rm ...
+
+-) xargs -I {}
+Массовое переименование:
+Не работает:
+find ./scripts -type f | xargs -I {} echo mv "{}" $(echo "{}" | sed 's/txt/sh/')
+bash -c "echo hello"
+bash -c 'echo $1' _ hello
+Обе работают, но по разному:
+find ./scripts -type f | xargs -I {} bash -c 'echo mv $1 $(echo $1 | sed "s/.txt//")' _ {}
+find ./scripts -type f | xargs -I {} bash -c 'echo mv {} $(echo {} | sed "s/.txt//")' _ {}
+
+Гораздо проще использовать цикл for:
+
+for file in *.txt; do
+    mv -- "$file" "${file%.txt}.bak"
+done
+
+
+-) Опция -printf у команды find
+
+
+-) grep -o | wc -l
+
+-) Поиск ip адреса:
+'\b([0-9]{1,3}\.){3}[0-9]{1,3}\b'
+"\b((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\b"
+
+
+-) Разница между grep -r и grep -R
+
+-) grep --include "*.java"
+-) grep --color=auto
+-) alias grep='grep --color=auto'
+
+
+Регулярное выражение для поиска объявлений методов:
+"^\s*(\w+\s+)+is[A-Z][a-zA-Z0-9_]*\s*\("
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-\documentclass{article}
+ \documentclass{article}
 \usepackage[english,russian]{babel}
 \usepackage{textcomp}
 \usepackage{geometry}
@@ -10,6 +10,7 @@
 \usepackage{multicol}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{upquote}
 \pagenumbering{gobble}
 
 \lstdefinestyle{csMiptCppStyle}{
@@ -92,6 +93,24 @@ frame=none
 
 \begin{document}
 \title{Семинар \#6: Диски и файловые системы \vspace{-5ex}}\date{}\maketitle
+
+\subsection*{Единицы измерения информации}
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{ l | l | l  | l  | l  }
+ единица & единица (англ.) & сокращение & сокращение (англ.) & величина   \\ \hline
+ байт & byte & Б & B & $1$ байт   \\ \hline
+ килобайт & kilobyte & КБ & KB    & $1000 = 10^3$ байт   \\
+ мегабайт & megabyte & МБ & MB    & $1000^2 = 10^6$ байт   \\
+ гигабайт & gigabyte & ГБ & GB    & $1000^3 = 10^9$ байт   \\
+ терабайт & terabyte & ТБ & TB    & $1000^4 = 10^{12}$ байт   \\ \hline
+ кибибайт & kibibyte & КиБ & KiB  & $1024 = 2^{10}$ байт   \\
+ мебибайт & mebibyte & МиБ & MiB  & $1024^2 = 2^{20} = 1,048,576$ байт   \\
+ гибибайт & gibibyte & ГиБ & GiB  & $1024^3 = 2^{30} = 1,073,741,824$ байт   \\
+ тебибайт & tebibyte & ТиБ & TiB  & $1024^4 = 2^{40} = 1,099,511,627,776$ байт   \\ \hline
+\end{tabular}
+\end{center}
+\renewcommand{\arraystretch}{1.1}
 
 \subsection*{Просмотр информации в дисках и разделах}
 \texttt{
