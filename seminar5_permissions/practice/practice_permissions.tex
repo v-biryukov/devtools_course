@@ -73,7 +73,7 @@
 	stepnumber=1,
 	tabsize=4,
 	morekeywords={echo, function},
-	otherkeywords={-, \{, \}},
+	otherkeywords={-},
 	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
 	upquote=true,
 	frame=none
@@ -648,7 +648,9 @@ $ EDITOR=nano sudo visudo
 
 \subsection{SUID}
 В репозитории \texttt{devtools\_course} можно найти файл \texttt{seminar5\_permissions/practice/write\_time.c}. В нём содержится простая программа на языке C:
-\begin{lstlisting}[style=csMiptCStyle]
+
+\lstset{style=csMiptCStyle}
+\begin{lstlisting}[language=C]
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -668,6 +670,7 @@ int main()
     return 0;
 }
 \end{lstlisting}
+\lstset{style=csMiptBash}
 Данная программа делает следующее:
 \begin{itemize}
 \item Открывает файл \texttt{/mytimes.txt} в режиме дозаписи в конец файла (\texttt{"a"} -- append). Если такого файла не существует, то \texttt{fopen} сначала создаст новый пустой файл, а уже затем откроет его. Обратите внимание, что файл создаётся в корневой директории.
