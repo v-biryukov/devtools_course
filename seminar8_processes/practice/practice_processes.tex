@@ -1,0 +1,277 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{upquote}
+\usepackage{chngcntr}
+\pagenumbering{gobble}
+\counterwithout{subsection}{section}
+
+\lstdefinestyle{csMiptCStyle}{
+  language=C,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCLinesStyle}{
+  style=csMiptCStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCBorderStyle}{
+  style=csMiptCStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+  	style=csMiptCStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-, \{, \}},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
+}
+
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
+\newcommand\section@cntformat{}     
+\newcommand\subsection@cntformat{Задача \thesubsection.\space} 
+\newcommand\subsubsection@cntformat{\thesubsubsection.\space}
+\makeatother
+
+
+
+\begin{document}
+\title{Семинар \#8: Процессы. Практика. \vspace{-5ex}}\date{}\maketitle
+\subsection*{Как сдавать задачи}
+Для сдачи ДЗ вам нужно создать репозиторий на GitLab (если он ещё не создан) под названием \texttt{devtools-homework}. Структура репозитория должна иметь вид:
+\begin{center}
+\begin{BVerbatim}
+├── seminar8_processes/
+│   ├── 01.sh
+│   ├── 02.sh
+│   └── ...
+└── ...
+\end{BVerbatim}
+\end{center}
+Для каждой задачи, если в самой задаче не сказано иное, нужно создать 1 скрипт с расширением \texttt{.sh} и шебангом в начале скрипта. Если задача делится на подзадачи нужно, если в самой задаче не сказано иное, создать скрипт для каждой подзадачи. Названия файлов решений для всех задач/подзадач должны начинаться с номера задачи, например \texttt{01.sh} или \texttt{04b.sh}, даже если в условии задачи используется другое имя для скрипта.  \\
+
+
+\subsection{Запуск в фоновом режиме}
+\begin{enumerate}[(a)]
+\item Создадим скрипт \texttt{counter.sh} который будет печатать на экран возрастающие целые числа с шагом в пол секунды.
+\begin{lstlisting}
+#!/bin/bash
+i=0
+while true; do
+    echo "$i"
+    sleep 0.5
+    ((i += 1))
+done
+\end{lstlisting}
+Напишите или скачайте этот скрипт с репозитория и дайте ему права на исполнение.
+
+\item Запустите скрипт:
+\begin{lstlisting}
+$ ./counter.sh
+\end{lstlisting}
+В результате на экран будут печататься числа. Bash будет занят выводом чисел на экран, поэтому в данной оболочке мы ничего сделать не сможем, пока не завершим программу. Завершите исполнение программы, используя \texttt{Ctrl-C}.
+
+
+\item Запустите скрипт в фоновом режиме:
+\begin{lstlisting}
+$ ./counter.sh &
+\end{lstlisting}
+Bash запустит программу в фоновом режиме. В этом случае bash будет свободен и вы сможете выполнять другие команды. Правда, так как \texttt{counter.sh} всё ещё выводит числа на экран, то работа с оболочкой может быть затруднена. Завершить программу, используя \texttt{Ctrl-C} в данном случае невозможно. Чтобы завершить процесс, его нужно сначала перевести из фонового (background) режима в передний (foreground) режим, используя команду \texttt{fg} и после этого завершить с помощью \texttt{Ctrl-C}.
+
+ 
+\item Запустите скрипт с выводом в файл: 
+\begin{lstlisting}
+$ ./counter.sh > a.txt
+\end{lstlisting}
+В результате в файл \texttt{a.txt} будут записываться числа. Bash будет занят записью чисел в файл, поэтому в данной оболочке мы ничего сделать не сможем. Но можно проверить, что числа печатаются в файл, используя другой терминал. Откройте другой терминал, зайдите в ту же директорию и проверьте, что в файл \texttt{a.txt} в данный момент производится запись, несколько раз вызвав \texttt{cat}. Также можно использовать команду:
+\begin{lstlisting}
+$ watch -n 2 cat a.txt
+\end{lstlisting}
+которая будет автоматически повторять команду \texttt{cat a.txt} каждые 2 секунды. Но, так как запись происходит в конец файла, то скорей всего лучше использовать команду \texttt{tail} вместо \texttt{cat}.
+\begin{lstlisting}
+$ watch -n 2 tail a.txt
+\end{lstlisting}
+Задача по выводу последних строк изменяемого файла используется настолько часто, что команде \texttt{tail} дали специальную опцию для этого случая:
+\begin{lstlisting}
+$ tail -f a.txt
+\end{lstlisting}
+Которая выводит последние строки файла, после изменения этого файла.
+
+Закройте второй терминал, вернитесь на первый и завершите процесс \texttt{counter.sh}.
+
+
+\item Запустите скрипт с выводом в файл в фоновом режиме:
+\begin{lstlisting}
+$ ./counter.sh > a.txt &
+\end{lstlisting}
+В результате в файл \texttt{a.txt} будут записываться числа. В этом случае bash будет свободен и вы сможете выполнять другие команды. Проверьте, что программа \texttt{counter} работает и в файл записываются числа, используя команду \texttt{tail -f}. 
+Чтобы завершить процесс, его нужно перевести из фонового (background) режима в передний (foreground) режим, используя команду \texttt{fg} и после этого завершить с помощью \texttt{Ctrl-C}.
+
+\item Запустите скрипт с выводом в файл в фоновом режиме:
+\begin{lstlisting}
+$ ./counter.sh > a.txt &
+\end{lstlisting}
+Выполните команду \texttt{ps}, которая покажет все программы, запущенные в данном терминале. Скорей всего на экран выведется информация о процессах \texttt{bash} (оболочка), \texttt{counter.sh}, \texttt{sleep} (запушенный внутри \texttt{counter.sh}) и только что запущенный \texttt{ps}. Для каждого процесса, будет выведен его идентификатор PID (\textit{process identifier}). Используйте полученный PID процесса \texttt{counter.sh} и команду \texttt{kill}, чтобы завершить процесс. Проверьте, что процесс завершился и запись в \texttt{a.txt} больше не производится. Ещё раз выполните команду \texttt{ps} и убедитесь, что процессы \texttt{counter.sh} и \texttt{sleep} отсутствуют в выводе.
+\end{enumerate}
+
+
+\subsection{Приостановка процесса}
+
+\begin{enumerate}[(a)]
+\item \textbf{Простая приостановка}
+\begin{itemize}[leftmargin=1mm,label={--}]
+\item Запустите скрипт \texttt{counter.sh}:
+\begin{lstlisting}
+$ ./counter.sh
+\end{lstlisting}
+\item Нажмите комбинацию клавиш \texttt{Ctrl-Z}, чтобы приостановить процесс. Теперь процесс приостановился и ничего не выводит на экран.
+\item Для возобновления работы процесса на переднем плане используйте команду \texttt{fg} (\textit{foreground process}).
+\item Завершите процесс, используя \texttt{Ctrl-C}.
+\end{itemize}
+
+
+\item \textbf{Передний и фоновый режимы}
+\begin{itemize}[leftmargin=1mm,label={--}]
+\item Запустите скрипт \texttt{counter.sh} с записью в файл:
+\begin{lstlisting}
+$ ./counter.sh > a.txt
+\end{lstlisting}
+\item Откройте новый терминал и запустите на нём просмотр конца файла \texttt{a.txt}, используя \texttt{tail -F a.txt}. Убедитесь, что в файл происходит запись. Не закрывайте этот терминал, на нём мы будем проверять, что наш процесс работает.
+\item Перейдите на основной терминал. Нажмите комбинацию клавиш \texttt{Ctrl-Z}, чтобы приостановить процесс. Теперь процесс приостановился и ничего не будет записывать в файл. Убедитесь в этом на втором терминале. 
+\item Используйте команду \texttt{fg}, чтобы возобновить работу процесса на переднем плане. Убедитесь, что процесс начал работу, проверив вывод команды \texttt{tail} на втором терминале.
+\item Снова приостановите процесс, используя \texttt{Ctrl-Z}. Используйте команду \texttt{bg}, чтобы возобновить процесс, но теперь в фоновом режиме. Убедитесь, что процесс начал работать, посмотрев вывод на другом терминале.
+\item Переведите процесс на передний план и завершите его.
+\end{itemize}
+
+
+\newpage
+\item \textbf{Список задач}
+\begin{itemize}[leftmargin=1mm,label={--}]
+\item Завершите все предыдущие процессы и запустите скрипт три раза в фоновом режиме:
+\begin{lstlisting}
+$ ./counter.sh > a.txt &
+$ ./counter.sh > b.txt &
+$ ./counter.sh > с.txt &
+\end{lstlisting}
+\item Убедитесь, что все задачи работают в фоновом режиме, проверив запись в соответствующие файлы.
+
+\item Выполните команду \texttt{jobs}, чтобы посмотреть все фоновые или приостановленные задачи в данной оболочке. Символом \texttt{+} будет отображаться последняя добавленная в \texttt{jobs} задача, а символом \texttt{-} предпоследняя.
+
+\item Переведите задачу записи в \texttt{a.txt} на передний план, используя команду:
+\begin{lstlisting}
+$ fg %N   # вместо N нужно подставить номер задачи в jobs
+\end{lstlisting}
+Остановите эту задачу с помощью \texttt{Ctrl-Z} и снова посмотрите на список задач.
+
+
+\item Теперь задача записи в \texttt{a.txt} приостановлена. Обратите внимание, что рядом с задачей записи в \texttt{a.txt} стоит символ \texttt{+}, так как эта последняя добавленная задача. Возобновите работу этой программы в фоновом режиме, используя:
+\begin{lstlisting}
+$ bg %N   # вместо N нужно подставить номер задачи в jobs
+\end{lstlisting}
+или, так как эта задача является последней добавленной, то можно использовать \texttt{bg} без указания номера. В этом случае операция будет применена к последней добавленной задаче. Снова посмотрите на все задачи, используя \texttt{jobs}.
+
+\item Используйте команду
+\begin{lstlisting}
+$ kill %N   # вместо N нужно подставить номер задачи в jobs
+\end{lstlisting}
+чтобы завершить задачу записи в файл \texttt{c.txt}. Снова посмотрите на все задачи.
+
+\item Используйте команду
+\begin{lstlisting}
+$ kill -STOP %N   # вместо N нужно подставить номер задачи в jobs
+\end{lstlisting}
+чтобы остановить задачу записи в файл \texttt{b.txt}. Посмотрите на все задачи. Используйте \texttt{bg} или 
+\begin{lstlisting}
+$ kill -CONT %N   # вместо N нужно подставить номер задачи в jobs
+\end{lstlisting}
+чтобы возобновить приостановленную задачу.
+\end{itemize}
+
+\subsection{Список процессов}
+\begin{itemize}
+\item Напечатайте все процессы данного терминала, используя \texttt{ps}.
+\item Напечатайте все процессы, используя \texttt{ps -ef}.
+\item Напечатайте все процессы, показав информацию только о uid, pid, ppid, pcpu, pmem, time.
+\item Напечатайте все процессы, показав информацию только о uid, pid, ppid, pcpu, pmem, time и отсортировав по полю pmem.
+\end{itemize}
+
+
+\subsection{Родословная}
+Напишите скрипт, который будет принимать через аргумент PID процесса и выводить рекурсивно PID его родителей и команды, с помощью которых были все процессы запущены. Последний родитель будет иметь имя \texttt{systemd} (или \texttt{/sbin/init}) и иметь PID равный 1.
+
+
+\subsection{Ловец сигналов}
+Напишите скрипт, который будет ловить сигналы и при поимке сигнала писать сообщение
+\begin{lstlisting}
+I caught названиесигнала
+\end{lstlisting}
+Протестируйте скрипт, отправив ему сигналы \texttt{SIGINT},  \texttt{SIGTERM},  \texttt{SIGHUP},  \texttt{SIGTSTP},  \texttt{SIGCONT},  \texttt{SIGQUIT}.
+
+
+
+\end{enumerate}
+\end{document}

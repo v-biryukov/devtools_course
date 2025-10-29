@@ -1,0 +1,182 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\pagenumbering{gobble}
+
+\lstdefinestyle{csMiptCppStyle}{
+  language=C++,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCppLinesStyle}{
+  style=csMiptCppStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCppBorderStyle}{
+  style=csMiptCppStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+breaklines=true,
+frame=tb,
+language=bash,
+breakatwhitespace=true,
+alsoletter={*()"'0123456789.},
+alsoother={\{\=\}},
+basicstyle={\ttfamily},
+keywordstyle={\bfseries},
+literate={{=}{{{=}}}1},
+prebreak={\textbackslash},
+sensitive=true,
+stepnumber=1,
+tabsize=4,
+morekeywords={echo, function},
+otherkeywords={-, \{, \}},
+literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+upquote=true,
+frame=none
+}
+
+
+\lstset{style=csMiptCppLinesStyle}
+\lstset{literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}}
+
+
+\renewcommand{\thesection}{\arabic{section}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}%    default
+   {\csname #1@cntformat\endcsname}}% enable individual control
+\newcommand\section@cntformat{Часть \thesection:\space}
+\makeatother
+
+
+\renewcommand{\arraystretch}{1.3}
+
+\begin{document}
+\title{Семинар \#8: Процессы \vspace{-5ex}}\date{}\maketitle
+
+
+\section*{Программа \texttt{ps}}
+
+
+
+
+\begin{flushleft}
+\begin{tabular}{ l | l }
+Команда 	    	& Действие\\ \hline
+\texttt{ps}	    	& Показывает процессы текущего терминала.\\
+\texttt{ps -e}	    & Показать все процессы в системе.\\
+\texttt{ps -f}	    & Показывает расширенную информацию: uid, pid, ppid, c, stime, tty, time, cmd.\\
+\texttt{ps -ef}	    & Показать все процессы в расширенном формате.\\
+\texttt{ps -u alice,bob} & Показать процессы пользователей alice и bob. \\
+\texttt{ps -p 100,200} & Показать процессы, со значениями PID равными 100 или 200. \\ \hline
+\texttt{ps -o pid,user,cmd} & Вывод в пользовательском формате. Для каждого процесса покажет идентификатор \\
+                            & процесса (\texttt{pid}), имя пользователя (\texttt{user}) и команду которой был запущен процесс (\texttt{cmd}).\\
+\texttt{ps -o pid=,user=,cmd=} & То же, но не выведет первую строку с описанием столбцов.\\
+\texttt{ps -C top}             & Все процессы с именем программы \texttt{top}.\\
+\texttt{ps -{}-sort time}        & Отсортировать по ключевому слову \texttt{time}.\\
+\texttt{ps -{}-sort -time}       & Сортировка в обратном порядке по ключевому слову \texttt{time}.\\ \hline
+\texttt{ps aux}                  & Все процессы с кл. словами: user, pid, pcpu, pmem, vsz, rss, tty, stat, start, time, cmd
+\end{tabular}
+\end{flushleft}
+
+
+\subsection*{Распространённые ключевые слова для \texttt{ps -o} и \texttt{ps -{}-sort}}
+\begin{flushleft}
+\begin{tabular}{ l | l }
+Ключевое слово 	    		& Расшифровка \\ \hline
+\texttt{pid}	    		& Идентификатор процесса (Process ID).\\
+\texttt{ppid}	    		& Идентификатор родительского процесса (Parent Process ID).\\
+\texttt{user}	    		& Имя пользователя, запустившего процесс.\\
+\texttt{uid}	    		& Идентификатор пользователя.\\
+\texttt{comm} 	 			& Имя команды (без аргументов). \\
+\texttt{cmd}				& Полная командная строка (включая аргументы).\\
+\texttt{tty}				& Управляющий терминал.\\
+\texttt{time}				& Совокупное время ЦП (CPU time).\\
+\texttt{etime}				& Прошедшее время с момента запуска процесса (Elapsed time).\\
+\texttt{c}					& Использование ЦП (в минутах).\\
+\texttt{pcpu}				& Процент использования ЦП.\\
+\texttt{pmem}				& Процент использования физической памяти.\\
+\texttt{vsz}				& Размер виртуальной памяти в КиБ (Virtual Size).\\
+\texttt{rss}				& Размер резидентного набора в КиБ (Resident Set Size).\\
+\texttt{stat}				& Текущее состояние процесса (например, R - выполняется, S - спит).\\
+\texttt{ni}					& Значение nice (приоритет).\\
+\texttt{priority}			& Приоритет ядра.\\
+\texttt{start}				& Время или дата запуска процесса.\\
+\end{tabular}
+\end{flushleft}
+
+\noindent Больше опций и ключевых слов можно найти в \texttt{man ps}.
+
+
+
+
+\section*{Сигналы}
+
+
+\subsection*{Распространённые сигналы}
+\begin{flushleft}
+\begin{tabular}{ c | c | c | l }
+Номер 	& Название 	& Действие по умолчанию  & Примечание\\ \hline
+2		& SIGINT	& Завершение 			 & Посылается, когда пользователь нажимает \texttt{Ctrl+C}.\\
+										 & & & Используется для корректного завершения процесса.\\ \hline
+15		& SIGTERM	& Завершение 			 & Стандартный запрос на корректное завершение процесса.\\ \hline
+9		& SIGKILL	& Немедленное завершение & Принудительное завершение, не дающее программе  \\
+										 & & & возможности сохранить данные или корректно освободить  \\
+										 & & & ресурсы. Не может быть перехвачен процессом.\\ \hline
+1		& SIGHUP	& Завершение 			 & Посылается при закрытии терминала.\\ \hline
+20		& SIGTSTP	& Приостановка 			 & Посылается, когда пользователь нажимает \texttt{Ctrl+Z}.\\
+										 & & & Приостанавливает процесс, который затем может быть \\
+										 & & & возобновлен командами \texttt{fg} или \texttt{bg}.\\ \hline
+19		& SIGSTOP	& Приостановка 			 & Принудительно приостанавливает выполнение процесса.\\
+										 & & & Не может быть проигнорирован или перехвачен процессом \\ \hline
+18		& SIGCONT	& Возобновление 	     & Возобновляет выполнение процесса, который был остановлен.\\
+										 & & & сигналами SIGSTOP или SIGTSTP. Используются командами \\
+										 & & & \texttt{fg} и \texttt{bg} для возобновления работы процесса. \\ \hline
+3		& SIGQUIT	& Создание дампа ядра 	 & Посылается, когда пользователь нажимает \texttt{Ctrl+\textbackslash}.\\
+				    & &	и завершение	     & Корректно завершает процесс. Дополнительно создает файл \\ 
+				                         & & & дампа памяти, полезный для отладки\\ \hline								
+\end{tabular}
+\end{flushleft}
+
+
+\end{document}
