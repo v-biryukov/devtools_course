@@ -1,19 +1,22 @@
-\documentclass{article}
+\documentclass[10pt]{article}
 \usepackage[english,russian]{babel}
 \usepackage{textcomp}
 \usepackage{geometry}
-  \geometry{left=2cm}
-  \geometry{right=1.5cm}
+  \geometry{left=2.1cm}
+  \geometry{right=2.1cm}
   \geometry{top=1.5cm}
   \geometry{bottom=2cm}
 \usepackage{tikz}
 \usepackage{multicol}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
 \pagenumbering{gobble}
 
-\lstdefinestyle{csMiptCppStyle}{
-  language=C++,
+\lstdefinestyle{csMiptCStyle}{
+  language=C,
   basicstyle=\linespread{1.1}\ttfamily,
   columns=fixed,
   fontadjust=true,
@@ -41,13 +44,13 @@
 }
 
 
-\lstdefinestyle{csMiptCppLinesStyle}{
-  style=csMiptCppStyle,
+\lstdefinestyle{csMiptCLinesStyle}{
+  style=csMiptCStyle,
   frame=lines,
 }
 
-\lstdefinestyle{csMiptCppBorderStyle}{
-  style=csMiptCppStyle,
+\lstdefinestyle{csMiptCBorderStyle}{
+  style=csMiptCStyle,
   framexleftmargin=5mm, 
   frame=shadowbox, 
   rulesepcolor=\color{gray}
@@ -55,39 +58,47 @@
 
 
 \lstdefinestyle{csMiptBash}{
-breaklines=true,
-frame=tb,
-language=bash,
-breakatwhitespace=true,
-alsoletter={*()"'0123456789.},
-alsoother={\{\=\}},
-basicstyle={\ttfamily},
-keywordstyle={\bfseries},
-literate={{=}{{{=}}}1},
-prebreak={\textbackslash},
-sensitive=true,
-stepnumber=1,
-tabsize=4,
-morekeywords={echo, function},
-otherkeywords={-, \{, \}},
-literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
-upquote=true,
-frame=none
+  	style=csMiptCStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none,
+    literate = {\$\#}{{{\$\#}}}2 {\$\# }{{{\$\# }}}2,
+    alsoletter={\#},
 }
 
-
-\lstset{style=csMiptCppLinesStyle}
-\lstset{literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}}
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
 
 
 \renewcommand{\thesection}{\arabic{section}}
 \makeatletter
 \def\@seccntformat#1{\@ifundefined{#1@cntformat}%
-   {\csname the#1\endcsname\quad}%    default
-   {\csname #1@cntformat\endcsname}}% enable individual control
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
 \newcommand\section@cntformat{Часть \thesection:\space}
 \makeatother
 
+
+\renewcommand{\arraystretch}{1.2}
+
+\newcommand*{\fvtextcolor}[2]{\textcolor{#1}{#2}}
 
 
 \begin{document}
@@ -104,30 +115,245 @@ frame=none
 }
 
 
-
+\newpage
 \subsection*{Манипуляции со строками}
-\begin{verbatim}
-$var    - значение переменной (строки) var
-${var}  - значение переменной (строки) var
-${#var} - длина строки var
-----------------------------------------------------------------------------------------
-${var#*x} -  строка с удалённым префиксом, соответствующим выражению "*x" 
-             "*x" это любая подстрока, заканчивающаяся на x
-             берётся наименьшее вхождение
-            
-${var##*x} - строка с удалённым префиксом, соответствующим выражению "*x" 
-             берётся наибольшее вхождение
-----------------------------------------------------------------------------------------
-${var%x*} -  строка с удалённым префиксом, соответствующим выражению "x*" 
-             "x*" это любая подстрока, начинающаяся на x
-             берётся наименьшее вхождение
-            
-${var%%x*} - строка с удалённым префиксом, соответствующим выражению "x*" 
-             берётся наибольшее вхождение
-----------------------------------------------------------------------------------------
-    
-\end{verbatim}
+\begin{flushleft}
+\begin{tabular}{ l | l }
+ \texttt{\$var} & значение переменной (строки) \texttt{var}  \\
+ \texttt{\$\{var\}} & значение переменной (строки) \texttt{var}  \\
+ \texttt{\$\{\#var\}} & длина строки \texttt{var}  \\ \hline
+ \texttt{\$\{var:N\}} & подстрока, начиная с символа с индексом \texttt{N} и до конца строки  \\
+ \texttt{\$\{var:N:K\}} & подстрока, начиная с символа с индексом \texttt{N} длинной \texttt{K} символов  \\ \hline
+ \texttt{\$\{var:-default\}} & если \texttt{var} не установлена или пуста, то вернёт значение \texttt{"default"}; иначе вернёт \texttt{\$var}  \\ 
+ \texttt{\$\{var:=default\}} & если \texttt{var} не установлена или пуста, то присвоит \texttt{var} значение \texttt{"default"}; вернёт \texttt{\$var}  \\ 
+ \texttt{\$\{var:+default\}} & если \texttt{var} установлена и не пуста, то вернёт значение \texttt{"default"}; иначе вернёт пустую строку \\ 
+ \texttt{\$\{var:?error\}} & если \texttt{var} не установлена или пуста, то будет ошибка с сообщением \texttt{"error"}; иначе \texttt{\$var}\\ \hline
+ \texttt{\$\{var\#pattern\}} & строка с удалённым префиксом, соответствующим wildcard-паттерну \texttt{pattern}  \\
+                            &  берётся наименьшее вхождение \\
+ \texttt{\$\{var\#\#pattern\}} & то же самое, но берётся наибольшее вхождение  \\ \hline
+ \texttt{\$\{var\%pattern\}} & строка с удалённым суффиксом, соответствующим wildcard-паттерну \texttt{pattern}  \\
+ 						  & берётся наименьшее вхождение \\
+ \texttt{\$\{var\%\%pattern\}} & то же самое, но берётся наибольшее вхождение  \\ \hline
+ \texttt{\$\{var/pattern/str\}} & заменить первое вхождение паттерна \texttt{pattern} на строку \texttt{str}  \\
+ \texttt{\$\{var//pattern/str\}} & заменить все вхождения паттерна \texttt{pattern} на строку \texttt{str} \\ \hline
+ \texttt{\$\{var\textasciicircum\}} & сделать первый символ заглавным  \\
+ \texttt{\$\{var\textasciicircum\textasciicircum\}} & сделать все символы заглавными  \\
+ \texttt{\$\{var,\}} & сделать первый символ строчным  \\
+ \texttt{\$\{var,,\}} & сделать все символы строчными  \\
+\end{tabular}
+\end{flushleft}
+wildcard-паттерны -- это те же паттерны, которые используются в командах linux (\texttt{*}, \texttt{?}, \texttt{[...]}).
+
+\subsection*{Примеры использования манипуляции со строками}
+Если есть строки:
+\begin{lstlisting}
+$ a="appleXbananaXcherryXdurian"
+$ b=""
+\end{lstlisting}
+то
+\begin{Verbatim}[xleftmargin=5mm,commandchars=@\[\]]
+echo ${a}                 @fvtextcolor[gray][# напечатает appleXbananaXcherryXdurian]
+echo ${#a}                @fvtextcolor[gray][# напечатает 26]
+echo ${a:5:3}             @fvtextcolor[gray][# напечатает Xba]
+
+echo ${a:-default}        @fvtextcolor[gray][# напечатает appleXbananaXcherryXdurian]
+echo ${b:-default}        @fvtextcolor[gray][# напечатает default]
+
+echo ${a#*X}              @fvtextcolor[gray][# напечатает bananaXcherryXdurian]
+echo ${a##*X}             @fvtextcolor[gray][# напечатает durian]
+                          @fvtextcolor[gray][# паттерн *X это любая подстрока, заканчивающаяся на X]
+
+echo ${a%X*}              @fvtextcolor[gray][# напечатает appleXbananaXcherry]
+echo ${a%%X*}             @fvtextcolor[gray][# напечатает apple]
+                          @fvtextcolor[gray][# паттерн X* это любая подстрока, начинающаяся на X]
+
+echo ${a/cherry/coconut}  @fvtextcolor[gray][# напечатает appleXbananaXcoconutXdurian]
+echo ${a//X/AAA}          @fvtextcolor[gray][# напечатает appleAAAbananaAAAcherryAAAdurian]
+echo ${a//??X/ABC}        @fvtextcolor[gray][# напечатает appABCbanaABCcherABCdurian]
+
+echo ${a^^}               @fvtextcolor[gray][# напечатает APPLEXBANANAXCHERRYXDURIAN]
+echo ${a,,}               @fvtextcolor[gray][# напечатает applexbananaxcherryxdurian]
+\end{Verbatim}
 
 
+
+
+
+
+\newpage
+\section*{Программа \texttt{awk}}
+Скриптовый язык \texttt{awk} служит для обработки текстовых файлов. Он обрабатывает текстовый файл построчно. Общий вид программы на \texttt{awk} имеет вид:
+\begin{lstlisting}
+'BEGIN { код } условие { код } ... условие { код } END { код }'
+\end{lstlisting}
+где
+\begin{itemize}
+\item Программа делится на блоки: блок \texttt{BEGIN}, средние блоки, и блок \texttt{END}.
+\item Код в блоке \texttt{BEGIN} выполняется перед обработкой строк файла.
+\item Условие вычисляется перед обработкой каждой строки.
+\item Код в средних блоках выполняется при обработке каждой строки, если соответствующее условие верно.
+\item Код в блоке \texttt{END} выполняется после обработки строк файла.
+\item Любой из блоков программы можно опустить.
+\item Условие тоже можно опустить, в этом случае оно считается истинным.
+\end{itemize}
+Текст программы для \texttt{awk} можно передавать через аргументы или через файл. Текст для обработки передаётся через файл, указанный в аргументах или через стандартный вход. Итоговый результат программа печатает в стандартный выход.
+Для примера, пусть у нас будет файл \texttt{animals.txt}, содержащий строки:
+\begin{lstlisting}
+Alpaca loves apples.
+Bison can run up to 35 miles per hour.
+Camel is a very unique mammal.
+Dog barks very loudly.
+\end{lstlisting}
+Такой запуск \texttt{awk} с блоком \texttt{BEGIN}, одним средним блоком без условия и блоком \texttt{END}:
+\begin{lstlisting}
+$ awk 'BEGIN {print "Hello"} {print "Processing line"} END {print "Goodbye"}' animals.txt
+\end{lstlisting}
+напечатает:
+\begin{lstlisting}
+Hello
+Processing line
+Processing line
+Processing line
+Processing line
+Goodbye
+\end{lstlisting}
+Любой из блоков программы, можно опускать, например такая команда без блоков \texttt{BEGIN} и \texttt{END}:
+\begin{lstlisting}
+$ awk '{print "Processing line"}' animals.txt
+\end{lstlisting}
+напечатает:
+\begin{lstlisting}
+Processing line
+Processing line
+Processing line
+Processing line
+\end{lstlisting}
+
+\subsection*{Выбор слов (полей) в строке}
+Для обозначения всей строки или одного слова строки используются специальные выражения. Под словом понимается любая последовательность непробельных символов, ограниченная пробельными символами и/или началом/концом строки. Слова в контексте \texttt{awk} также называются полями (\textit{fields}). Разделитель для полей в строке можно настроить с помощью переменной \texttt{FS}.
+
+\begin{flushleft}
+\begin{tabular}{ l | l }
+ \texttt{\$0} & вся строка  \\
+ \texttt{\$1} & первое слово строки\\
+ \texttt{\$5} & пятое слово строки\\
+ \texttt{\$NF} & последнее слово строки\\
+ \texttt{\$(NF-1)} & предпоследнее слово строки\\
+\end{tabular}
+\end{flushleft}
+
+\newpage
+\noindent Например, такая команда:
+\begin{lstlisting}
+$ awk '{print $2,$(NF-1)}' animals.txt
+\end{lstlisting}
+Напечатает второе и предпоследнее слово в каждой строке:
+\begin{lstlisting}
+loves loves
+can per
+is unique
+barks very
+\end{lstlisting}
+Функции \texttt{print} языка \texttt{awk} можно передать аргументы через запятую. В этом случае она будет печатать их через разделитель, заданный в переменной \texttt{OFS} (по умолчанию \texttt{OFS} равен пробелу). Если же передавать аргументы без запятой, то они будут склеиваться:
+\begin{lstlisting}
+$ awk '{print $2 $(NF-1)}' animals.txt
+\end{lstlisting}
+Напечатает второе и предпоследнее слово в каждой строке без разделителей:
+\begin{lstlisting}
+lovesloves
+canper
+isunique
+barksvery
+\end{lstlisting}
+
+
+\subsection*{Основные переменные}
+\begin{flushleft}
+\begin{tabular}{ l | l }
+ \texttt{NR} & номер текущей обрабатываемой строки. \\
+ \texttt{NF} & количество полей (слов) в текущей обрабатываемой строке. \\
+ \texttt{FS} & разделитель, используемый при считывании полей; определяет, что является полем.  \\
+ \texttt{OFS} & разделитель, используемый при печати.  \\
+\end{tabular}
+\end{flushleft}
+
+\noindent Например, следующая команда:
+\begin{lstlisting}
+$ awk '{print NR,NF}' animals.txt
+\end{lstlisting}
+Напечатает значение переменных \texttt{NR} и \texttt{NF} для каждой строки файла \texttt{animals.txt}:
+\begin{lstlisting}
+1 3
+2 9
+3 6
+4 4
+\end{lstlisting}
+
+\noindent Часто разделителем полем в файле нужно считать не пробельные, а другие символы. Например в известном файле \texttt{/etc/passwd} разделителем выступает символ \texttt{":"}.
+\begin{lstlisting}
+$ cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+
+...
+\end{lstlisting}
+Для того, чтобы разделить этот файл на поля, нужно задать переменную \texttt{FS} значением \texttt{":"}.
+\begin{lstlisting}
+$ awk 'BEGIN {FS=":"} {print $1,$3}' /etc/passwd
+\end{lstlisting}
+Данная команда напечатает только имя пользователя и его \texttt{UID}:
+\begin{lstlisting}
+$ cat /etc/passwd
+root 0
+daemon 1
+bin 2
+sys 3
+sync 4
+...
+\end{lstlisting}
+
+
+\subsection*{Условия}
+Перед каждым средним блоком кода можно указать некоторое условие или некоторый паттерн, по которому будет определяться будет ли обрабатываться текущая строка. Например, следующая команда:
+\begin{lstlisting}
+$ awk 'NR == 2 || NR == 4 {print $0}' animals.txt
+\end{lstlisting}
+Напечатает только строку номер 2 и строку номер 4 из файла \texttt{animals.txt}:
+\begin{lstlisting}
+Bison can run up to 35 miles per hour.
+Dog barks very loudly.
+\end{lstlisting}
+Можно также использовать паттерны регулярных выражений используя синтаксис \texttt{str $\sim$ /regex/}\\ 
+Например, следующая команда напечатает только строки, которые содержат подстроку \texttt{very}:
+\begin{lstlisting}
+$ awk '$0 ~ /very/ {print $0}' animals.txt
+Camel is a very unique mammal.
+Dog barks very loudly.
+\end{lstlisting}
+А следующая команда напечатает только строки, содержащие подстроку из двух цифр:
+\begin{lstlisting}
+$ awk '$0 ~ /[[:digit:]]{2}/ {print $0}' animals.txt
+Bison can run up to 35 miles per hour.
+\end{lstlisting}
+\texttt{awk} использует регулярные выражения, совместимые POSIX, поэтому выражения \texttt{\textbackslash s},  \texttt{\textbackslash w} и т. д. тут не поддерживаются. Вместо этого нужно использовать \texttt{[[:space:]]}, \texttt{[[:alpha:]]} и т. д.
+
+
+\subsection*{Примеры команд}
+
+\begin{itemize}
+\item Напечатать все поля в строка, начиная со второго поля:
+\begin{lstlisting}
+$ awk '{for (i = 2; i < NF; i++) {printf $i " "} printf "\n"}'
+\end{lstlisting}
+
+\item Напечатать все слова в файле:
+\begin{lstlisting}
+$ awk 'BEGIN {myvar=0} {myvar += NF} END {print myvar}' file.txt
+\end{lstlisting}
+
+\end{itemize}
 
 \end{document}

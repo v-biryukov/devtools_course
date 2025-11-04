@@ -87,6 +87,10 @@
         literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
 }
 
+\newcommand{\prevsubsection}{%
+  \number\numexpr\value{subsection}-1\relax%
+}
+
 \renewcommand{\thesubsection}{\arabic{subsection}}
 \makeatletter
 \def\@seccntformat#1{\@ifundefined{#1@cntformat}%
@@ -97,6 +101,7 @@
 \newcommand\subsubsection@cntformat{\thesubsubsection.\space}
 \makeatother
 
+\renewcommand{\arraystretch}{1.3}
 
 
 \begin{document}
@@ -114,6 +119,7 @@
 \end{center}
 Для каждой задачи, если в самой задаче не сказано иное, нужно создать 1 скрипт с расширением \texttt{.sh} и шебангом в начале скрипта. Если задача делится на подзадачи нужно, если в самой задаче не сказано иное, создать скрипт для каждой подзадачи. Названия файлов решений для всех задач/подзадач должны начинаться с номера задачи, например \texttt{01.sh} или \texttt{04b.sh}, даже если в условии задачи используется другое имя для скрипта.  \\
 
+Файлы для этого задания можно найти в репозитории в папке \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course/-/tree/main/seminar7_bash_scripting/practice/files}{\texttt{seminar7\_bash\_scripting/practice/files}}.
 
 
 \section{Переменные}
@@ -222,9 +228,9 @@ export ALPACA=apple
 $ ./print_alpaca.sh
 \end{lstlisting}
 
-\item Распечатайте все переменные среды, с помощью команды \texttt{printenv} и убедитесь, что добавилась новая переменная среды \texttt{ALPACA}.
+\item Распечатайте все переменные среды, с помощью команды \texttt{env} и убедитесь, что добавилась новая переменная среды \texttt{ALPACA}.
 \end{enumerate}
-Для того, чтобы сдать эту задачу создайте файл \texttt{03.txt} в котором будут печататься выводы команд на каждом шаге в следующем формате:
+Для того, чтобы сдать эту задачу создайте файл \texttt{0\thesubsection.txt} в котором будут печататься выводы команд на каждом шаге в следующем формате:
 \begin{lstlisting}
 # Subtask a
 $ ALPACA=apple
@@ -307,14 +313,12 @@ $ export PATH=""
 \end{lstlisting}
 
 
-\subsection{Подмена ls}
+\subsection{Подмена \texttt{cat}}
+В этой задаче будет нужно подменить команду \texttt{cat} так, чтобы она вместо того, чтобы печатать содержимое файла/файлов, печатала на экран одно слово \texttt{"Meow"}, вне зависимости от переданных ей аргументов. Добейтесь подобного поведения, изменив переменную \texttt{PATH}. После выполнения задания, перезагрузите терминал, чтобы вернуть прежнее значение переменной \texttt{PATH}.
 
 
 
-
-\newpage
 \section{Аргументы}
-
 \subsection{Привет скрипт}
 Напишите программу на языке bash, которая будет печатать имя своего файла. Например, если скрипт вызывается как \texttt{./script.sh}, то он должен печатать на экран строку  \texttt{"Hello ./script.sh"}.
 \begin{lstlisting}
@@ -336,6 +340,24 @@ $ ./script.sh apple banana cherry durian
 4
 \end{lstlisting}
 
+\subsection{Первый аргумент}
+Напишите программу, которая будет печатать первый переданные ей аргумент.
+\begin{lstlisting}
+$ ./script.sh
+
+$ ./script.sh apple
+apple
+$ ./script.sh cherry durian
+cherry
+\end{lstlisting}
+
+
+\subsection{Все аргументы}
+Напишите программу, которая будет печатать все переданные ей аргументы через пробел. Используйте \texttt{"\$@"}.
+\begin{lstlisting}
+$ ./script.sh apple banana cherry durian
+apple banana cherry durian
+\end{lstlisting}
 
 
 
@@ -429,7 +451,328 @@ find /usr -name "*.sh"
 
 
 
+
+\newpage
+\section{Коды возврата}
+
+\subsection{Коды возврата базовых программ}
+В каких случаях следующие программы возвращают ненулевой код возврата:
+\begin{multicols}{2}
+\begin{enumerate}[(a)]
+\item \texttt{ls}
+\item \texttt{diff}
+\item \texttt{find}
+\item \texttt{grep}
+\item \texttt{id}
+\item \texttt{ping -c 1}
+\end{enumerate}
+\end{multicols}
+\noindent Вызовите каждую из этих команд 2 раза так, чтобы при первом вызове код возврата был равен нулю, а при втором вызове -- не равен нулю. После каждого вызова напечатайте код возврата, используя команду
+\begin{lstlisting}
+$ echo $?
+\end{lstlisting}
+
+\subsection{Коды возврата скобочных команд}
+Пусть заданы переменные:
+\begin{lstlisting}
+$ a=apple
+$ x=80
+\end{lstlisting}
+В bash можно выполнить команду из двух квадратных скобок, содержащих условие Такие команды ничего не выводят на экран, а только возвращают код возврата.
+\begin{lstlisting}
+$ [[ $a == apple ]]
+$ echo $?
+0
+\end{lstlisting}
+Код возврата \texttt{0} говорит о том, что условие воспринимается как \textit{истина}. Ненулевой код возврата говорил бы о том, что условие воспринимается как \textit{ложь}.\\
+
+\noindent Чему равны коды возврата следующий команд. Проверьте себя с помощью \texttt{echo \$?}
+\begin{multicols}{2}
+\begin{enumerate}[(a)]
+\item \texttt{[[ \$a == apple ]]}
+\item \texttt{[[ \$a == apple ]]}
+\item \texttt{[[ \$a != apple ]]}
+\item \texttt{[[ \$a == banana ]]}
+\item \texttt{[[ \$a < banana ]]}
+\item \texttt{[[ ! \$a < banana ]]}
+\item \texttt{[[ \$a > apple \&\& \$a < cherry ]]}
+\item \texttt{[[ \$x == 80 ]]}
+\item \texttt{[[ \$x -eq 80 ]]}
+\item \texttt{[[ \$x > \$y ]]}
+\item \texttt{[[ \$x -gt \$y ]]}
+\item \texttt{[[ 0 == -0 ]]}
+\item \texttt{[[ 0 -eq -0 ]]}
+\item \texttt{[[ \$y < 100 || \$y > 300 ]]}
+\end{enumerate}
+\vfill\null
+\columnbreak
+\begin{enumerate}[(a)]
+\setcounter{enumi}{14}
+\item \texttt{(( 0 ))}
+\item \texttt{(( 1 ))}
+\item \texttt{(( x + 1 ))}
+\item \texttt{(( x - 80 ))}
+\item \texttt{(( x > 0 ))}
+\item \texttt{(( x < 0 ))}
+\item \texttt{(( x > 50 \&\& x < 100 ))}
+\item \texttt{(( x \% 2 ))}
+\item \texttt{true}
+\item \texttt{false}
+\item \texttt{false \&\& echo Hello}
+\item \texttt{true || echo Hello}
+
+\end{enumerate}
+\vfill\null
+\end{multicols}
+
+
+
+\newpage
+\section{Ветвление}
+\textbf{Важно! Используйте синтаксис с двойными скобками \texttt{if [[...]]}, а не с одинарными \texttt{if [...]}}
+
+\subsection{Проверка количества аргументов}
+Напишите программу, которая будет проверять количество аргументов и печатать:
+\begin{itemize}
+\item \texttt{Too Little} -- если в программу было передано меньше двух аргументов.
+\item \texttt{Correct} -- если в программу было передано два или три аргумента.
+\item \texttt{Too Much} -- если в программу было передано больше трёх аргументов.
+\end{itemize}
+
+\subsection{Сравнение строк}
+Напишите программу, которая будет принимать две строки через аргументы и печатать:
+\begin{itemize}
+\item \texttt{Less} -- если первая строка лексикографический меньше второй.
+\item \texttt{Equal} -- если строки равны.
+\item \texttt{Greater} -- если первая строка лексикографический больше второй.
+\end{itemize}
+
+\subsection{Существует ли файл}
+Напишите скрипт, который принимает название файла, через аргумент и печатает \texttt{Yes}, если такой файл (любого типа) существует в данной директории или \texttt{No}, если не существует. Решите эту задачу тремя способами:
+\begin{enumerate}[(a)]
+\item С использованием \texttt{if} и ключа \texttt{-e}.
+\item С использованием \texttt{if} и программы \texttt{ls}.
+\item С использованием операторов \texttt{\&\&}, \texttt{||} и программы \texttt{ls} (без использования \texttt{if}).
+\end{enumerate}
+Скрипт должен принимать ровно один аргумент. Если количество передаваемых аргументов меньше или больше одного, то программа должна завершаться с текстом:
+\begin{lstlisting}
+Usage: $0 <filename>
+\end{lstlisting}
+Скрипт не должен выводить на экран никакого дополнительного текста, не указанного в условии задачи.
+
+\subsection{Удаление с сообщением}
+Напишите программу, которая принимает название файла, через аргумент и пытается удалить этот файл. Если файл существует, то программа должна его удалить и напечатать \texttt{"File deleted"}. Если же файла не существует, то программа должна напечатать \texttt{"File does not exist"}. Решите задачу тремя способами:
+\begin{enumerate}[(a)]
+\item С использованием \texttt{if} и ключа \texttt{-f}.
+\item С использованием \texttt{if} и программы \texttt{ls}.
+\item С использованием оператора \texttt{||} и программы \texttt{ls} (без использования \texttt{if}).
+\end{enumerate}
+
+
+\subsection{Есть ли право на исполнение?}
+Напишите программу, которая принимает путь к файлу и печатает:
+\begin{itemize}
+\item \texttt{Does not exist} -- если файла не существует.
+\item \texttt{Yes} -- если у файла есть право на исполнение для текущего пользователя.
+\item \texttt{No} -- если  у файла нет права на исполнение для текущего пользователя.
+\end{itemize}
+
+
+\subsection{Проверка пользователя}
+Напишите программу, которая проверяет существует ли пользователь. Программа должна принимать имя пользователя и возвращать \texttt{0} если пользователь существует и \texttt{1} иначе. Программа не должна ничего печатать. Используйте программу \texttt{grep} и файл \texttt{/etc/passwd}. Ниже представлен пример использования программы в предположении что в системе существуют пользователи \texttt{root} и \texttt{alice} и не существуют пользователи \texttt{tom}, \texttt{bash}.
+\begin{lstlisting}
+$ ./script.sh root
+$ echo $?
+0
+$ ./script.sh alice
+$ echo $?
+0
+$ ./script.sh tom
+$ echo $?
+1
+$ ./script.sh bash
+$ echo $?
+1
+\end{lstlisting}
+
+
+\iffalse
+\subsection{Это dog?}
+Напишите программу, которая будет принимать 1 аргумент и печатать \texttt{"Yes"}, если аргумент равен строке \texttt{"dog"}. В ином случае программа должна печатать \texttt{"No"}. В случае, если количество аргументов, передающихся программе не равно 1, программа должна напечатать \texttt{"Wrong number of arguments"}.
+
+Если программа была использована корректно (ей был передан ровно один аргумент), она должна вернуть код возврата \texttt{0}. Если же программа завершилась некорректно она должна вернуть код возврата 1.
+
+\begin{lstlisting}
+$ ./script.sh apple
+No
+$ echo $?
+1 
+$ ./script.sh dog
+Yes
+$ echo $?
+0 
+$ ./script.sh Dog
+No
+$ echo $?
+1 
+$ ./script.sh
+Wrong number of arguments
+$ echo $?
+2 
+$ ./script.sh dog apple
+Wrong number of arguments
+$ echo $?
+2 
+\end{lstlisting}
+\fi
+
+
+
+\section{Циклы}
+
+\subsection{Повторение}
+Напишите программу, которая будет печатать переданный ей аргумент 5 раз, используя цикл \texttt{for}.
+\begin{lstlisting}
+$ ./script.sh apple
+apple
+apple
+apple
+apple
+apple
+\end{lstlisting}
+
+
+\subsection{Создаём файлы}
+Напишите программу, которая принимает число \texttt{N} и создаёт файлы с именами \texttt{data1.txt}, \texttt{data2.txt} ... \texttt{dataN.txt}. В каждом из файлов нужно написать соответствующее число. То есть в файл \texttt{data1.txt} нужно написать \texttt{1}, в файл \texttt{data2.txt} нужно написать \texttt{2} и т. д. Используйте цикл \texttt{for}.
+
+
+
+
+\subsection{Аргументы с пробелами}
+Пусть есть следующая программа на языке bash:
+\begin{lstlisting}
+#!/bin/bash
+echo
+echo "1: "
+for elem in $*; do echo $elem; done
+
+echo
+echo "2: "
+for elem in $@; do echo $elem; done
+
+echo
+echo "3: "
+for elem in "$*"; do echo $elem; done
+
+echo
+echo "4: "
+for elem in "$@"; do echo $elem; done
+\end{lstlisting}
+Что напечатает эта программа, если её вызвать следующим образом:
+\begin{lstlisting}
+$ ./script.sh apple banana 'cherry and durian'
+\end{lstlisting}
+Для решения этой задачи нужно создать файл в формате \texttt{.txt}, который будет содержать вывод программы.
+
+
+\subsection{Цикл по всем аргументам}
+Напишите программу, которая будет печатать все переданные ей аргументы в следующем формате:
+\begin{lstlisting}
+$ ./script.sh
+
+$ ./script.sh apple
+Argument 1: apple
+
+$ ./script.sh apple banana cherry durian
+Argument 1: apple
+Argument 2: banana
+Argument 3: cherry
+Argument 4: durian
+
+$ cd space_test
+$ ../script.sh *
+Argument 1: alpaca.txt
+Argument 2: bison.txt
+Argument 3: camel carries goods.txt
+\end{lstlisting}
+Решите эту задачу двумя способами:
+\begin{enumerate}[(a)]
+\item Используя цикл \texttt{for} и специальный массив из аргументов \texttt{"\$@"}.
+\item Используя цикл \texttt{while} и целочисленный счётчик.
+\item Используя цикл \texttt{while} и команду \texttt{shift}.
+\end{enumerate}
+
+
+
+\subsection{Перенаправление цикла}
+\begin{enumerate}[(a)]
+\item Решите подзадачу \prevsubsection(a), но вместо вывода на экран цикл \texttt{for} должен выводить результат в файл \texttt{resulta.txt}. Решите эту подзадачу, используя только одно простое перенаправление \texttt{>}, применив его ко всему циклу.
+\item Решите подзадачу \prevsubsection(b), но вместо вывода на экран \texttt{while} должен выводить результат в файл \texttt{resultb.txt}. Решите эту подзадачу, используя только одно простое перенаправление \texttt{>}, применив его ко всему циклу.
+\end{enumerate}
+
+
+\subsection{Печать всех путей из \texttt{PATH}}
+Переменная \texttt{PATH} является строкой, которая содержит пути, разделённые символом \texttt{":"}. Используйте цикл \texttt{for} и переменную \texttt{IFS}, чтобы напечатать все пути из этой переменной, каждый путь в новой строке.
+\begin{lstlisting}
+$ ./script.sh
+/usr/local/bin
+/usr/bin
+/bin
+/usr/local/games
+/usr/games
+\end{lstlisting}
+На вашей системе пути в \texttt{PATH} могут быть другими.
+
+\newpage
+
+\section{Группировка команд \texttt{\{ ... \}} и сабшеллы \texttt{( ... )}}
+\subsection{Раличие между группой команд и сабшеллом}
+{(a)} Что выведет на экран следующий скрипт:
+\begin{lstlisting}
+#!/bin/bash
+cd /home
+a=apple
+{
+	cd /etc
+	a=avocado
+	pwd
+	echo $a
+}
+pwd
+echo $a
+\end{lstlisting}
+Для решения этой задачи создайте текстовый файл, содержащий вывод скрипта.\\
+\noindent {(b)} Что выведет на экран следующий скрипт:
+\begin{lstlisting}
+#!/bin/bash
+cd /home
+a=apple
+(
+	cd /etc
+	a=avocado
+	pwd
+	echo $a
+)
+pwd
+echo $a
+\end{lstlisting}
+Для решения этой задачи создайте текстовый файл, содержащий вывод скрипта.
+
+
 \section{Работа со строками}
+Для задач этой главы используйте возможности, описанные в файле теории \texttt{theory\_bash\_scripting.pdf} в главе "Манипуляция со строками".
+
+\subsection{Операции над строкой}
+Напишите программу, которая принимает одну строку, через аргумент и печатает следующее:
+\begin{enumerate}[(a)]
+\item Длину этой строки
+\item Первые три символа строки
+\item Последние три символа строки
+\item Строка, в которой все подстроки \texttt{"apple"} заменены на \texttt{"banana"}
+\item Строка, в которой все заглавные буквы заменены на соответствующие строчные буквы
+\end{enumerate}
+
+
 \subsection{Базовое имя}
 В linux есть команда \texttt{basename}, которая принимает на вход полный путь до некоторого файла, а возвращает только имя этого файла.
 \begin{lstlisting}
@@ -440,57 +783,210 @@ file.txt
 \end{lstlisting}
 Вам нужно написать скрипт, который будет делать то же самое, но без использования программы \texttt{basename}.
 
-\section{Коды возврата}
-
-\subsection{Коды возврата базовых программ}
-Какой код возврата будет в следующих строках кода.
-
-\subsection{Коды возврата базовых программ}
-В каких случаях следующие программы возвращают ненулевой код возврата:
-\begin{enumerate}[a.]
-\item \texttt{ls}
-\item \texttt{curl}
-\item \texttt{diff}
-\item \texttt{find}
-\item \texttt{grep}
-\end{enumerate}
 
 
-
-\section{Ветвление}
-\subsection{Существует ли файл}
-Напишите скрипт, который принимает название файл, через аргумент и печатает \texttt{Yes}, если такой файл (любого типа) существует в данной директории или \texttt{No}, если не существует. Решите эту задачу тремя способами:
-\begin{enumerate}[(a)]
-\item С использованием \texttt{if} и ключа \texttt{-e}.
-\item С использованием \texttt{if} и программы \texttt{ls}.
-\item С использованием операторов \texttt{\&\&}, \texttt{||} и программы \texttt{ls}.
-\end{enumerate}
-Скрипт должен принимать ровно один аргумент. Если количество передаваемых аргументов меньше или больше одного, то программа должна завершаться с текстом:
+\subsection{Домен верхнего уровня}
+Напишите программу, которая будет принимать строку, являющуюся веб-адресом, через аргумент и печатать домен верхнего уровня этого веб-адреса.
 \begin{lstlisting}
-Usage: $0 <filename>
+$ ./script.sh www.google.com
+com
+$ ./script.sh https://tldp.org/LDP/abs/html/string-manipulation.html
+org
+$ ./script.sh ftp://sub.example.co.uk/path
+uk
 \end{lstlisting}
-Скрипт не должен выводить на экран никакого дополнительного текста, не указанного в условии задачи.
 
 
-\subsection{Удаление с сообщением}
-Пытается удалить файл, если его не существует, то должна напечатать \texttt{File not exists}.
+\section{Управляющая конструкция \texttt{case esac}}
+\subsection{Количество дней в месяце}
+Напишите программу которая бы печатала количество дней в месяце по его короткому имени. Используйте конструкцию \texttt{case esac}.
+\begin{lstlisting}
+$ ./script.sh jan
+31
+$ ./script.sh feb
+28 or 29
+$ ./script.sh apr
+30
+\end{lstlisting}
+
+\subsection{Печать текста с опциями}
+Напишите программу, которая бы делала простейшие манипуляции со строкой в зависимости от переданных ей опций. Программа должна принимать опцию и строку через аргументы командной строки. Программа должна поддерживать следующие операции над строкой:
+\begin{flushleft}
+\begin{tabular}{ l | l }
+ \texttt{-{}-lower} & перевод всех букв в нижний регистр \\
+ \texttt{-{}-upper} & перевод всех букв в верхний регистр \\
+ \texttt{-{}-length} & вычисление длины строки \\
+ \texttt{-{}-reverse} & обращение строки\\
+ \texttt{-{}-prefix n} &  возвращает только первые \texttt{n} символов строки\\
+\end{tabular}
+\end{flushleft}
+
+\noindent При работы такой программы:
+\begin{lstlisting}
+$ ./script.sh --lower APPLE123
+apple123
+
+$ ./script.sh --upper banana123
+BANANA123
+
+$ ./script.sh --length cherry
+6
+
+$ ./script.sh --reverse durian
+nairud
+
+$ ./script.sh --prefix 3 eggplant
+egg
+\end{lstlisting}
+
+
+
+\section{Работа с целыми числами}
+\subsection{Куб}
+Напишите программу, которая принимает числа через аргумент и печатает куб этого числа.
+\begin{lstlisting}
+$ ./script.sh 5
+125
+\end{lstlisting}
+
+\subsection{Квадраты}
+Напишите программу, которая будет печатать квадраты первых 100 натуральных чисел. Используйте цикл \texttt{for} вместе с \texttt{(( ... ))}.
+
+
+\subsection{Сумма цифр}
+Напишите программу, которая принимает целое число и возвращает сумму цифр этого числа.
+
+
+\section{Массивы}
+\subsection{Работа с массивом}
+Пусть есть следующий массив:
+\begin{lstlisting}
+array=(apple banana cherry durian eggplant fig guava)
+\end{lstlisting}
+Произведите с массивом следующие операции:
 \begin{enumerate}[(a)]
-\item С использованием \texttt{if} и ключа \texttt{-f}.
-\item С использованием оператора \texttt{||} и программы \texttt{ls}.
+\item Напечатайте первый элемент массива
+\item Напечатайте последний элемент массива
+\item Напечатайте количество строк в массиве
+\item Удалите элемент с индексом 1 (\texttt{banana})
+\item Добавьте строку \texttt{"hazelnut"} в конец массива
+\item Добавьте строку \texttt{"fruit"} после строки с индексом 4
 \end{enumerate}
 
 
-\subsection{Проверка пользователя}
-grep /etc/passwd.
+
+
+\section{Словари}
+\subsection{Работа со словарём}
+Пусть есть следующий словарь:
+\begin{lstlisting}
+declare -A map
+map["alpaca"]="apple"
+map["bison"]="banana"
+map["camel"]="cherry"
+map["dog"]="durian"
+map["eagle"]="eggplant"
+map["fox"]="fig"
+\end{lstlisting}
+Произведите с словарём следующие операции:
 \begin{enumerate}[(a)]
-\item С использованием \texttt{if}.
-\item С использованием оператора \texttt{||}.
+\item Напечатайте значение с ключом \texttt{"dog"}
+\item Напечатайте количество пар ключ-значение в словаре
+\item Напечатайте все значения словаря
+\item Напечатайте все ключи словаря
+\item Используйте цикл \texttt{for}, чтобы напечатать все пары ключ-значение в формате:
+\begin{lstlisting}
+Key: alpaca, Value: apple
+Key: bison, Value: banana
+...
+\end{lstlisting}
+\item Добавьте в словарь пару \texttt{(ключ="giraffe"{}, значение="guava")}
+\item Добавьте в словарь пару с ключом \texttt{"dog"}.
 \end{enumerate}
+\section{Функции}
+
+
+\subsection{Факториал}
+Напишите программу, содержащую функцию \texttt{fact}. Эта функция должна принимать число через аргумент и возвращать факториал этого числа через \texttt{echo}. Если на вход приходит отрицательное число, то код возврата функции должен быть \texttt{1}, в ином случае код возврата должен быть \texttt{0}.
+
+
+
+\subsection{Тип файла}
+Напишите программу, содержащую функцию \texttt{get\_file\_type}. Эта функция должна принимать путь до файла и возвращать через \texttt{echo} строку, описывающую тип этого файла, а именно она должна возвращать:
+
+\begin{center}
+\begin{tabular}{ l | l }
+ \texttt{"regular"} & если это обычный файл\\
+ \texttt{"directory"} & если этот файл -- директория\\
+ \texttt{"symbolic link"} & если это символическая ссылка\\
+ \texttt{"block special"} & если это файл блочного устройства\\
+ \texttt{"character special"} & если это файл символьного устройства\\
+ \texttt{"other"} & если тип файла ни один из перечисленных\\
+\end{tabular}
+\end{center}
+
+\noindent Функция должна иметь код возврата \texttt{1}, если файла не существует и \texttt{0} в ином случае.
 
 
 \subsection{Массовое переименование}
+Напишите функцию \texttt{add\_suffix}, которая будет массово переименовывать файлы, добавляя суффикс для имени каждого файла. Функция должна принимать суффикс через первый аргумент и пути до файлов через аргументы, начиная со второго. Например, вызов функции:
+\begin{lstlisting}
+$ add_suffix ".backup" a.txt b.txt c.txt
+\end{lstlisting}
+Должен переименовывать файлы \texttt{a.txt}, \texttt{b.txt}, \texttt{c.txt} в \texttt{a.txt.backup}, \texttt{b.txt.backup}, \texttt{c.txt.backup}. Функция должна переименовывать как обычные файлы, ссылки, так и директории.\\
+Если какого-то файла из переданных не существует, то функция для этого файла должна вывести в \texttt{stderr}:
+\begin{lstlisting}
+add_suffix: cannot acces <filename>: No such file or directory
+\end{lstlisting}
+При это все остальные файлы должны быть обработаны. Функция должна возвращать код возврата \texttt{0}, если все файлы существуют и они были переименованы, и \texttt{1} в иных случах.
 
+
+
+\section{Чтение}
+
+\subsection{Сумма}
+Напишите программу, которая считывает два числа из стандартного входа, а потом печатает сумму этих чисел.
+\begin{lstlisting}
+$ ./script.sh
+# Вводим первое число 10
+# Вводим второе число 20
+30
+\end{lstlisting}
+
+
+\subsection{Чтение в тихом режиме}
+Напишите программу, которая будет читать строку из \texttt{stdin} в тихом режиме (\texttt{read -s}), а затем выводить эту строку на экран.
+
+
+\subsection{Нумерация строк}
+Напишите программу, которая будет принимать через аргумент названия файла, а затем печатать этот файл на экран, добавляя номер строки и количество символов в строке перед началом каждой строки.
+Например, если файл содержит:
+\begin{lstlisting}
+Alpaca loves apples.
+Bison can run up to 35 miles per hour.
+Camel is a very unique mammal.
+Dog barks very loudly.
+\end{lstlisting}
+то программа должна вывести:
+\begin{lstlisting}
+[1: 20] Alpaca loves apples.
+[2: 38] Bison can run up to 35 miles per hour.
+[3: 30] Camel is a very unique mammal.
+[4: 22] Dog barks very loudly.
+\end{lstlisting}
+Решите эту задачу, используя цикл \texttt{while} и команду \texttt{read}.
+ 
+
+
+
+
+\iffalse
+\section{Сложные}
 \subsection{Бэкап всех файлов в текущей директории}
 Создать backup копию для каждого файла в этой директории в скрытой папке. Делает новый backup только есть файл изменился. Названия файлов \texttt{.backup/file.txt.0}, \texttt{.backup/file.txt.1}, и т.д.
+
+\subsection{Проверка пользователя 2}
+Напишите программу, которая проверяет существует ли пользователь и имеет ли он полные права для \texttt{sudo}. Программа должна принимать имя пользователя и возвращать \texttt{0} если пользователь имеет полные права и \texttt{1} иначе.  Используйте программу \texttt{grep} и файл \texttt{/etc/passwd}.
+\fi
 
 \end{document}

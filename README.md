@@ -21,6 +21,10 @@
 
 
 ### bash
+- Карл Олбинг, Джей Пи Фоссен: Идиомы bash
+- https://tldp.org/LDP/abs/html/
+- https://www.opennet.ru/docs/RUS/bash_scripting_guide/
+- https://www.gnu.org/software/bash/manual/bash.html
+- https://github.com/onceupon/Bash-Oneliner
 - https://www.commandlinefu.com/commands/browse
-- Уильям Шотс: Командная строка Linux 
 
