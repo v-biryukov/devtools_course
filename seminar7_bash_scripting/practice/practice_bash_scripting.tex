@@ -978,10 +978,20 @@ Dog barks very loudly.
 Решите эту задачу, используя цикл \texttt{while} и команду \texttt{read}.
  
 
-
-
-
 \iffalse
+\section{Дополнения}
+\begin{enumerate}
+\item Пустая команда ":"
+\item Присвоить переменной значение, если оно не присвоено:
+\begin{lstlisting}
+: "${a:=apple}"
+\end{lstlisting}
+
+\item Задача на массивы + проверку строки на пустоту.
+\end{enumerate}
+
+
+
 \section{Сложные}
 \subsection{Бэкап всех файлов в текущей директории}
 Создать backup копию для каждого файла в этой директории в скрытой папке. Делает новый backup только есть файл изменился. Названия файлов \texttt{.backup/file.txt.0}, \texttt{.backup/file.txt.1}, и т.д.
