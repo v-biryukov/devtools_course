@@ -76,7 +76,7 @@
 	stepnumber=1,
 	tabsize=4,
 	morekeywords={echo, function},
-	otherkeywords={-, \{, \}},
+	otherkeywords={-},
 	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
 	upquote=true,
 	frame=none
@@ -112,18 +112,27 @@
 └── ...
 \end{BVerbatim}
 \end{center}
-Для каждой задачи, если в самой задаче не сказано иное, нужно создать 1 скрипт с расширением \texttt{.sh} и шебангом в начале скрипта. Если задача делится на подзадачи нужно, если в самой задаче не сказано иное, создать скрипт для каждой подзадачи. Названия файлов решений для всех задач/подзадач должны начинаться с номера задачи, например \texttt{01.sh} или \texttt{04b.sh}, даже если в условии задачи используется другое имя для скрипта.  \\
+Для каждой задачи, если в самой задаче не сказано иное, нужно создать 1 скрипт с расширением \texttt{.sh} и шебангом в начале скрипта. Если задача делится на подзадачи нужно, если в самой задаче не сказано иное, создать скрипт для каждой подзадачи. Названия файлов решений для всех задач/подзадач должны начинаться с номера задачи, например \texttt{01.sh} или \texttt{04b.sh}, даже если в условии задачи используется другое имя для скрипта. Если в задаче встречается вопрос, то на этот вопрос нужно ответить в комментариях (начинаются с \texttt{\#}) скрипта.\\
+Если в задаче требуется в определённый момент перейти в другой терминал, отметьте это в файле решения, используя комментарий:
+\begin{lstlisting}
+# Переходим во второй терминал
+...
+# Возвращаемся в первый терминал
+\end{lstlisting}
+
+\noindent В некоторых задачах используются готовые программы на языках bash и C. Найти эти программы можно в \href{https://mipt-hsse.gitlab.yandexcloud.net/v.biryukov/devtools_course/-/tree/main/seminar8_processes/practice/code}{\texttt{seminar8\_processes/practice/code}}.
 
 
+\section{Job Control}
 \subsection{Запуск в фоновом режиме}
 \begin{enumerate}[(a)]
-\item Создадим скрипт \texttt{counter.sh} который будет печатать на экран возрастающие целые числа с шагом в пол секунды.
+\item Создадим скрипт \texttt{counter.sh} который будет печатать на экран возрастающие целые числа с шагом в две секунды.
 \begin{lstlisting}
 #!/bin/bash
 i=0
 while true; do
     echo "$i"
-    sleep 0.5
+    sleep 2
     ((i += 1))
 done
 \end{lstlisting}
@@ -175,7 +184,7 @@ $ ./counter.sh > a.txt &
 \begin{lstlisting}
 $ ./counter.sh > a.txt &
 \end{lstlisting}
-Выполните команду \texttt{ps}, которая покажет все программы, запущенные в данном терминале. Скорей всего на экран выведется информация о процессах \texttt{bash} (оболочка), \texttt{counter.sh}, \texttt{sleep} (запушенный внутри \texttt{counter.sh}) и только что запущенный \texttt{ps}. Для каждого процесса, будет выведен его идентификатор PID (\textit{process identifier}). Используйте полученный PID процесса \texttt{counter.sh} и команду \texttt{kill}, чтобы завершить процесс. Проверьте, что процесс завершился и запись в \texttt{a.txt} больше не производится. Ещё раз выполните команду \texttt{ps} и убедитесь, что процессы \texttt{counter.sh} и \texttt{sleep} отсутствуют в выводе.
+Выполните команду \texttt{ps}, которая покажет все программы, запущенные в данном терминале. Скорей всего на экран выведется информация о процессах \texttt{bash} (оболочка), \texttt{counter.sh}, \texttt{sleep} (запушенный внутри \texttt{counter.sh}) и только что запущенный \texttt{ps}. Для каждого процесса, будет выведен его идентификатор PID (\textit{process identifier}). Используйте полученный PID процесса \texttt{counter.sh} и команду \texttt{kill}, чтобы завершить процесс. Команда \texttt{kill <PID>} пошлёт сигнал \texttt{SIGTERM} процессу с идентификатором \texttt{<PID>}, что завершит этот процесс. Проверьте, что процесс завершился и запись в \texttt{a.txt} больше не производится. Ещё раз выполните команду \texttt{ps} и убедитесь, что процесс \texttt{counter.sh} отсутствует в выводе.
 \end{enumerate}
 
 
@@ -208,7 +217,6 @@ $ ./counter.sh > a.txt
 \end{itemize}
 
 
-\newpage
 \item \textbf{Список задач}
 \begin{itemize}[leftmargin=1mm,label={--}]
 \item Завершите все предыдущие процессы и запустите скрипт три раза в фоновом режиме:
@@ -250,28 +258,403 @@ $ kill -CONT %N   # вместо N нужно подставить номер з
 \end{lstlisting}
 чтобы возобновить приостановленную задачу.
 \end{itemize}
+\end{enumerate}
 
+
+\newpage
+\section{Просмотр процессов}
 \subsection{Список процессов}
-\begin{itemize}
-\item Напечатайте все процессы данного терминала, используя \texttt{ps}.
-\item Напечатайте все процессы, используя \texttt{ps -ef}.
-\item Напечатайте все процессы, показав информацию только о uid, pid, ppid, pcpu, pmem, time.
-\item Напечатайте все процессы, показав информацию только о uid, pid, ppid, pcpu, pmem, time и отсортировав по полю pmem.
-\end{itemize}
+\begin{enumerate}[(a)]
+\item Запустите скрипт \texttt{counter.sh}. Он должен работать во время решения этой задачи.
+\item Перейдите в другой терминал и напечатайте все процессы данного терминала, используя \texttt{ps}. При этом процесс \texttt{counter.sh} не будет отображаться, так как он запущен на другом терминале.
+\item Напечатайте все процессы, используя \texttt{ps -ef}. Эта команда покажет информацию о uid, pid, ppid, c, stime, tty, time, cmd всех процессов в системе. Найдите среди этих процессов процесс \texttt{counter.sh}. Чему равны \texttt{PID} и \texttt{PPID} для этого процесса?
+\item Напечатайте все процессы, используя \texttt{ps aux}. Эта команда покажет информацию о user, pid, pcpu, pmem, vsz, rss, tty, stat, start, time, cmd всех процессов в системе. Найдите среди этих процессов процесс \texttt{counter.sh}. В каком состоянии находится процесс \texttt{counter.sh} (поле STAT)?
+\item Используйте команду \texttt{pstree}, чтобы напечатать информацию о всех процессах в древовидном виде. Найдите среди этих процессов процесс \texttt{counter.sh}. Какие процессы являются предками процесса \texttt{counter.sh}? Программа \texttt{pstree} может быть не установлена в системе. Если это так, то нужно будет её установить.
+\item Напечатайте все процессы, показав информацию только о pid, ppid, pcpu, pmem, cmd.
+\item Напечатайте все процессы, показав только pid, ppid, pcpu, pmem, cmd и отсортировав по полю pmem.
+\item Используйте \texttt{ps} с опцией \texttt{-p}, чтобы напечатать информацию uid, pid, ppid, pcpu, pmem, cmd только для процесса \texttt{counter.sh}.
+\item Используйте \texttt{ps} вместе с командой \texttt{grep}, чтобы напечатать информацию uid, pid, ppid, pcpu, pmem, cmd только для \texttt{counter.sh}.
+\item Используйте \texttt{ps}, чтобы напечатать только одно число -- PPID процесса \texttt{counter.sh}. Нужно напечатать только одно число, без какого-либо текста, в том числе без заголовка.
+\item Используйте команду \texttt{kill}, чтобы остановить процесс \texttt{counter.sh} на другом терминале. На другом терминале убедитесь, что процесс остановлен и находится в списке jobs. Ещё раз используйте \texttt{kill}, чтобы возобновить работу скрипта \texttt{counter.sh}.
+\item Используйте команду \texttt{kill}, чтобы завершить процесс \texttt{counter.sh}.
+\item Запустите скрипт \texttt{counter.sh} заново на другом терминале. Используйте команду \texttt{pkill}, чтобы завершить процесс \texttt{counter.sh}
 
+\end{enumerate}
+
+
+\subsection{ID родителя, ID процесса и ID ребёнка}
+Напишите скрипт, которых будет делать следующее:
+\begin{enumerate}
+\item Создавать ребёнка, запуская скрипт \texttt{counter.sh} в фоновом режиме. Вывод ребёнка должен быть перенаправлен в файл \texttt{a.txt}.
+\item Печатать на экран \texttt{PID} родителя данного процесса, а также команду с помощью которой был запущен родитель (используйте \texttt{ps -o cmd}).
+\item Печатать на экран \texttt{PID} самого процесса, а также команду с помощью которой он был запущен.
+\item Печатать на экран \texttt{PID} ребёнка данного процесса, а также команду с помощью которой он был запущен.
+\end{enumerate}
 
 \subsection{Родословная}
 Напишите скрипт, который будет принимать через аргумент PID процесса и выводить рекурсивно PID его родителей и команды, с помощью которых были все процессы запущены. Последний родитель будет иметь имя \texttt{systemd} (или \texttt{/sbin/init}) и иметь PID равный 1.
 
 
-\subsection{Ловец сигналов}
-Напишите скрипт, который будет ловить сигналы и при поимке сигнала писать сообщение
+
+
+\section{Группы процессов и сессии}
+
+\subsection{Группа процессов}
+Когда оболочка запускает команду, она создаёт новую группу процессов для этой команды. Все дочерние процессы, порождённые этой командой, попадают в одну группу. 
+Создайте скрипт \texttt{create\_group.sh}, использующий скрипт \texttt{counter.sh} из предыдущих заданий (он должен находиться в той же директории) и содержащий:
 \begin{lstlisting}
-I caught названиесигнала
+#!/bin/bash
+./counter.sh &
+./counter.sh &
+./counter.sh
 \end{lstlisting}
-Протестируйте скрипт, отправив ему сигналы \texttt{SIGINT},  \texttt{SIGTERM},  \texttt{SIGHUP},  \texttt{SIGTSTP},  \texttt{SIGCONT},  \texttt{SIGQUIT}.
+Этот скрипт запускает два фоновых процесса \texttt{counter.sh} и один передний процесс \texttt{counter.sh}. Все четыре процесса (сам скрипт и три ребёнка) будут находиться в одной группе процессов.
+
+\begin{enumerate}[(a)]
+\item Запустите скрипт \texttt{create\_group.sh}.
+\item Откройте другой терминал и используйте 
+\begin{lstlisting}
+$ ps -e -o pid,ppid,pgid,comm
+\end{lstlisting}
+чтобы распечатать информацию о \texttt{PID}, \texttt{PPID} и \texttt{PGID} (\textit{process group id}) процессов, а также имя команды, запустившей процесс. Какие процессы были созданы после запуска скрипта \texttt{create\_group.sh}? Убедитесь, что все созданные процессы принадлежат одной группе процессов. Какой процесс является лидером этой группы процессов?
+\item Завершите процесс скрипта \texttt{create\_group.sh} по его \texttt{PID}, послав ему сигнал с помощью команды \texttt{kill}. Завершились ли при этом дочерние процессы скрипта? Если дочерние процессы не завершились, то какой процесс является их родителем? Если дочерние процессы не завершились, то завершите их с помощью \texttt{pkill}.
+\item Заново запустите скрипт \texttt{create\_group.sh}. Используйте \texttt{ps}, чтобы узнать \texttt{PGID} новой группы процессов. Завершите сразу все процессы одной группы, послав им всем сигналы. Используйте только один вызов команды \texttt{kill}.
+\item Заново запустите скрипт \texttt{create\_group.sh}. Если сейчас нажать \texttt{Ctrl-C}, то какие сигналы и каким процессам будут посланы? Какие процессы при этом завершатся?
+\end{enumerate}
+
+
+\subsection{Сессия}
+Все процессы, которые были запущены из одного терминала по умолчанию будут принадлежать одной сессии. Одна сессия может содержать несколько групп процессов. 
+
+\begin{enumerate}[(a)]
+\item Используйте скрипт \texttt{create\_group.sh}, чтобы создать две группы процессов в текущей сессии:
+\begin{lstlisting}
+$ /create_group.sh > a.txt &
+$ /create_group.sh > b.txt &
+\end{lstlisting}
+
+\item Используйте
+\begin{lstlisting}
+ps -e -o pid,ppid,pgid,sid,comm
+\end{lstlisting}
+чтобы распечатать информацию о \texttt{PID}, \texttt{PPID}, \texttt{PGID} и \texttt{SID} (\textit{session id}) процесса, а также имя команды, запустившей процесс. Убедитесь, что значения \texttt{PGID} одинаково для процессов, находящихся в одной группе. Убедитесь, что значения \texttt{SID} одинаковы для всех созданных процессов. Кто является лидером сессии?
+\item Если сейчас закрыть терминал, то какие сигналы и каким процессам будут посланы? Какие процессы при этом завершатся?
+\end{enumerate}
+
+
+
+
+
+
+\section{Сигналы}
+\subsection{Перехватчик сигналов}
+Напишите скрипт \texttt{signal\_catcher.sh} на основе \texttt{counter.sh}. Скрипт \texttt{signal\_catcher.sh} должен выводить числа на экран и одновременно перехватывать сигналы. При получении сигнала скрипт не завершается, а выводит соответствующее сообщение. Например, при сигнале \texttt{SIGTERM} он должен напечатать:
+\begin{lstlisting}
+I caught SIGTERM
+\end{lstlisting}
+Скрипт должен ловить сигналы: \texttt{SIGINT}, \texttt{SIGTERM},  \texttt{SIGHUP},  \texttt{SIGTSTP},  \texttt{SIGCONT}. Используйте команду \texttt{trap}.
+
+
+\subsection{Работаем с перехватчиком сигналов}
+\begin{enumerate}[(a)]
+\item Запустите скрипт \texttt{signal\_catcher.sh}. Откройте другой терминал и попытайтесь завершить процесс с помощью команды:
+\begin{lstlisting}
+$ kill <PID>
+\end{lstlisting}
+Что напечатает скрипт в этом случае?
+
+\item Отправьте процессу скрипта \texttt{signal\_catcher.sh} сигналы \texttt{SIGINT} и \texttt{SIGTSTP}, используя команду \texttt{kill}. Что напечатает скрипт в этом случае? 
+
+\item Завершите процесс \texttt{signal\_catcher.sh} с помощью сигнала \texttt{SIGKILL}.
+
+\item Заново запустите скрипт \texttt{signal\_catcher.sh}. После запуска скрипта нажмите \texttt{Ctrl-C}. Что напечатает программа и почему? Если быстро нажать \texttt{Ctrl-C} несколько раз подряд, то программа будет печатать числа быстрее чем раз в две секунды. Почему?
+
+\item Нажмите \texttt{Ctrl-Z} в терминале скрипта. Скрипт остановится, хотя он должен ловить сигнал \texttt{SIGTSTP}. Почему скрипт остановился? Восстановите работу скрипта, не завершая его и не запуская его заново.
+
+\item Запустите скрипт следующим образом:
+\begin{lstlisting}
+$ signal_catcher.sh > sc.txt
+\end{lstlisting}
+После этого закройте терминал. Завершится ли процесс \texttt{signal\_catcher.sh} после закрытия терминала? Проверьте жив ли процесс, посмотрев происходит ли печать в файл \texttt{sc.txt}.
+\end{enumerate}
+
+
+\subsection{Перехват или игнорирование}
+\begin{enumerate}[(a)]
+\item \textbf{Перехват сигнала}
+
+Пусть есть скрипт \texttt{intercept.sh} который перехватывает сигнал \texttt{SIGINT}:
+\begin{lstlisting}
+#!/bin/bash
+trap 'echo I caught SIGINT' INT
+sleep 1000
+\end{lstlisting}
+Если запустить этот скрипт и нажать \texttt{Ctrl-C}, то завершится ли скрипт? Объясните поведение скрипта в этом случае.
+
+
+\item \textbf{Блокирование сигнала}
+
+Пусть есть скрипт \texttt{ignore.sh} который блокирует сигнал \texttt{SIGINT}:
+\begin{lstlisting}
+#!/bin/bash
+trap '' INT
+sleep 1000
+\end{lstlisting}
+Если запустить этот скрипт и нажать \texttt{Ctrl-C}, то завершится ли скрипт? Объясните поведение скрипта в этом случае.
 
 
 
 \end{enumerate}
+
+\subsection{Отсоединённый процесс}
+Если запустить скрипт \texttt{counter.sh} вот так:
+\begin{lstlisting}
+$ ./counter.sh > c.txt
+\end{lstlisting}
+то после закрытия терминала процессу \texttt{counter.sh} будет послан сигнал \texttt{SIGHUP} и он завершиться, так как этот процесс не перехватывает и не блокирует сигналы.
+Используя команду \texttt{nohup}, запустите скрипт \texttt{counter.sh} с блокировкой сигнала \texttt{SIGHUP}. После этого закройте терминал, откройте новый терминал и убедитесь, что процесс \texttt{counter.sh} всё ещё жив. Завершите этот процесс с помощью \texttt{kill}.
+
+
+
+\subsection{Сигналы от дочерних процессов}
+Пусть есть скрипт \texttt{random\_sleeper.sh}, который просто спит случайное число секунд от 1 до 10:
+\begin{lstlisting}
+#!/bin/bash
+sleep $((RANDOM % 10 + 1))
+\end{lstlisting}
+
+\noindent Напишите скрипт \texttt{waiter.sh}, который будет принимать число \texttt{n} через аргументы командной строки и запускать скрипт \texttt{random\_sleeper.sh} параллельно \texttt{n} раз. Скрипт \texttt{waiter.sh} должен дожидаться всех своих дочерних процессов -- используйте команду \texttt{wait}. Также скрипт должен отслеживать завершения всех дочерних процессов с помощью \texttt{trap}. После того как любой из дочерних процессов завершается, \texttt{waiter.sh} должен сразу печатать на экран строку вида:
+\begin{lstlisting}
+Child k of n is finished.
+\end{lstlisting}
+\noindent Пример запуска такого скрипта:
+\begin{lstlisting}
+$ ./waiter.sh 3
+Child 1 of 3 is finished.
+Child 2 of 3 is finished.
+Child 3 of 3 is finished.
+\end{lstlisting}
+
+
+
+
+\section{Состояния процессов}
+
+\subsection{Спящий и остановленный процесс}
+Напишите скрипт, который создаёт спящий процесс и остановленный процесс. После этого скрипт должен напечатать \texttt{PID} этих процессов. Два созданных процесса должны существовать после того, как скрипт завершился. Используйте \texttt{ps aux}, чтобы просмотреть состояния процессов.
+
+
+\subsection{Состояния процессов}
+Объясните, что означают следующие состояния процессов в выводе команды \texttt{ps}:
+\begin{enumerate}[(a)]
+\item \texttt{R}
+\item \texttt{S}
+\item \texttt{T}
+\item \texttt{D}
+\item \texttt{Z}
+\item \texttt{Rl}
+\item \texttt{Ss}
+\item \texttt{SNsl}
+\item \texttt{I} (для потока ядра)
+\item \texttt{I<} (для потока ядра)
+\end{enumerate}
+
+\iffalse
+\subsection{Процесс сирота}
+\begin{lstlisting}[style=csMiptCStyle]
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() 
+{
+    pid_t pid = fork();
+    if (pid > 0) 
+    {
+        exit(0);
+    } 
+    else if (pid == 0) 
+    {
+        sleep(100);
+    }
+}
+\end{lstlisting}
+\fi
+
+\subsection{Зомби процесс}
+Обычно родитель ждёт завершения дочернего процесса, чтобы получить код возврата и понять, успешно ли он завершился. От этого может зависеть дальнейшее поведение родителя. Но если ребёнок завершился, а родитель не вызвал команду или системный вызов wait для чтения кода возврата, процесс остаётся в особом состоянии — зомби (Z), пока родитель не прочитает его результат или сам не завершится.
+
+Данная программа на языке C создаёт зомби-процесс (создать зомби-процесс в bash может быть непросто или невозможно в некоторых системах):
+\begin{lstlisting}[style=csMiptCStyle]
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() 
+{
+    pid_t pid = fork();
+    if (pid > 0) 
+    {
+        sleep(1000);
+    } 
+    else if (pid == 0) 
+    {
+        exit(0);
+    }
+}
+\end{lstlisting}
+Системный вызов \texttt{fork} создаёт ребёнка процесса, путём клонирования текущего процесса. Можно считать, что в \texttt{fork} заходит один процесс (родительский), а из \texttt{fork} выходят два процесса (родительский и дочерний). В дочернем процессе \texttt{fork} возвращает \texttt{0}. В родительском -- значение \texttt{PID} ребёнка. В данной программе после \texttt{fork} родительский процесс засыпает на 1000 секунд, а дочерний процесс сразу пытается завершиться с помощью \texttt{exit}. Обычно, родительский процесс должен дождаться прочитать код возврата дочернего процесса, но он этого не делает, в результате дочерний процесс становится зомби процессом.
+
+\begin{enumerate}[(a)]
+\item Скомпилируйте программу, используя компилятор \texttt{gcc}.
+\item Запустите программу и убедитесь, что дочерний процесс стал зомби процессом.\\
+Запомните PID родительского процесса и дочернего зомби процесса.
+\item Можно ли завершить зомби процесс, послав ему сигнал \texttt{SIGTERM}?
+\item Можно ли завершить зомби процесс, послав ему сигнал \texttt{SIGKILL}?
+\item Как можно завершить зомби процесс?
+\end{enumerate}
+
+
+\section{Мониторинг}
+\subsection{Программа \texttt{top}}
+Программа \texttt{top} используется для мониторинга ресурсов процессов. Объясните, что означают следующие поля в выводе \texttt{top}.
+\begin{multicols}{2}
+\begin{enumerate}[(a)]
+\item \texttt{PID}
+\item \texttt{USER}
+\item \texttt{PR}
+\item \texttt{NI}
+\item \texttt{VIRT}
+\item \texttt{RES}
+\item \texttt{SHR}
+\item \texttt{S}
+\item \texttt{\%CPU}
+\item \texttt{\%MEM}
+\item \texttt{TIME+}
+\item \texttt{COMMAND}
+\end{enumerate}
+\end{multicols}
+
+
+\subsection{Директория \texttt{/proc}}
+\begin{itemize}
+\item Запустите программу \texttt{counter.sh} и найдите \texttt{PID} процесса.
+\item Перейдите в директорию виртуальной файловой системы \texttt{proc}, соответствующей этому процессу.
+\begin{lstlisting}
+/proc/<PID>/
+\end{lstlisting}
+\item Что содержится в следующих файлах этой директории?
+\begin{itemize}
+\item \texttt{cmdline}
+\item \texttt{environ}
+\item \texttt{maps}
+\end{itemize}
+
+\item Куда указывают следующие мягкие ссылки в этой директории?
+\begin{itemize}
+\item \texttt{cwd}
+\item \texttt{exe}
+\item \texttt{fd/1}
+\end{itemize}
+
+\item Что означают следующие поля в файле \texttt{status}?
+\begin{itemize}
+\item \texttt{Name}
+\item \texttt{State}
+\item \texttt{Uid / Gid}
+\item \texttt{VmSize}
+\item \texttt{VmRSS}
+\item \texttt{VmData, VmExe, VmStk}
+\item \texttt{FDSize}
+\end{itemize}
+
+\end{itemize}
+
+
+
+
+
+
+
+
+
+\iffalse
+\section{Параллельный запуск}
+\subsection{Запуск нескольких процессов}
+Напишите скрипт, который запускает 5 процессов \texttt{counter.sh}. Все процессы должны работать параллельно. Ваш скрипт должен дожидаться всех процессов и только потом завершаться и печатать сообщение о завершении. Хоть процессы \texttt{counter.sh} работают в бесконечном цикле, они могут завершиться из-за сигналов.
+
+\subsection{Запуск нескольких потоков}
+\begin{lstlisting}[style=csMiptCStyle]
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+
+#define NUM_THREADS 5
+
+void* counter(void* arg) 
+{
+    int id = *(int*)arg;
+    int i = 0;
+    while (1)
+    {
+        printf("Thread %2i: %i\n", id, i);
+        sleep(1);
+        i++;
+    }
+    return NULL;
+}
+
+int main()
+{
+    pthread_t tid[NUM_THREADS];
+    int ids[NUM_THREADS];
+
+    for (int i = 0; i < NUM_THREADS; i++)
+    {
+        ids[i] = i + 1;
+        if (pthread_create(&tid[i], NULL, counter, &ids[i]) != 0)
+        {
+            perror("pthread_create");
+            exit(1);
+        }
+    }
+
+    for (int i = 0; i < NUM_THREADS; i++)
+        pthread_join(tid[i], NULL);
+
+    printf("All threads finished.\n");
+}
+\end{lstlisting}
+\fi
+
+
+\iffalse
+\newpage
+~
+\newpage
+\section*{другие}
+\begin{itemize}
+\item Контекст процесса
+\item proc
+
+\begin{lstlisting}
+cat /proc/<PID>/maps
+\end{lstlisting}
+\item сессии команда \texttt{setsid}
+\item Задача на \texttt{простой демон в новой сессии}
+\item Задача на \texttt{oom}
+\item Задача на \texttt{lsof}
+
+
+\item \texttt{SIGFPE}
+\item \texttt{iostat}
+\item \texttt{ulimit}
+
+\end{itemize}
+\fi
+
+
+
+
 \end{document}
