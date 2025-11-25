@@ -10,10 +10,16 @@
 \usepackage{multicol}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{upquote}
+\usepackage{chngcntr}
 \pagenumbering{gobble}
+\counterwithout{subsection}{section}
 
-\lstdefinestyle{csMiptCppStyle}{
-  language=C++,
+\lstdefinestyle{csMiptCStyle}{
+  language=C,
   basicstyle=\linespread{1.1}\ttfamily,
   columns=fixed,
   fontadjust=true,
@@ -41,13 +47,13 @@
 }
 
 
-\lstdefinestyle{csMiptCppLinesStyle}{
-  style=csMiptCppStyle,
+\lstdefinestyle{csMiptCLinesStyle}{
+  style=csMiptCStyle,
   frame=lines,
 }
 
-\lstdefinestyle{csMiptCppBorderStyle}{
-  style=csMiptCppStyle,
+\lstdefinestyle{csMiptCBorderStyle}{
+  style=csMiptCStyle,
   framexleftmargin=5mm, 
   frame=shadowbox, 
   rulesepcolor=\color{gray}
@@ -55,38 +61,31 @@
 
 
 \lstdefinestyle{csMiptBash}{
-breaklines=true,
-frame=tb,
-language=bash,
-breakatwhitespace=true,
-alsoletter={*()"'0123456789.},
-alsoother={\{\=\}},
-basicstyle={\ttfamily},
-keywordstyle={\bfseries},
-literate={{=}{{{=}}}1},
-prebreak={\textbackslash},
-sensitive=true,
-stepnumber=1,
-tabsize=4,
-morekeywords={echo, function},
-otherkeywords={-, \{, \}},
-literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
-upquote=true,
-frame=none
+  	style=csMiptCStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
 }
 
-
-\lstset{style=csMiptCppLinesStyle}
-\lstset{literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}}
-
-
-\renewcommand{\thesection}{\arabic{section}}
-\makeatletter
-\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
-   {\csname the#1\endcsname\quad}%    default
-   {\csname #1@cntformat\endcsname}}% enable individual control
-\newcommand\section@cntformat{Часть \thesection:\space}
-\makeatother
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
 
 
 \renewcommand{\arraystretch}{1.3}
@@ -95,10 +94,408 @@ frame=none
 \title{Семинар \#9: systemd \vspace{-5ex}}\date{}\maketitle
 
 
-\section*{Программа}
+\section*{Команды \texttt{systemctl}}
+Для некоторых команд необходимы права суперпользователя, то есть нужно использовать \texttt{sudo}.
+\begin{flushleft}
+\begin{tabular}{ l | l }
+Команда 	    	& Назначение\\ \hline
+\texttt{systemctl start <unit>}	& Запускает юнит.\\
+\texttt{systemctl stop <unit>}		& Останавливает юнит.\\
+\texttt{systemctl restart <unit>}	& Перезапускает юнит.\\
+\texttt{systemctl reload <unit>}	& Перечитать конфиг юнита без перезапуска.\\
+\texttt{systemctl enable <unit>}	& Включить автозапуск юнита при загрузке.\\
+\texttt{systemctl disable <unit>}	& Отключить автозапуск юнита при загрузке.\\ \hline
+\texttt{systemctl status <unit>}	& Отображает состояние юнита, логи, PID и другую информацию.\\
+\texttt{systemctl cat <unit>}		& Печатает путь до юнит-файла и сам юнит-файл.\\
+\texttt{systemctl edit <unit>}		& Редактировать директивы юнита.\\
+\texttt{systemctl show <unit>}		& Показывает свойства юнита.\\ \hline
+\texttt{systemctl is-active <unit>}	& Проверяет, активен ли юнит.\\
+\texttt{systemctl is-failed <unit>}	& Проверяет, находится ли юнит в состоянии "failed".\\
+\texttt{systemctl is-enabled <unit>} & Проверяет, включён ли юнит для автозапуска.\\ \hline
+\texttt{systemctl}	& Показывает активные юниты.\\
+\texttt{systemctl -{}-all}	& Показывает все юниты, даже неактивные.\\
+\texttt{systemctl list-units -{}-type=service}	& Показывает активные сервисы.\\ \hline
+\texttt{systemctl daemon-reload} & Перечитать все юнит-файлы. Нужно выполнить после \\
+                                 & редактирования юнит-файлов.\\ \hline
+\end{tabular}
+\end{flushleft}
 
 
 
+
+
+\section*{Основные типы юнитов}
+\begin{flushleft}
+\begin{tabular}{ p{2.4cm} | l }
+Тип юнита 	    	& Назначение\\ \hline
+\texttt{service}	& Запуск и управление службами/демонами.\\
+\texttt{target}		& Группа юнитов.\\
+\texttt{timer}		& Юнит, который активирует сервисы по расписанию (альтернатива cron). \\
+\texttt{path}		& Следит за изменениями файлов/директорий и активирует сервисы.\\
+\texttt{socket}		& Управление сокет-активацией.\\ \hline
+\end{tabular}
+\end{flushleft}
+Ещё типы юнитов: \texttt{device}, \texttt{mount}, \texttt{automount}, \texttt{slice}, \texttt{scope}, \texttt{swap}, \texttt{busname}, \texttt{snapshot} и другие.
+
+
+\section*{Алгоритм поиска юнит файлов}
+Имена юнит файлов имеют вид \texttt{<имя юнита>.<тип юнита>}, например сервис под названием \texttt{nginx} имеет юнит-файл под названием \texttt{nginx.service}. systemd ищет юнит файлы по следующему алгоритму:
+\begin{enumerate}
+\item Сначала ищет в директории \texttt{/etc/systemd/system}.
+\item Если не нашёл, то ищет в директории \texttt{/run/systemd/system}.
+\item Если не нашёл, то ищет в директории \texttt{/usr/lib/systemd/system}.
+\end{enumerate}
+Плюс, существуют ещё некоторые файлы, в которых можно переопределить директивы юнита или скрыть юнит.
+
+
+
+\section*{Секции и директивы в юнит файлах}
+\begin{flushleft}
+\begin{tabular}{ p{2.4cm} | l }
+Секция 	    	& Назначение\\ \hline
+\texttt{[Unit]}		& Используется во всех типах юнитов. Задает общую информацию и зависимости.\\
+\texttt{[Service]}	& Используется только в \texttt{service}-юнитах.\\
+\texttt{[Install]}	& Описывает, как юнит "встраивается"{} в систему при \texttt{systemctl enable}. \\
+\texttt{[Timer]}	& Используется только в \texttt{timer}-юнитах.\\
+\texttt{[Тип\_юнита]} & Используется только в \texttt{Тип\_юнита}-юнитах.\\
+\end{tabular}
+\end{flushleft}
+
+
+\subsection*{Директивы секции \texttt{[Unit]}}
+\begin{itemize}
+\item \texttt{Description}\\
+Короткое описание юнита.
+\item \texttt{Documentation}\\
+Ссылка на документацию.
+\item \texttt{After}\\
+Устанавливает порядок запуска юнита. В этой директиве указывается один или несколько других юнитов (через пробел). Если данный юнит запускается вместе с теми, что перечислены в \texttt{After}, то он будет запущен после всех этих юнитов. Но если эти юниты не запускаются вместе с данным, то они не будут дополнительно запущены.
+\item \texttt{Before}\\
+Устанавливает порядок запуска юнита. Как \texttt{After}, но только данный юнит будет запущен до тех, которые указаны в \texttt{Before}.
+\item \texttt{Wants}\\
+Мягкие зависимости юнита. В этой директиве указывается один или несколько других юнитов (через пробел). Если при запуске данного юнита, юниты, указанные в \texttt{Wants} не запускаются, то \texttt{systemd} попытается их запустить. Если запустить юнит/юниты в \texttt{Wants} не получится, то данный юнит всё-равно может быть успешно запущен.
+
+\item \texttt{Requires}\\
+Жесткие зависимости юнита. Как \texttt{Wants}, но если хотя бы один из зависимых юнитов запустить не получилось, то данный юнит тоже не запустится и будет в состоянии \texttt{failed}. 
+
+\item \texttt{Conflicts}\\
+Данный юнит не может работать одновременно с теми, что указаны в \texttt{Conflicts}.  При старте данного юнита, юниты указанные в \texttt{Conflicts} останавливаются.
+
+
+
+\item \texttt{Condition*}\\
+Директивы, начинающиеся с \texttt{Condition} задают некоторое условие. Если хотя бы одно условие не выполняется, то systemd останавливает дальнейшую активацию данного юнита и помечает его как \texttt{skipped / inactive}. Примеры таких директив:
+\begin{itemize}
+\item \texttt{ConditionPathExists} -- проверяет, существует ли файл по указанному пути.
+\item \texttt{ConditionFileNotEmpty} -- файл существует, является обычным файлом и этот файл не пуст.
+\item \texttt{ConditionFileIsExecutable} -- файл существует, является обычным файлом, и этот файл имеет право на исполнение.
+\item \texttt{ConditionACPower} -- \texttt{true} если питание от сети и \texttt{false} иначе.
+\item \texttt{ConditionUser}/\texttt{ConditionGroup} -- проверяет наличие указанного пользователя или группы в системе.
+\item \texttt{ConditionCapability} -- проверяет, есть ли у systemd определённая Linux-capability.
+\end{itemize}
+
+\item \texttt{Assert*}\\
+Директивы, начинающиеся с \texttt{Assert} задают некоторое условие, аналогичные условиям, задаваемым с помощью \texttt{Condition}. Но, если хотя бы одно из таких условий не выполняется, то юнит не запускается и считается \texttt{failed}.
+
+
+\item \texttt{OnFailure}\\
+В этой директиве указываются юниты, которые запускаются при переходе данного юнита в состояние \texttt{failed}.
+\end{itemize}
+
+
+
+\subsection*{Директивы секции \texttt{[Service]}}
+\begin{itemize}
+\item \texttt{Type}\\
+Тип сервиса, определяет модель запуска сервиса. Существуют следующие типы:
+\begin{itemize}
+\item \texttt{simple}\\
+Запускается напрямую через команду в \texttt{ExecStart}. Сервис считается запущенным сразу после старта процесса. Это тип сервиса по умолчанию.
+\item \texttt{forking}\\
+Сначала запускается процесс через команду в \texttt{ExecStart}. Предполагается, что запущенный процесс создаст дочерний процесс через \texttt{fork}, после чего сам завершится. systemd будет отслеживать дочерний процесс и считать его сервисом. Сервис начинает считаться запущенным, когда systemd узнаёт  его PID. Чтобы узнать PID сервиса (то есть PID дочернего процесса) используется \texttt{PIDFile} или другие способы.
+\item \texttt{oneshot}\\
+Запускает команду в \texttt{ExecStart} и ждёт её выполнения. Сервис считается "активным"{} только после выполнения команды в \texttt{ExecStart}. Используется для одноразовых задач, которые выполняют задачу один раз и завершают работу. 
+
+\item \texttt{notify}\\
+Запускается напрямую через команду в \texttt{ExecStart}. Сервис считается запущенным когда он сам сообщит об этом systemd с помощью функции \texttt{sd\_notify}. Используется для сервисов с долгой инициализацией.
+\item \texttt{dbus}
+\item \texttt{idle}
+\end{itemize}
+
+\item \texttt{ExecStart}\\
+Основная команда запуска сервиса. Выполняется при запуске сервиса, то есть при
+\begin{lstlisting}
+$ sudo systemctl start <service> 
+\end{lstlisting}
+Но что конкретно будет происходить при старте сервиса определяется типом сервиса.
+
+
+\item \texttt{ExecStop}\\
+Команда, выполняемая при остановке сервиса (\texttt{systemctl stop}). Если не указано, то systemd просто посылает сигнал SIGTERM основному процессу.
+
+\item \texttt{ExecReload}\\
+Команда, выполняемая для перезагрузки конфигурации сервиса. Вызывается при использовании (\texttt{systemctl reload}). Если не указано, то команда \texttt{systemctl reload} будет недоступна для данного сервиса.
+
+
+\item \texttt{ExecStartPre}\\
+Команды, выполняемые перед запуском основного процесса (перед \texttt{ExecStart}). Используется для подготовки к запуску сервиса (создание директорий, монтирование, проверка конфигураций). Если команда завершается с ошибкой, сервис не запускается.
+
+\item \texttt{ExecStartPost}\\
+Команды, выполняемые после запуска основного процесса (после \texttt{ExecStart}). Ошибка в \texttt{ExecStartPost} не останавливает основной процесс, но сервис может считаться неуспешным.
+
+\item \texttt{ExecStopPost}\\
+Команды, выполняемые после остановки сервиса. Используется для очистки ресурсов, удаления временных файлов и т. д.
+
+
+\item \texttt{Restart}\\
+Определяет, будет ли перезапускаться сервис, если он завершился (успешно или с ошибкой). Может принимать следующие значения:
+\begin{itemize}
+\item \texttt{no}\\
+Сервис не перезапускается автоматически.
+\item \texttt{always}\\
+Сервис всегда перезапускается.
+\item \texttt{on-success}\\
+Сервис перезапускается, только если он завершился успешно.
+\item \texttt{on-failure}\\
+Сервис перезапускается, только если он завершился с ошибкой. Под ошибкой тут понимается:
+\begin{itemize}
+\item Завершение сервиса с ненулевым кодом возврата.
+\item Если процесс был убит сигналом.
+\item Если процесс не успел стартовать или остановиться в пределах \texttt{TimeoutStartSec} / \texttt{TimeoutStopSec}.
+\item Если задан \texttt{WatchdogSec} и сервис не отправляет heartbeat через \texttt{sd\_notify}.
+\end{itemize}
+
+\item \texttt{on-abnormal}\\
+Сервис перезапускается, только если он завершился ненормально, а именно:
+\begin{itemize}
+\item Был убит сигналом.
+\item Завершился по таймауту (\texttt{TimeoutStartSec}, \texttt{TimeoutStopSec}).
+\item Процесс завершился аварийно (обычно из-за ошибки вроде сегментационной ошибки — segmentation fault) и ядро системы создало дамп памяти.
+\end{itemize}
+
+\item \texttt{on-abort}\\
+Сервис перезапускается, только если он завершился по сигналу \texttt{SIGABRT}.
+
+\item \texttt{on-watchdog}\\
+Сервис перезапускается, только если задан \texttt{WatchdogSec} и сервис не отправляет heartbeat через \texttt{sd\_notify}.
+\end{itemize}
+
+
+\item \texttt{RestartSec}\\
+Задержка перед перезапуском сервиса при использовании \texttt{Restart}.
+\begin{lstlisting}
+RestartSec=5s
+\end{lstlisting}
+Можно использовать суффиксы: \texttt{ms}, \texttt{s}, \texttt{min}, \texttt{h}.
+По умолчанию используется задержка \texttt{100ms}. Для ресурсоёмких сервисов ставится задержка побольше (10–30 секунд), чтобы избежать перегрузки системы при постоянных падениях.
+
+
+\item \texttt{User}/\texttt{Group}\\
+Сервис запускается от имени указанного пользователя/группы.
+
+\item \texttt{Environment}, \texttt{EnvironmentFile}\\
+С помощью этих директив можно задать переменные среды запускаемого процесса.
+
+\item \texttt{WorkingDirectory}\\
+Задаёт рабочую директорию процесса.
+
+
+\item \texttt{CapabilityBoundingSet}\\
+Задаёт capabilities (способности) для процессов сервиса. Capabilities -- это механизм, который разбивает полномочия суперпользователя (root) на отдельные, более мелкие права. По умолчанию systemd запускает сервис с полным набором способностей, если он работает от \texttt{root}. Задать способности сервиса можно, если задать директиву \texttt{CapabilityBoundingSet}. В ней прописываются разрешённые способности процесса. Способности могут быть следующими:
+\begin{flushleft}
+\begin{tabular}{ l | l }
+Capability 	    	& Назначение\\ \hline
+\texttt{CAP\_SYS\_ADMIN}& Монтирование файловых систем, настройки namespaces, управления cgroups.\\
+\texttt{CAP\_CHOWN}		& Изменение владельца файлов.\\
+\texttt{CAP\_DAC\_OVERRIDE} & Игнорирование стандартных прав доступа к файлам.\\
+\texttt{CAP\_SETUID}		& Позволяет менять UID процесса.\\
+\texttt{CAP\_SETGID}		& Позволяет менять GID процесса.\\
+\texttt{CAP\_NET\_BIND\_SERVICE}& Позволяет процессу слушать порты <1024, например 80 (HTTP) или 443 (HTTPS).\\
+\texttt{CAP\_NET\_RAW}		& Позволяет создавать raw-сокеты.\\
+\texttt{CAP\_MKNOD}		& Позволяет создавать специальные device файлы.\\
+\end{tabular}
+\end{flushleft}
+
+\noindent Все способности можно посмотреть в \texttt{https://man7.org/linux/man-pages/man7/capabilities.7.html}.
+
+\item \texttt{PIDFile}\\
+Эта директива нужна для сервисов типа \texttt{forking}. Указывает путь до файла, в который родительский процесс записывает PID дочернего процесса. Таким образом systemd и другие процессы в системе могут узнать PID демона.
+
+\item \texttt{StandardOutput} и \texttt{StandardError}\\
+Управляет тем, куда перенаправляется стандартный вывод (stdout) или стандартный поток ошибок (stderr) процесса.
+\begin{itemize}
+\item \texttt{inherit}\\
+Наследует настройки вывода от родительского процесса (обычно от systemd).
+\item \texttt{journal}\\
+Отправляет вывод в systemd‑journal. Это поведение по умолчанию.
+\item \texttt{console}\\
+Печатает вывод на системную консоль.
+\item \texttt{null}\\
+Отбрасывает всё, что сервис печатает в stdout.
+\end{itemize}
+
+\item \texttt{TimeoutStartSec}\\
+Задаёт максимальное время, которое systemd будет ждать успешного запуска сервиса. Если сервис не запустился за указанное время, то процессу будет послан сигнал SIGTERM (если не помогло, то SIGKILL) и сервис перейдёт в состояние \texttt{failed}. Значение по умолчанию можно задать в \texttt{/etc/systemd/system.conf}. Если в этом файле значения по умолчанию не заданы, то systemd берёт внутреннее значение по умолчанию, которое обычно равно 90 секунд.
+
+\item \texttt{TimeoutStopSec}\\
+Максимальное время, которое systemd будет ждать корректного завершения сервиса при остановке. Если процесс не завершился за заданное время, то systemd отправляет SIGKILL.
+
+
+\item \texttt{KillMode}\\
+Управляет тем, какие процессы будут завершены при остановке сервиса. Может принимать следующие значения:
+\begin{itemize}
+\item \texttt{control-group}\\
+Значение по умолчанию. Завершаются все процессы в cgroup сервиса (главный и дочерние процессы). Сначала всем процессам посылается сигнал, заданный в \texttt{KillSignal}, но если за время \texttt{TimeoutStopSec} процессы не завершились, то посылается SIGKILL.
+\item \texttt{process}\\
+Завершается только главный процесс (тот, что systemd считает основным). Дочерние процессы остаются жить. Сначала  процессу посылается сигнал, заданный в \texttt{KillSignal}, но если за время \texttt{TimeoutStopSec} он не завершился, то посылается SIGKILL.
+\item \texttt{mixed}\\
+Главному процессу посылается сигнал, заданный в \texttt{KillSignal}, а всем остальным в cgroup сразу SIGKILL. Используется, если дочерние процессы могут зависнуть, а главный должен завершиться корректно.
+\item \texttt{none}\\
+systemd не посылает никаких сигналов. Завершение процессов полностью остаётся на логике сервиса. systemd просто меняет статус юнита на \texttt{stopped} или \texttt{inactive}, но процессы продолжают жить пока сами не завершатся.
+\end{itemize}
+
+\item \texttt{KillSignal}\\
+Определяет, какой сигнал будет отправлен процессу при его остановке. Значение по умолчанию SIGTERM.
+
+
+
+
+\end{itemize}
+
+
+\subsection*{Директивы секции \texttt{[Install]}}
+\begin{itemize}
+\item \texttt{WantedBy}\\
+Говорит systemd, в какой target должен быть включён юнит при выполнении \texttt{systemctl enable}. Например, если написать:
+\begin{lstlisting}
+[Install]
+WantedBy=multi-user.target
+\end{lstlisting}
+то данный юнит будет запускаться, когда активируется юнит \texttt{multi-user.target}. \texttt{multi-user.target} активируется после загрузки системы, когда система готова к многопользовательской работе в текстовом режиме. При загрузке системе в графическом режиме (\texttt{graphical.target}) сначала активируется \texttt{multi-user.target}, а затем запускаются графические службы.
+
+\item \texttt{RequiredBy}\\
+Работает как \texttt{WantedBy}, но связь жёсткая: юнит, который указывает \texttt{RequiredBy}, не запустится без этого юнита.
+
+\item \texttt{Also}\\
+Позволяет указать дополнительные юниты, которые должны быть \texttt{enable/disable} вместе с этим.
+
+\item \texttt{Alias}\\
+Создаёт дополнительные имена (alias) для юнита.
+\end{itemize}
+
+
+
+\subsection*{Директивы секции \texttt{[Timer]}}
+Таймеры systemd (*.timer) запускают соответствующие сервисы (*.service) по заданному расписанию. Имя таймера и сервиса должны совпадать.
+
+\begin{itemize}
+
+\item \texttt{Unit}\\
+Задаёт имя юнита, запускаемого этим таймером. По умолчанию таймер запускает юнит с тем же именем, что у таймера.
+
+\item \texttt{OnBootSec}\\
+Задаёт время, через который должен быть запущен связанный сервис после загрузки системы.
+
+\item \texttt{OnActiveSec}\\
+Задаёт время, через который должен быть запущен связанный сервис после активации таймера (после \texttt{systemctl start my.timer}).
+
+\item \texttt{OnUnitActiveSec}\\
+Задаёт время, через который должен быть запущен связанный сервис после последнего успешного запуска связанного сервиса через \texttt{systemctl start my.service}.
+
+
+\item \texttt{Persistent}\\
+Если \texttt{Persistent=yes}, то пропущенные срабатывания (например, когда компьютер был выключен) будут выполнены сразу после включения.
+
+\item \texttt{RandomizedDelaySec}\\
+Добавляет случайную задержку при запуске сервиса. Задаётся максимальное значение этой случайной задержки.
+Используется для того, чтобы избежать ситуации, когда множество таймеров или сервисов стартуют одновременно и создают нагрузку на систему или сеть.
+
+
+\item \texttt{OnCalendar}\\
+Задаёт расписание запуска сервисов. Общий формат \texttt{ГГГГ-ММ-ДД ЧЧ:ММ:СС}. Примеры использования этой директивы:
+
+\begin{flushleft}
+\begin{tabular}{ l | l }
+Директива 	    	& Описание\\ \hline
+\texttt{OnCalendar=hourly}& Каждый час в начале часа.\\
+\texttt{OnCalendar=daily}& Каждый день в полночь.\\
+\texttt{OnCalendar=weekly}& Каждую неделю в понедельник 00:00.\\
+\texttt{OnCalendar=monthly}& Первого числа каждого месяца в 00:00.\\
+\texttt{OnCalendar=yearly}& Первого января каждого года в 00:00.\\ \hline
+
+\texttt{OnCalendar=*-*-* 12:00:00}& Каждый день ровно в 12:00.\\
+\texttt{OnCalendar=Mon..Fri 09:00}& Каждый будний день в 9:00.\\ 
+\texttt{OnCalendar=Sat,Sun 18:00}& По выходным в 18:00.\\
+\texttt{OnCalendar=Mon 10:00, Wed 12:00}& По понедельникам в 10:00 и по средам в 12:00.\\
+\texttt{OnCalendar=2025-12-31 23:59:00}& Один раз в указанную дату и время.\\ \hline
+
+\texttt{OnCalendar=*:*:10}& Раз в минуту. Каждый раз, когда значение секунд становится равным 10.\\
+\texttt{OnCalendar=*:*:0/15}& Каждый раз, когда значение секунд становится кратным 15. \\
+							& То есть четыре раза в минуту (0, 15, 30, 45). \\
+\texttt{OnCalendar=*:*:25/10}& Начиная с 25 секунд, с шагом в 10 секунд.\\
+						    & Четыре раза в минуту (25, 35, 45, 55).\\ \hline
+\texttt{OnCalendar=*:20}& Раз в час. Когда значение минут становится равным 20.\\
+\texttt{OnCalendar=*:0/20}& Три раза в час. Когда значение минут становится кратным 20.\\ \hline
+
+\texttt{OnCalendar=7} & Раз в сутки. Когда значение часов становится равным 7.\\
+\texttt{OnCalendar=0/7} & Три раза в сутки. Когда значение часов становится кратным 7.\\ \hline
+\texttt{OnCalendar=0/7:12:34} & Три раза в сутки. Когда значение часов становится кратным 7, а значение \\ 
+                              & минут становится равным 12 и значение секунд становится равным 34.\\ \hline
+\texttt{OnCalendar=*-01,04-0/3 2/5:12}& Любой год. Январь или апрель. Значение дня кратно трём. Значение\\
+                                    & часа равно 2, 7, 12, 17 или 22. Значение минут равно 12, а секунд 0.\\ \hline
+\end{tabular}
+\end{flushleft}
+
+
+
+\end{itemize}
+
+\subsection*{Директивы секции \texttt{[Path]}}
+Path-юниты systemd (*.path) запускают соответствующие сервисы (*.service) при некоторых изменениях в файловой системе. Имя path-юнита и сервиса должны совпадать.
+
+
+\begin{itemize}
+\item \texttt{Unit}\\
+Задаёт имя юнита, запускаемого этим path-юнитом. По умолчанию path-юнит запускает сервис с тем же именем.
+
+\item \texttt{PathExists}\\
+Запускает сервис, когда появится указанный файл или директория.
+
+\item \texttt{PathExistsGlob}\\
+Как \texttt{PathExists}, но с glob-шаблоном. То есть можно использовать метасимволы \texttt{*}, \texttt{?}, \texttt{[...]}.
+
+\item \texttt{PathChanged}\\
+Запускает сервис, на любое изменение файла: запись, удаление, изменение атрибутов, изменения размера.
+
+\item \texttt{PathModified}\\
+Запускает сервис, при каждом изменении содержимого файла.
+
+\item \texttt{DirectoryNotEmpty}\\
+Запускает сервис, если директория перестаёт быть пустой.
+
+\item \texttt{MakeDirectory}\\
+По умолчанию, если вы укажете \texttt{PathExists=/some/dir/file} или \texttt{DirectoryNotEmpty=/some/dir}, а директория \texttt{/some/dir} не существует, systemd просто не сможет отслеживать её состояние. Если добавить \texttt{MakeDirectory=true}, то при активации path‑юнита systemd создаст эту директорию (с правами по умолчанию 0755 и владельцем \texttt{root}), чтобы можно было отслеживать её изменения.
+
+
+
+\end{itemize}
+
+\section*{Спецификаторы внутри юнит-файла}
+Внутри юнит-файлов можно использовать следующие спецификаторы.
+\begin{flushleft}
+\begin{tabular}{ c | l }
+Спецификатор 	    	& Назначение\\ \hline
+\texttt{\%n}	    	& Имя юнита (например, nginx.service).\\
+\texttt{\%p}	    	& Имя родительского юнита.\\
+\texttt{\%i}	    	& Имя инстанса, например, если юнит называется \texttt{myservice@first}, то \texttt{\%i = first}\\
+\texttt{\%f}	    	& Полный путь к файлу юнита.\\
+\texttt{\%u}	    	& Имя пользователя, от которого запускается сервис.\\
+\texttt{\%h}	    	& Домашний каталог пользователя.\\
+\texttt{\%U}	    	& UID пользователя.\\
+\texttt{\%m}	    	& Machine ID системы.\\
+\texttt{\%H}	    	& Имя хоста.\\ \hline
+\end{tabular}
+\end{flushleft}
 
 
 
