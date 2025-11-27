@@ -1,0 +1,594 @@
+\documentclass{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2cm}
+  \geometry{right=1.5cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{upquote}
+\usepackage{chngcntr}
+\pagenumbering{gobble}
+\counterwithout{subsection}{section}
+
+\lstdefinestyle{csMiptCStyle}{
+  language=C,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCLinesStyle}{
+  style=csMiptCStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCBorderStyle}{
+  style=csMiptCStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+  	style=csMiptCStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-, \{, \}},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
+}
+
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
+
+\newcommand{\prevsubsection}{%
+  \number\numexpr\value{subsection}-1\relax%
+}
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
+\newcommand\section@cntformat{}     
+\newcommand\subsection@cntformat{Задача \thesubsection.\space} 
+\newcommand\subsubsection@cntformat{\thesubsubsection.\space}
+\makeatother
+
+
+
+\renewcommand{\arraystretch}{1.3}
+
+
+\begin{document}
+
+\section*{Инструменты разработчика. Вопросы.}
+
+
+\begin{enumerate}
+\setcounter{enumi}{-1}
+\item \textbf{Основные команды оболочки и работа в терминале Linux}
+\begin{enumerate}[(a)]
+\item \textbf{Основные команды}
+\begin{itemize}
+\item \texttt{pwd}
+\item \texttt{cd}
+\item \texttt{ls} и её опции \texttt{-l}, \texttt{-a} и \texttt{-i}
+\item \texttt{echo} и её опции \texttt{-n} и \texttt{-e}
+\item \texttt{cat} и её опция \texttt{-n}.
+\item \texttt{less} и её опции \texttt{-N} и \texttt{-R}. Горячие клавиши \texttt{Пробел}, \texttt{b}, \texttt{q}, \texttt{g}, \texttt{G}, \texttt{n}, \texttt{N}, \texttt{h}. Поиск текста в файле
+\item Текстовый редактор \texttt{nano}
+\item \texttt{file}
+\item \texttt{alias}, создание и удаление алиасов. Просмотр всех алиасов. Как сохранить алиас навсегда?
+\item \texttt{man}, поиск в конкретном разделе
+\item \texttt{date}, печать даты/времени в форматированном виде (опция \texttt{+<формат>})
+\end{itemize}
+
+\item \textbf{Команды для манипуляции с файлами}
+\begin{itemize}
+\item \texttt{touch}
+\item \texttt{mkdir} и её опция \texttt{-p}
+\item \texttt{cp} и её опции \texttt{-r}, \texttt{-a}, \texttt{-t}, \texttt{-i}, \texttt{-u}, \texttt{-n}
+\item \texttt{mv}, переименование файлов с помощью \texttt{mv}
+\item \texttt{rm} и её опции \texttt{-r}, \texttt{-f}
+\end{itemize}
+
+\item \textbf{Сокращение имён директорий}
+\begin{itemize}
+\item \texttt{.}
+\item \texttt{..}
+\item \texttt{$\sim$}
+\item \texttt{$\sim$alice}
+\end{itemize}
+
+\item \textbf{Горячие клавиши, используемые в терминале}
+\begin{itemize}
+\item \texttt{Ctrl-C}
+\item \texttt{Ctrl-D}
+\item \texttt{Ctrl-Z}
+\end{itemize}
+
+\item \textbf{Команды для архивации}
+\begin{itemize}
+\item \texttt{gzip} и её опции \texttt{-d} и \texttt{-k}
+\item \texttt{bzip2} и её опции \texttt{-d} и \texttt{-k}
+\item \texttt{tar} и её опции \texttt{-с}, \texttt{-x}, \texttt{-t}, \texttt{-v}, \texttt{-f}, \texttt{-z} и \texttt{-j}
+\end{itemize}
+
+\item \textbf{Пакетные менеджеры}\\
+Пакетные менеджеры \texttt{apt} и \texttt{dnf}. Подкоманды этих пакетных менеджеров:
+\begin{itemize}
+\item \texttt{install}/\texttt{remove}
+\item \texttt{update}/\texttt{upgrade}
+\item \texttt{search}
+\end{itemize}
+\end{enumerate}
+
+
+\item \textbf{Основы \texttt{git}}
+\begin{enumerate}[(a)]
+
+
+\item \textbf{Системы контроля версий}\\
+Что такое система контроля версий? Локальные, централизованные и распределённые системы контроля версий.
+Отличие \texttt{git} от других систем контроля версий.
+
+
+\item \textbf{Настройка \texttt{git}}\\
+Команда \texttt{git config}. Печать всех настроек \texttt{git}. Добавление и удаление настроек. Уровни настроек:
+\begin{itemize}
+\item Системный
+\item Глобальный
+\item Локальный
+\end{itemize}
+Файлы конфигурации, в которых хранятся эти настройки. Основные настройки:
+\begin{itemize}
+\item \texttt{user.name}
+\item \texttt{user.email}
+\item \texttt{core.editor}
+\item \texttt{core.autocrlf}
+\item \texttt{alias.<name>}
+\end{itemize}
+
+
+
+\item \textbf{Создание репозитория}\\
+Команда \texttt{git init} и её опция \texttt{-{}-bare}. Команда \texttt{git clone}.
+
+
+\item \textbf{Работа с файлами и коммитами}\\
+Рабочая директория. Индекс. Команда \texttt{git add}. Добавление всех изменений из рабочей директории в индекс. Удаление файлов из индекса. Команда \texttt{git rm} и её опция \texttt{-{}-cached}. Локальный репозиторий. Коммит. Хэш коммита. Команда \texttt{git commit} и её опция \texttt{-m}.
+
+
+\item \textbf{Команды для просмотр информации индекса и локального репозитория}
+\begin{itemize}
+\item \texttt{git status}
+\item \texttt{git show}
+\item \texttt{git diff} и её опция \texttt{-{}-staged}
+\item \texttt{git log} и её опции \texttt{-{}-oneline}, \texttt{-{}-graph}, \texttt{-{}-all}, \texttt{-{}-pretty=format}
+\item \texttt{git log} для поиска в истории, её опции \texttt{-{}-since}, \texttt{-{}-author}, \texttt{-{}-grep}, \texttt{-S}
+\item \texttt{git blame}
+\end{itemize}
+
+\item \textbf{Работа с ветками}\\
+Что такое ветка? Основная ветка \texttt{main}. Команда \texttt{git branch} и её опции \texttt{-d}, \texttt{-D}, \texttt{-m}, \texttt{-M}, \texttt{-v}, \texttt{-r}, \texttt{-vv}.
+
+\item \textbf{Адресация коммитов}\\
+Адресация коммитов с использованием хэша. Полный и сокращённый хэш коммита. Адресация коммитов с помощью веток и указателя \texttt{HEAD}. Символы \texttt{$\sim$} и $\wedge$.
+
+\item \textbf{Перемещение по графу коммитов}\\
+Указатель \texttt{HEAD}. Команда \texttt{git switch} и её опции \texttt{-c} и \texttt{-{}-detach}. Чем \texttt{git switch} отличается от старой команды \texttt{git checkout}?  Переход на отдельный коммит. Состояние \texttt{detached HEAD} и чем опасно это состояние? 
+
+\item \textbf{Слияние}\\
+Слияние веток. Команда \texttt{git merge}. Слияние перемоткой (fast-forward merge) и когда используется такой вид слияния. Опция \texttt{-{}-no-ff}. Конфликты при слиянии. Когда возникают конфликты? Как разрешить конфликт? Команды 
+\begin{itemize}
+\item \texttt{git merge -{}-abort}
+\item \texttt{git merge -{}-continue}
+\end{itemize}
+Как отменить произведённое слияние?
+
+\item \textbf{Перебазирование}\\
+Перебазирование веток. Команда \texttt{git rebase}. Отличие перебазирования от слияния. Преимущества и недостатки перебазирования по сравнению со слиянием. Конфликты при перебазировании. Как разрешить конфликт, возникший при перебазировании? Команды \texttt{git rebase -{}-abort}, \texttt{git rebase -{}-continue} и \texttt{git rebase -{}-skip}. 
+\begin{itemize}
+\item \texttt{git rebase -{}-abort}
+\item \texttt{git rebase -{}-continue}
+\item \texttt{git rebase -{}-skip}
+\end{itemize}
+
+Как отменить произведённое перебазирование?
+
+\end{enumerate}
+
+
+\item \textbf{Продолжение \texttt{git}}
+\begin{enumerate}[a.]
+\item \textbf{Откат состояния}\\
+Команда \texttt{git reset} и её режимы \texttt{-{}-soft}, \texttt{-{}-mixed} и \texttt{-{}-hard}. Как меняется рабочая директория, индекс и локальный репозиторий при использовании \texttt{git reset} в каждом из этих режимов? Как отменить произведённый откат состояния? Команда \texttt{git reflog}, что она показывает? В каких случаях использование \texttt{git reset} может привести к безвозвратной потери данных? Команда \texttt{git restore} и её опция \texttt{-{}-source}.
+Как восстановить случайно удалённый файл в рабочей директории?
+
+\item \textbf{Копирование отдельных коммитов}\\
+Команда \texttt{git cherry-pick}. В чём недостатки использования \texttt{git cherry-pick}? Конфликты при копировании коммитов. Команды:
+\begin{itemize}
+\item \texttt{git cherry-pick -{}-abort}
+\item \texttt{git cherry-pick -{}-continue}
+\item \texttt{git cherry-pick -{}-skip}
+\end{itemize}
+
+\item \textbf{Интерактивное перебазирование}\\
+Команда \texttt{git rebase -i}. Файл \texttt{git-rebase-todo}. Команды интерактивного перебазирования:
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{pick}
+\item \texttt{reword}
+\item \texttt{edit}
+\item \texttt{squash}
+\item \texttt{fixup}
+\item \texttt{drop}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+Конфликты при интерактивном перебазировании. Как отменить произведённое интерактивное перебазирование?
+
+\item \textbf{Типы файлов в \texttt{git}}
+\begin{itemize}
+\item Отслеживаемые (tracked)
+\begin{itemize}
+\item Индексированные (staged)
+\item Неизменённые (unmodified)
+\item Изменённые (modified)
+\end{itemize}
+\item Неотслеживаемые (untracked)
+\item Игнорируемые (ignored)
+\end{itemize}
+
+\item \textbf{Игнорируемые файлы}\\
+Файл \texttt{.gitignore} и как с его помощью:
+\begin{itemize}
+\item Игнорировать все файлы в репозитории с данным именем
+\item Игнорировать все директории в репозитории с данным именем
+\item Игнорировать один конкретный файл
+\item Игнорировать файлы по шаблону \texttt{*}, \texttt{?}, \texttt{[...]}
+\item Сделать исключение из игнорирования
+\end{itemize}
+
+Игнорирование пустых директорий. Как заставить \texttt{git} не игнорировать пустые директории?
+
+
+\item \textbf{Очистка репозитория}\\
+На какие типы файлов не действует команда \texttt{git reset -{}-hard}? Какие типы файлов меняются при использовании \texttt{git switch}?
+Команда \texttt{git clean} и её опции \texttt{-f}, \texttt{-d}, \texttt{-x}, \texttt{-X}, \texttt{-n}.
+
+
+\item \textbf{Удалённый репозиторий}\\
+Удалённый репозиторий. Ремоут (remote). В чём разница между удалённым репозиторием и ремоутом? Команда \texttt{git remote}, её опция \texttt{-v} и подкоманды \texttt{add}, \texttt{remove}, \texttt{rename}, \texttt{set-url} и \texttt{show}.
+
+\item \textbf{Удалённые ветки}\\
+Что такое удалённая ветка (remote branch)? Что такое ветка отслеживания (remote-tracking branch)? Какие имена имеют ветки отслеживания в git? На что указывают такие ветки? Когда обновляется состояние таких веток? Команда:
+\begin{itemize}
+\item \texttt{git branch -a}
+\end{itemize}
+
+
+\item \textbf{Работа с удалённым репозиторием}\\
+Команды для взаимодействия локального репозитория с удалённым:
+\begin{itemize}
+\item \texttt{git push} и её опции \texttt{-{}-all}, \texttt{-{}-tags}, \texttt{-f}, \texttt{-{}-force-with-lease}, \texttt{-u}, \texttt{-{}-set-upstream}.
+\item \texttt{git fetch} и её опции \texttt{-{}-prune} и \texttt{--tags}.
+\item \texttt{git pull} и её опции \texttt{-{}-rebase} и \texttt{-{}-ff-only}. Конфликты при использовании \texttt{git pull}.
+\end{itemize}
+Чем \texttt{git pull} отличается от \texttt{git fetch}? Перезапись истории в удалённом репозитории. Отмена изменений в удалённом репозитории. Команда \texttt{git push -f} и в чём её опасность? Команда \texttt{git revert}.
+
+\item \textbf{Отслеживающие и upstream-ветки}\\
+Что такое отслеживающая ветка (tracking branch)? Что такое upstream-ветка (upstream-branch)? Как привязать отслеживающую ветку к \texttt{upstream}-ветке? Какие преимущества даёт такая привязка? Что будет, если не сделать такую привязку? Команды:
+\begin{itemize}
+\item \texttt{git branch -vv}
+\item \texttt{git branch -{}-set-upstream-to=origin/main}
+\item \texttt{git branch -{}-unset-upstream}
+\item \texttt{git push -u origin main}
+\end{itemize}
+\item \textbf{Тэги}\\
+Чем тэги отличаются от веток? Зачем нужны тэги? Команда \texttt{git tag} и её опции \texttt{-d}, \texttt{-l}, \texttt{-a} и \texttt{-m}.
+
+\item \textbf{Pull request}\\
+Веб-сервисы для хранения и работы с удалёнными репозиториями. GitHub. GitLab. Форк. Pull request. Merge request.
+\end{enumerate}
+
+
+\item \textbf{Продвинутый \texttt{git} (не будет на коллоквиуме)}
+
+\item \textbf{Потоки и конвейеры}
+\begin{enumerate}[a.]
+\item \textbf{Команды, которые часто используются в конвейерах}
+\begin{itemize}
+\item \texttt{tac}
+\item \texttt{head}
+\item \texttt{tail}
+\item \texttt{wc}
+\end{itemize}
+
+
+\item \textbf{Потоки и перенаправление}\\
+Потоки \texttt{stdin}, \texttt{stdout} и \texttt{stderr}. Перенаправление потоков.
+
+\item \textbf{Синтаксис подстановки команд}\\
+\item \textbf{Конвейеры}\\
+\item \textbf{Wildcards}\\
+\item \textbf{Команда \texttt{find}}\\
+\item \textbf{Команда \texttt{xargs}}\\
+\item \textbf{Команда \texttt{grep}}\\
+\item \textbf{Команда \texttt{tee}}\\
+\end{enumerate}
+
+
+\item \textbf{Пользователи и права доступа Linux}
+\begin{enumerate}[a.]
+\item \textbf{Системные файлы, хранящие информацию о пользователях и группах}
+\begin{itemize}
+\item \texttt{/etc/passwd}
+\item \texttt{/etc/shadow}
+\item \texttt{/etc/group}
+\item \texttt{/etc/gshadow}
+\end{itemize}
+В каком формате хранится информация в каждом из файлов? Как хранится информация о паролях пользователей?
+
+\item \textbf{Просмотр информации о пользователях и группах}\\
+Команды \texttt{id}, \texttt{groups} и \texttt{getent}.
+
+\item \textbf{Работа с пользователями}
+\begin{itemize}
+\item \texttt{useradd}
+\item \texttt{usermod}
+\item \texttt{userdel}
+\end{itemize}
+Блокировка пользователей.
+
+
+\item \textbf{Работа с паролями}\\
+Команда \texttt{passwd}.
+
+
+\item \textbf{\texttt{sudo} и \texttt{su}}\\
+
+\item \texttt{Права доступа}\\
+Просмотр прав доступа с помощью \texttt{ls}. Символьное и числовое представление прав доступа. Конвертация из одного представления в другое. Изменение прав доступа с помощью команды \texttt{chmod}. На что влияют права доступа обычных файлов? На что влияют права доступа директорий?
+
+\item \textbf{SUID, SGID и Sticky Bit}\\
+За что отвечает SUID? Примеры системных файлов, которые имеют SUID бит. Работает ли SUID на скриптах? За что отвечает SGID? SGID для обычных файлов и для директорий. За что отвечает Sticky Bit. Пример системной директории, которая имеет Sticky Bit. Символьное и числовое представление прав доступа вместе с данными битами. 
+
+\end{enumerate}
+
+
+\item \textbf{Диски и файловые системы}
+\begin{enumerate}[a.]
+\item \textbf{Единицы измерения информации}
+\item \textbf{Просмотр информации о дисках, разделах и точках монтирования}
+\begin{itemize}
+\item \texttt{lsblk}
+\item \texttt{blkid}
+\item \texttt{findmnt}
+\end{itemize}
+
+\item \textbf{Просмотр информации об использованной памяти}
+\begin{itemize}
+\item \texttt{df}
+\item \texttt{du}
+\end{itemize}
+
+
+\item \textbf{Таблица разделов}\\
+MBR и GPT
+
+\item \textbf{Команда \texttt{dd}}\\
+
+
+\item \textbf{Ссылки}\\
+Мягкие и жёсткие.
+
+\item \textbf{Файловые системы}\\
+Блоки. Суперблок. Таблица inode. Что хранится в inode-ах?
+
+\item \textbf{Распространённые файловые системы}\\
+ext4, FAT, NTFS.
+
+\end{enumerate}
+
+
+\item \textbf{Язык Bash}
+\begin{enumerate}[a.]
+\item \textbf{Переменные Bash}\\
+Создание и использование переменных в bash. Переменные среды. Команды \texttt{unset} и \texttt{export}. Файл \texttt{.bashrc}.
+
+\item \textbf{Переменная среды \texttt{PATH}}
+
+\item \textbf{Аргументы}\\
+Передача аргументов в Bash.
+
+\item \textbf{Коды возврата}\\
+
+\item \textbf{Управляющая конструкция \texttt{if fi}}\\
+
+\item \textbf{Управляющая конструкция \texttt{case esac}}\\
+
+\item \textbf{Циклы}\\
+
+\item \textbf{Манипуляции со строками в bash}\\
+
+\item \textbf{Работа с целыми числами}\\
+
+\item \textbf{Функции}\\
+
+\item \textbf{Массивы и словари}\\
+
+\item \textbf{Чтение из стандартного входа или из файла}\\
+
+
+\end{enumerate}
+
+
+\item \textbf{Процессы}
+\begin{enumerate}[a.]
+
+\item \textbf{Основные определения}\\
+Что такое программа? Что такое процесс? 
+
+\item \textbf{Управление заданиями}\\
+Фоновый и передний режим. Как запустить процесс в фоновом режиме? Команды \texttt{jobs}, \texttt{fg}, \texttt{bg}. Использование \texttt{kill} для того, чтобы посылать сигналы процессам из \texttt{jobs}. Как остановить и возобновить процесс?
+
+\item \textbf{Просмотр информации о процессах}\\
+Команда \texttt{ps} и её опции \texttt{-e}, \texttt{-f}, \texttt{aux}, \texttt{-u}, \texttt{-o}. Команда \texttt{pstree}.
+
+\item \textbf{Идентификаторы}\\
+Идентификатор процесса PID. Как узнать идентификатор процесса? Как узнать идентификатор дочернего процесса? Группа процессов. Сессия.
+
+
+\item \textbf{Сигнал}\\
+Что такое сигнал? Основные сигналы:
+\begin{itemize}
+\item SIGTERM
+\item SIGHUP
+\item SIGINT
+\item SIGKILL
+\item SIGSTOP
+\item SIGTSTP
+\item SIGCONT
+\item SIGCHLD
+\end{itemize}
+Как послать сигнал процессу?
+
+\item \textbf{Перехват сигналов}\\
+Команда \texttt{trap}. Перехват сигналов. Игнорирование сигналов.
+
+\item \textbf{Отсоединённый процесс}\\
+Отсоединение процесса. Команда \texttt{nohup}. 
+
+\item \textbf{Состояния процессов}
+\begin{itemize}
+\item Running
+\item Sleeping
+\item Uninterruptible sleep
+\item Stopped
+\item Zombie
+\end{itemize}
+В каких случаях процесс попадает в то или иное состояние?
+
+\item \textbf{Мониторинг процессов}\\
+Команда \texttt{top} и \texttt{htop}. Директория \texttt{/proc}.
+
+\end{enumerate}
+
+
+
+\item \textbf{systemd}
+\begin{enumerate}[a.]
+\item \textbf{Основы}\\
+Что такое systemd и какую роль он выполняет в Linux? Юнит в systemd. Типы юнитов:
+\begin{itemize}
+\item service
+\item target
+\item timer
+\item path
+\end{itemize}
+
+\item \textbf{Команда \texttt{systemctl}}\\
+Подкоманды:
+\begin{itemize}
+\item \texttt{systemctl start}
+\item \texttt{systemctl stop}
+\item \texttt{systemctl enable}
+\item \texttt{systemctl disable}
+\item \texttt{systemctl status}
+\item \texttt{systemctl cat}
+\item \texttt{systemctl reload}
+\item \texttt{systemctl daemon-reload}
+\item \texttt{systemctl list-units}
+\end{itemize}
+
+
+\item \textbf{Юнит-файлы}\\
+В каких директориях systemd ищет юнит файлы? Как создать свой сервис? Строение юнит файла. Секции. Директивы секции \texttt{[Unit]}:
+\begin{itemize}
+\item \texttt{Description}
+\item \texttt{After}/\texttt{Before}
+\item \texttt{Wants}/\texttt{Requires}
+\item \texttt{Condition*}
+\end{itemize}
+
+Директивы секции \texttt{[Service]}:
+\begin{itemize}
+\item \texttt{Type}, типы \texttt{simple}, \texttt{forking}, \texttt{oneshot}, \texttt{notify}.
+\item \texttt{ExecStart}
+\item \texttt{ExecStop}
+\item \texttt{Restart}
+\item \texttt{User}/\texttt{Group}
+\item \texttt{Environment}/\texttt{EnvironmentFile}
+\item \texttt{PIDFile}
+\item \texttt{TimeoutStartSec}
+\item \texttt{KillMode}
+\end{itemize} 
+
+Директива секции \texttt{[Install]}:
+\begin{itemize}
+\item \texttt{WantedBy}
+\end{itemize}
+
+Таргеты по умолчанию:
+\begin{itemize}
+\item \texttt{rescue.target}
+\item \texttt{multi-user.target}
+\item \texttt{graphical.target}
+\item \texttt{default.target}
+\end{itemize}
+
+\end{enumerate}
+
+
+\end{enumerate}
+
+\end{document}
