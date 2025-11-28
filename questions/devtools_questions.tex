@@ -234,7 +234,7 @@
 Как отменить произведённое слияние?
 
 \item \textbf{Перебазирование}\\
-Перебазирование веток. Команда \texttt{git rebase}. Отличие перебазирования от слияния. Преимущества и недостатки перебазирования по сравнению со слиянием. Конфликты при перебазировании. Как разрешить конфликт, возникший при перебазировании? Команды \texttt{git rebase -{}-abort}, \texttt{git rebase -{}-continue} и \texttt{git rebase -{}-skip}. 
+Перебазирование веток. Команда \texttt{git rebase}. Отличие перебазирования от слияния. Преимущества и недостатки перебазирования по сравнению со слиянием. Конфликты при перебазировании. Как разрешить конфликт, возникший при перебазировании? Команды: 
 \begin{itemize}
 \item \texttt{git rebase -{}-abort}
 \item \texttt{git rebase -{}-continue}
@@ -345,30 +345,162 @@
 
 \item \textbf{Потоки и конвейеры}
 \begin{enumerate}[a.]
-\item \textbf{Команды, которые часто используются в конвейерах}
+\item \textbf{Основные команды, которые часто используются в конвейерах}
 \begin{itemize}
 \item \texttt{tac}
-\item \texttt{head}
-\item \texttt{tail}
-\item \texttt{wc}
+\item \texttt{head} и её опции \texttt{-n} и \texttt{-c}
+\item \texttt{tail} и её опции \texttt{-n}, \texttt{-c}, \texttt{-f} и \texttt{-F}
+\item \texttt{uniq} и её опция \texttt{-c}
+\item \texttt{sort} и её опции \texttt{-n}, \texttt{-r}, \texttt{-u}, \texttt{-h}, \texttt{-k} и \texttt{-t}.
+\item \texttt{wc} и её опции \texttt{-l}, \texttt{-w}, \texttt{-c} и \texttt{-m}
 \end{itemize}
 
 
 \item \textbf{Потоки и перенаправление}\\
-Потоки \texttt{stdin}, \texttt{stdout} и \texttt{stderr}. Перенаправление потоков.
+Стандартные потоки ввода вывода:
+\begin{itemize}
+\item \texttt{stdin}
+\item \texttt{stdout}
+\item \texttt{stderr}
+\end{itemize}
+Куда эти потоки направлены по умолчанию? Перенаправление потока в файл для перезаписи. Перенаправление потока в файл для дозаписи. Перенаправление файла в \texttt{stdin}. Перенаправление \texttt{stderr} в файл. Как перенаправить \texttt{stdout} и \texttt{stderr} в один файл? Файл \texttt{/dev/null}. Что произойдёт, если перенаправить потоки \texttt{stdout}/\texttt{stderr} в этот файл? Что произойдёт если перенаправить файл \texttt{/dev/null} в \texttt{stdin}?
 
-\item \textbf{Синтаксис подстановки команд}\\
+\item \textbf{Расширения оболочки}
+\begin{itemize}
+\item Шаблон поиска (wildcard/glob pattern). Wildcard-символы: 
+\begin{itemize}
+\item[$\circ$] \texttt{*}
+\item[$\circ$] \texttt{?}
+\item[$\circ$] \texttt{[...]}
+\item[$\circ$] \texttt{[!...]}
+\end{itemize}
+\item Brace expansion \texttt{\{...\}}. 
+\item Синтаксис подстановки команд \texttt{\$(...)}. 
+\item Подстановка процесса \texttt{<(...)} и \texttt{>(...)}. Примеры использования подстановки процесса.
+\end{itemize}
+
+
 \item \textbf{Конвейеры}\\
-\item \textbf{Wildcards}\\
+Что такое конвейер оболочки Bash и как его использовать? Примеры простых конвейеров. Код возврата конвейера. Переменная \texttt{PIPESTATUS}. Как перенаправить поток \texttt{stderr} в конвейер?
+
+
 \item \textbf{Команда \texttt{find}}\\
+Опции команды \texttt{find}:
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{-type}
+\item \texttt{-name}/\texttt{-iname}
+\item \texttt{-size}
+\item \texttt{-mtime}
+\item \texttt{-and}, \texttt{-or}, \texttt{-not}
+\item \texttt{-maxdepth}
+\item \texttt{-print0}
+\item \texttt{-exec}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+Два вида синтаксиса \texttt{find -exec}:
+\begin{itemize}
+\item Синтаксис с \texttt{\textbackslash;}
+\item Синтаксис с \texttt{+}
+\end{itemize}
+Чем различаются эти два вида синтаксиса? Примеры использования \texttt{find -exec}.
+
 \item \textbf{Команда \texttt{xargs}}\\
-\item \textbf{Команда \texttt{grep}}\\
+Что делает команда \texttt{xargs}? В каких ситуациях эта команда используется чаще всего? Примеры использования команды \texttt{xargs}. Опции \texttt{-0}, \texttt{-I} и \texttt{-P}.
+
 \item \textbf{Команда \texttt{tee}}\\
+Примеры использования команды \texttt{tee}. Опция \texttt{-a}. Использование \texttt{tee} вместе с подстановкой процесса. Использование \texttt{echo}, \texttt{sudo} и \texttt{tee} для записи в файл с правами \texttt{root}.
+
+\item \textbf{Команда \texttt{grep}}\\
+Синтаксис команды \texttt{grep}. Опции:
+
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{-i}
+\item \texttt{-r}
+\item \texttt{-n}
+\item \texttt{-v}
+\item \texttt{-E} / \texttt{egrep}
+\item \texttt{-l}
+\item \texttt{-c}
+\item \texttt{-o}
+\item \texttt{-w}
+\item \texttt{-A}, \texttt{-B} и \texttt{-C}
+\item \texttt{-{}-color=auto}
+\item \texttt{-q}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+
+Приведите примеры использования \texttt{grep} в следующих ситуациях:
+\begin{itemize}
+\item Поиск строк, содержащих подстроку, в одном файле.
+\item Поиск строк, содержащих подстроку, рекурсивно во всех файлах директории.
+\item Поиск файлов, содержащих подстроку, рекурсивно во всех файлах директории.
+\item Фильтрация вывода команды с помощью конвейера и \texttt{grep}.
+\item Поиск строк в файле или файлах, соответствующих регулярному выражению.
+\end{itemize}
+
+
+\item \textbf{Регулярные выражения в \texttt{grep}}\\
+Два типа регулярных выражений: BRE и ERE. Основные элементы регулярных выражений ERE:
+\begin{itemize}
+\item Обычные символы
+\item Точка \texttt{.}
+\item Символьные классы \texttt{[...]}
+\item Группировка \texttt{(...)}
+\item Альтернация \texttt{|}
+\item Квантификаторы:
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item[$\circ$] \texttt{*}
+\item[$\circ$] \texttt{+}
+\item[$\circ$] \texttt{?}
+\item[$\circ$] \texttt{\{m\}}
+\item[$\circ$] \texttt{\{m,\}}
+\item[$\circ$] \texttt{\{m,n\}}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+\item Якоря строки: $\wedge$ и \$.
+\end{itemize}
+Предопределённые классы:
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{[:alpha:]}
+\item \texttt{[:digit:]}
+\item \texttt{[:alnum:]}
+\item \texttt{[:space:]}
+\item \texttt{[:lower:]}
+\item \texttt{[:upper:]}
+\item \texttt{[:punct:]}
+\item \texttt{[:xdigit:]}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+
 \end{enumerate}
 
 
 \item \textbf{Пользователи и права доступа Linux}
 \begin{enumerate}[a.]
+\item \textbf{Пользователи}\\
+UID. Суперпользователь \texttt{root}. Системные пользователи. Зачем нужны системные пользователи? Какой диапазон UID обычно используется для системных пользователей, а какой для обычных? 
+
+\item \textbf{Группы пользователей}\\
+Группы. Основная группа пользователя. Дополнительные группы. GID.
+Команда \texttt{id} и её опция \texttt{-u}. Команда \texttt{groups}.
+
+\item \textbf{Домашняя директория}\\
+Стандартное расположение домашней директории. Что обычно хранится в домашней директории? Файлы \texttt{$\sim$/.bash\_profile} и \texttt{$\sim$/.bashrc}. Директория \texttt{/etc/skel}.
+
+
+
 \item \textbf{Системные файлы, хранящие информацию о пользователях и группах}
 \begin{itemize}
 \item \texttt{/etc/passwd}
@@ -376,28 +508,52 @@
 \item \texttt{/etc/group}
 \item \texttt{/etc/gshadow}
 \end{itemize}
-В каком формате хранится информация в каждом из файлов? Как хранится информация о паролях пользователей?
+Какая информация и в каком формате хранится в каждом из этих файлов? Как хранится информация о паролях пользователей? Как хранится принадлежность пользователя к основной группе? Как хранится принадлежность пользователя к дополнительным группам? 
+Как можно отличить обычного пользователя от системного по файлу \texttt{passwd}? Что такое \texttt{/sbin/nologin}? Как можно понять, что пользователь заблокирован по файлу \texttt{/etc/shadow}?
 
-\item \textbf{Просмотр информации о пользователях и группах}\\
-Команды \texttt{id}, \texttt{groups} и \texttt{getent}.
-
-\item \textbf{Работа с пользователями}
+\item \textbf{Работа с пользователями и группами}
 \begin{itemize}
-\item \texttt{useradd}
-\item \texttt{usermod}
-\item \texttt{userdel}
+\item \texttt{useradd} и её опции \texttt{-m}, \texttt{-d}, \texttt{-s} и \texttt{G}.
+\item \texttt{usermod} и её опции \texttt{-G}, \texttt{-aG}, \texttt{-d}, \texttt{-s}, \texttt{-L} и \texttt{-U}.
+\item \texttt{userdel} и её опция \texttt{-r}.
+\item \texttt{groupadd} и её опция \texttt{-r}.
+\item \texttt{groupmod}
+\item \texttt{groupdel}
 \end{itemize}
-Блокировка пользователей.
+Создание/удаление основной группы при создании/удалении пользователя. Использование \texttt{usermod} для блокировки/разблокировки пользователя.
 
 
 \item \textbf{Работа с паролями}\\
-Команда \texttt{passwd}.
+Использование команды \texttt{passwd} для смены собственного пароля. Использование команды \texttt{passwd} для смены пароля другого пользователя.
 
 
-\item \textbf{\texttt{sudo} и \texttt{su}}\\
+\item \textbf{\texttt{su} и \texttt{sudo}}\\
+Переключение на другого пользователя. Команда \texttt{su}. Полное и неполное переключение. Выполнение команды от имени другого пользователя. Команда \texttt{sudo} и её опции \texttt{-u} и \texttt{-i}. Какой пароль требуется для команды \texttt{su}, а какой пароль -- для команды \texttt{sudo}? Чем различаются следующие способы переключения на пользователя \texttt{root}:
+\begin{itemize}
+\item \texttt{su}
+\item \texttt{su -}
+\item \texttt{sudo -i}
+\end{itemize}
+Файл \texttt{/etc/sudoers}. В каком формате хранятся записи в файле \texttt{/etc/sudoers}? Группа \texttt{sudo}/\texttt{wheel}. В чём опасность редактирования файла \texttt{/etc/sudoers}? Как безопасно редактировать этот файл?
 
-\item \texttt{Права доступа}\\
-Просмотр прав доступа с помощью \texttt{ls}. Символьное и числовое представление прав доступа. Конвертация из одного представления в другое. Изменение прав доступа с помощью команды \texttt{chmod}. На что влияют права доступа обычных файлов? На что влияют права доступа директорий?
+
+
+
+\item \textbf{Права доступа}\\
+Владелец файла. Группа владелец. Может ли владелец файла не входить в группу владелец этого же файла? Права доступа.
+Просмотр прав доступа с помощью \texttt{ls}. Символьное и числовое представление прав доступа. Конвертация из одного представления в другое. Команды:
+\begin{itemize}
+\item \texttt{chmod} и её опция \texttt{-R}. Как можно изменять права пользователя с помощью этой команды, используя символьное и числовое представление прав? Кто и в каких случаях может изменять права доступа?
+\item \texttt{chown} и её опция \texttt{-R}. Как изменить группу владельца, используя \texttt{chown}? Кто и в каких случаях может изменять владельца файла?
+\item \texttt{chgrp} и её опция \texttt{-R}. Кто и в каких случаях может изменять группу владельца файла?
+\item \texttt{newgrp}.
+\end{itemize}
+За что отвечают права \texttt{r}, \texttt{w}, \texttt{x} для обычных файлов? За что отвечают права \texttt{r}, \texttt{w}, \texttt{x} для директорий? Права мягких ссылок.
+
+
+\item \textbf{Маска}\\
+Права только что созданного файла. Права копии файла. Команда \texttt{umask}.
+
 
 \item \textbf{SUID, SGID и Sticky Bit}\\
 За что отвечает SUID? Примеры системных файлов, которые имеют SUID бит. Работает ли SUID на скриптах? За что отвечает SGID? SGID для обычных файлов и для директорий. За что отвечает Sticky Bit. Пример системной директории, которая имеет Sticky Bit. Символьное и числовое представление прав доступа вместе с данными битами. 
@@ -421,53 +577,140 @@
 \item \texttt{du}
 \end{itemize}
 
-
 \item \textbf{Таблица разделов}\\
 MBR и GPT
 
+
+\item \textbf{Создание разделов с помощью программы parted}
+\begin{itemize}
+\item \texttt{print}
+\item \texttt{mklabel}
+\item \texttt{mkpart}
+\item \texttt{rm}
+\item \texttt{resizepart}
+\item \texttt{unit}
+\end{itemize}
+Запуск команд \texttt{parted} в скриптовом и тихом режиме. Команда \texttt{parted -l}.
+
+
+\item \textbf{Работа с файловыми системами}\\
+Команда \texttt{mkfs}. Команды \texttt{mount} и \texttt{umount}. Файл \texttt{/etc/fstab}. Поля в этом файле \texttt{file system}, \texttt{mount} \texttt{point}, \texttt{type}, \texttt{options}, \texttt{dump}, \texttt{pass}. \texttt{UUID}.
+
+
+
 \item \textbf{Команда \texttt{dd}}\\
+Распространённые варианты использования команды \texttt{dd}:
+\begin{itemize}
+\item Создание файлов определённого размера, заполненный нулевыми или случайными байтами 
+\item Копирование файлов 
+\item Просмотр байт файлов 
+\item Просмотр байт разделов 
+\item Копирование разделов 
+\item Создание образа диска или раздела (файла \texttt{.img})
+\item Восстановление диска/раздела из образа
+\item Запись ISO-образа на флешку
+\end{itemize}
+Опции команды \texttt{dd}:
+\begin{itemize}
+\item \texttt{if}
+\item \texttt{of}
+\item \texttt{bs}
+\item \texttt{count}
+\item \texttt{skip}
+\item \texttt{seek}
+\item \texttt{conv}, значения \texttt{noerror}, \texttt{sync}, \texttt{notrunc}, \texttt{ucase} и \texttt{lcase}
+\end{itemize}
+
+
 
 
 \item \textbf{Ссылки}\\
-Мягкие и жёсткие.
+Мягкие и жёсткие. Команда \texttt{ln} и её опция \texttt{-s}.
+Команды \texttt{ls -i} и \texttt{stat}. Зачем нужен счётчик жёстких ссылок в inode?
+Как узнать куда указывает мягкая ссылка?
+Что будет, если удалить исходный файл, на который указывает мягкая/жёсткая ссылка?
+Можно ли создать мягкую/жёсткую ссылку на директорию?
+Можно ли создать мягкую/жёсткую ссылку на файл, находящийся в другой файловой системе?
 
 \item \textbf{Файловые системы}\\
-Блоки. Суперблок. Таблица inode. Что хранится в inode-ах?
+Блоки. Суперблок. Таблица inode. Что хранится в inode-ах файлов разных типов?
+Переполнение таблицы inode.
 
 \item \textbf{Распространённые файловые системы}\\
-ext4, FAT, NTFS.
+ext4, xfc, btrfs, FAT, NTFS. Особенности каждой из файловых систем.
 
 \end{enumerate}
 
 
 \item \textbf{Язык Bash}
 \begin{enumerate}[a.]
+
+\item \textbf{Основы}\\
+Интерпретатор Bash. Шебанг.
+
 \item \textbf{Переменные Bash}\\
-Создание и использование переменных в bash. Переменные среды. Команды \texttt{unset} и \texttt{export}. Файл \texttt{.bashrc}.
+Создание и использование переменных в bash. Переменные среды. Команды \texttt{unset} и \texttt{export}. Команда \texttt{source}. Файл \texttt{.bashrc}.
 
 \item \textbf{Переменная среды \texttt{PATH}}
 
 \item \textbf{Аргументы}\\
 Передача аргументов в Bash.
+Переменные \texttt{\$1}, \texttt{\$2}, \texttt{\$0}, \texttt{\$*}, \texttt{\$@}.  
 
 \item \textbf{Коды возврата}\\
+Как получить код возврата последней выполненной команды?
 
 \item \textbf{Управляющая конструкция \texttt{if fi}}\\
+Сравнение строк в конструкции \texttt{if}. Сравнение чисел в конструкции \texttt{if}. Операторы:
+\begin{itemize}
+\item \texttt{-n}
+\item \texttt{-z}
+\item \texttt{-e}
+\item \texttt{-f}
+\item \texttt{-d}
+\item \texttt{-L}
+\item \texttt{-r}
+\item \texttt{-w}
+\item \texttt{-x}
+\end{itemize}
+Разница между  \texttt{[[ ... ]]} и \texttt{[ ... ]}. Проверка на совпадение с регулярным выражением \texttt{=$\sim$}.
 
 \item \textbf{Управляющая конструкция \texttt{case esac}}\\
+Примеры конструкций \texttt{case esac}. Использование glob-шаблонов в этих конструкциях.
+
 
 \item \textbf{Циклы}\\
+Циклы \texttt{while} и \texttt{for}. Примеры циклов. Перенаправление из цикла и в цикл.
 
-\item \textbf{Манипуляции со строками в bash}\\
+\item \textbf{Манипуляции со строками}\\
+Что означают следующие выражения:
+\begin{verbatim}
+$var
+${var}
+${#var}
+${var:N}
+${var:N:K}
+${var:-default}
+${var:=default}
+${var#pattern}
+${var%pattern}
+${var/pattern/str}
+${var^^}
+${var„} 
+\end{verbatim}
 
 \item \textbf{Работа с целыми числами}\\
+Арифметические выражения \texttt{(( ... ))}. Чем \texttt{\$(( ... ))} отличается от \texttt{(( ... ))}?
+
 
 \item \textbf{Функции}\\
+Создание функции. Вызов функции. Передача аргументов функции. Возврат значений из функции. Локальные переменные функции, чем они отличаются от обычных переменных?
 
-\item \textbf{Массивы и словари}\\
+\item \textbf{Массивы}\\
+Уметь производить базовые операции с массивами: получение по индексу, изменение элемента, добавление элемента в конец массива.
 
 \item \textbf{Чтение из стандартного входа или из файла}\\
-
+Команда \texttt{read} и её опции \texttt{-p}, \texttt{-r}, \texttt{-a}, \texttt{-s}. Использование \texttt{read} вместе с \texttt{while} для чтения строк или слов из файла. Переменная \texttt{IFS}.
 
 \end{enumerate}
 
@@ -586,6 +829,26 @@ ext4, FAT, NTFS.
 \item \texttt{default.target}
 \end{itemize}
 
+
+
+\item \textbf{Таймеры}\\
+Зачем нужны timer юниты? Как создать timer unit, который бы запускал сервис по расписанию? Директивы:
+\begin{itemize}
+\item \texttt{Unit}
+\item \texttt{OnBootSec}
+\item \texttt{OnActiveSec}
+\item \texttt{Persistent}
+\item \texttt{RandomizedDelaySec}
+\item \texttt{OnCalendar}
+\end{itemize}
+
+\item \textbf{Path-юниты}\\
+Зачем нужны path-юниты? Директивы:
+\begin{itemize}
+\item \texttt{Unit}
+\item \texttt{PathExists}
+\item \texttt{PathChanged}
+\end{itemize}
 \end{enumerate}
 
 
