@@ -119,8 +119,9 @@
 \begin{itemize}
 \item \texttt{pwd}
 \item \texttt{cd}
-\item \texttt{ls} и её опции \texttt{-l}, \texttt{-a} и \texttt{-i}
+\item \texttt{ls} и её опции \texttt{-l}, \texttt{-a} и \texttt{-i}. Какая информация отображается при вызове \texttt{ls -l}?
 \item \texttt{echo} и её опции \texttt{-n} и \texttt{-e}
+\item \texttt{printf}, спецификаторы \texttt{\%s},  \texttt{\%c}, \texttt{\%d}, \texttt{\%x}, \texttt{\%f}, \texttt{\%8s}, \texttt{\%08d} и \texttt{\%.2f}. 
 \item \texttt{cat} и её опция \texttt{-n}.
 \item \texttt{less} и её опции \texttt{-N} и \texttt{-R}. Горячие клавиши \texttt{Пробел}, \texttt{b}, \texttt{q}, \texttt{g}, \texttt{G}, \texttt{n}, \texttt{N}, \texttt{h}. Поиск текста в файле
 \item Текстовый редактор \texttt{nano}
@@ -139,13 +140,18 @@
 \item \texttt{rm} и её опции \texttt{-r}, \texttt{-f}
 \end{itemize}
 
-\item \textbf{Сокращение имён директорий}
+\item \textbf{Путь до файла}\\
+Абсолютный и относительный путь. Сокращение имён директорий:
+\vspace{-3mm}
+\begin{multicols}{2}
 \begin{itemize}
 \item \texttt{.}
 \item \texttt{..}
 \item \texttt{$\sim$}
 \item \texttt{$\sim$alice}
 \end{itemize}
+\end{multicols}
+\vspace{-3mm}
 
 \item \textbf{Горячие клавиши, используемые в терминале}
 \begin{itemize}
@@ -302,7 +308,7 @@
 
 
 \item \textbf{Очистка репозитория}\\
-На какие типы файлов не действует команда \texttt{git reset -{}-hard}? Какие типы файлов меняются при использовании \texttt{git switch}?
+На какие типы файлов не действует команда \texttt{git reset -{}-hard}? Какие типы файлов не меняются при использовании \texttt{git switch}?
 Команда \texttt{git clean} и её опции \texttt{-f}, \texttt{-d}, \texttt{-x}, \texttt{-X}, \texttt{-n}.
 
 
@@ -368,12 +374,16 @@
 \item \textbf{Расширения оболочки}
 \begin{itemize}
 \item Шаблон поиска (wildcard/glob pattern). Wildcard-символы: 
+\vspace{-3mm}
+\begin{multicols}{2}
 \begin{itemize}
 \item[$\circ$] \texttt{*}
 \item[$\circ$] \texttt{?}
 \item[$\circ$] \texttt{[...]}
 \item[$\circ$] \texttt{[!...]}
 \end{itemize}
+\end{multicols}
+\vspace{-3mm}
 \item Brace expansion \texttt{\{...\}}. 
 \item Синтаксис подстановки команд \texttt{\$(...)}. 
 \item Подстановка процесса \texttt{<(...)} и \texttt{>(...)}. Примеры использования подстановки процесса.
@@ -408,7 +418,7 @@
 Чем различаются эти два вида синтаксиса? Примеры использования \texttt{find -exec}.
 
 \item \textbf{Команда \texttt{xargs}}\\
-Что делает команда \texttt{xargs}? В каких ситуациях эта команда используется чаще всего? Примеры использования команды \texttt{xargs}. Опции \texttt{-0}, \texttt{-I} и \texttt{-P}.
+Что делает команда \texttt{xargs}? В каких ситуациях эта команда используется чаще всего? Примеры использования команды \texttt{xargs}. Опции \texttt{-0}, \texttt{-I} и \texttt{-P}. Преимущества \texttt{xargs} перед \texttt{find -exec}.
 
 \item \textbf{Команда \texttt{tee}}\\
 Примеры использования команды \texttt{tee}. Опция \texttt{-a}. Использование \texttt{tee} вместе с подстановкой процесса. Использование \texttt{echo}, \texttt{sudo} и \texttt{tee} для записи в файл с правами \texttt{root}.
@@ -499,7 +509,7 @@ UID. Суперпользователь \texttt{root}. Системные пол
 \item \textbf{Домашняя директория}\\
 Стандартное расположение домашней директории. Что обычно хранится в домашней директории? Файлы \texttt{$\sim$/.bash\_profile} и \texttt{$\sim$/.bashrc}. Директория \texttt{/etc/skel}.
 
-
+\clearpage
 
 \item \textbf{Системные файлы, хранящие информацию о пользователях и группах}
 \begin{itemize}
@@ -563,25 +573,65 @@ UID. Суперпользователь \texttt{root}. Системные пол
 
 \item \textbf{Диски и файловые системы}
 \begin{enumerate}[a.]
-\item \textbf{Единицы измерения информации}
-\item \textbf{Просмотр информации о дисках, разделах и точках монтирования}
+\item \textbf{Единицы измерения объёма информации}\\
+Десятичные и двоичные единицы измерения.
+
+
+\item \textbf{Метаданные файлов}\\
+Что обычно включает в себя метаданные файла? Где хранятся метаданные? Просмотр метаданных с помощью команды \texttt{ls -l}. Команда \texttt{stat} и её опция \texttt{-c}. Плейсхолдеры для форматированного вывода команды \texttt{stat -c}:
+\vspace{-3mm}
+\begin{multicols}{4}
 \begin{itemize}
-\item \texttt{lsblk}
-\item \texttt{blkid}
-\item \texttt{findmnt}
+\item \texttt{\%n}
+\item \texttt{\%i}
+\item \texttt{\%s}
+\item \texttt{\%F}
+\item \texttt{\%u}~~\texttt{\%U}
+\item \texttt{\%g}~~\texttt{\%G}
+\item \texttt{\%a}~~\texttt{\%A}
+\item \texttt{\%x}~~ \texttt{\%y}~~ \texttt{\%z}
 \end{itemize}
+\end{multicols}
+\vspace{-3mm}
+Временные метки \texttt{atime}, \texttt{mtime} и \texttt{ctime}. Изменение временных меток с помощью команды \texttt{touch}. Опции команды \texttt{touch}: \texttt{-a}, \texttt{-m} и \texttt{-d}. 
 
-\item \textbf{Просмотр информации об использованной памяти}
+
+\item \textbf{Типы файлов}
 \begin{itemize}
-\item \texttt{df}
-\item \texttt{du}
+\item Обычный файл
+\item Директория
+\item Мягкая ссылка
+\item Файл блочного устройства
+\item Файл символьного устройства
 \end{itemize}
+Как узнать тип файла, используя команды \texttt{ls}, \texttt{stat} и \texttt{file}?  
 
-\item \textbf{Таблица разделов}\\
-MBR и GPT
 
+\item \textbf{Файл устройств}\\
+Директория \texttt{/dev/}. Файлы устройств как интерфейсы. Какие данные и метаданные хранят в себе файлы устройств? Major и minor number.
+
+\begin{enumerate}
+\item \textbf{Файлы символьных устройств}\\
+Примеры символьных устройств. Как символьные устройства передают данные? Символьные псевдоустройства \texttt{/dev/null}, \texttt{/dev/zero}, \texttt{/dev/random}.
+
+\item \textbf{Файлы блочных устройств}\\
+Примеры блочных устройств. Как блочные устройства передают данные? Блочные устройства дисков и разделов. Размер блока блочных устройств. Физический и логический размеры блоков.
+\end{enumerate}
+
+\item \textbf{Разделы}\\
+Зачем нужны разделы? Блочные файлы разделов. Команда \texttt{lsblk}. Таблицы разделов:
+\begin{enumerate}
+\item \textbf{Таблица разделов MBR}\\
+Где находится таблица MBR и сколько место занимает? Что содержится внутри MBR? Ограничение на количество разделов и размер каждого раздела. Типы разделов: первичный (primary), расширенный (extended), логический (logical).
+
+\item \textbf{Таблица разделов GPT}\\
+Где находится таблица GPT и сколько место занимает? Что содержится внутри GPT? Ограничение на количество разделов и размер каждого раздела.
+\end{enumerate}
+Команда \texttt{parted -l}. Как узнать, какая таблица разделов используется на диске?
 
 \item \textbf{Создание разделов с помощью программы parted}
+\vspace{-3mm}
+\begin{multicols}{2}
 \begin{itemize}
 \item \texttt{print}
 \item \texttt{mklabel}
@@ -590,12 +640,49 @@ MBR и GPT
 \item \texttt{resizepart}
 \item \texttt{unit}
 \end{itemize}
-Запуск команд \texttt{parted} в скриптовом и тихом режиме. Команда \texttt{parted -l}.
+\end{multicols}
+\vspace{-3mm}
+Запуск команд \texttt{parted} в скриптовом и тихом режиме. 
 
+\item \textbf{Файловые системы}\\
+Что такое файловая система? UUID файловой системы. Создание файловой системы на разделе. Команда \texttt{mkfs}. Команды для отображения информации о файловых системах:
+\begin{itemize}
+\item \texttt{lsblk -f}
+\item \texttt{blkid}
+\item \texttt{df} и её опции \texttt{-h}, \texttt{-T} и \texttt{-i}
+\item \texttt{du} и её опции \texttt{-h} и \texttt{-s}
+\end{itemize}
 
-\item \textbf{Работа с файловыми системами}\\
-Команда \texttt{mkfs}. Команды \texttt{mount} и \texttt{umount}. Файл \texttt{/etc/fstab}. Поля в этом файле \texttt{file system}, \texttt{mount} \texttt{point}, \texttt{type}, \texttt{options}, \texttt{dump}, \texttt{pass}. \texttt{UUID}.
+\newpage
+\item \textbf{Монтирование файловой системы}\\
+Что такое монтирование файловой системы? Точка монтирования. Команда \texttt{mount} и её опция \texttt{-o}. Команда \texttt{umount}. Опции монтирования:
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{defaults}
+\item \texttt{rw}
+\item \texttt{ro}
+\item \texttt{noexec}
+\item \texttt{nosuid}
+\item \texttt{noatime}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
 
+Автоматическое монтирование файловых систем. Файл \texttt{/etc/fstab}.  Поля в этом файле:
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{file system}
+\item \texttt{mount point}
+\item \texttt{type}
+\item \texttt{options}
+\item \texttt{dump}
+\item \texttt{pass}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+Команда \texttt{mount -a}. Просмотр точек монтирования с помощью \texttt{findmnt}.
 
 
 \item \textbf{Команда \texttt{dd}}\\
@@ -611,6 +698,8 @@ MBR и GPT
 \item Запись ISO-образа на флешку
 \end{itemize}
 Опции команды \texttt{dd}:
+\vspace{-3mm}
+\begin{multicols}{3}
 \begin{itemize}
 \item \texttt{if}
 \item \texttt{of}
@@ -618,26 +707,48 @@ MBR и GPT
 \item \texttt{count}
 \item \texttt{skip}
 \item \texttt{seek}
-\item \texttt{conv}, значения \texttt{noerror}, \texttt{sync}, \texttt{notrunc}, \texttt{ucase} и \texttt{lcase}
+\item \texttt{conv=noerror}
+\item \texttt{conv=sync}
+\item \texttt{conv=notrunc}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+На что влияет значение размера блока (\texttt{bs}) в команде \texttt{dd}?
+Какой \texttt{bs} используется по умолчанию?
+
+\item \textbf{Жёсткие ссылки}\\
+Чем является жёсткая ссылка? Команда \texttt{ln}. Что происходит при создании жёсткой ссылки? Равноправность жёстких ссылок. Зачем нужен счётчик жёстких ссылок в inode?    
+\begin{itemize}
+\item Что будет, если удалить исходный файл, на который указывает жёсткая ссылка?
+\item Жёсткие ссылки на директории (\texttt{.} и \texttt{..}). Можно ли создать жёсткую ссылку на директорию?
+\item Можно ли создать жёсткую ссылку на файл, находящийся в другой файловой системе?
 \end{itemize}
 
 
+\item \textbf{Символические (мягкие) ссылки}\\
+Чем является символическая ссылка? Команда \texttt{ln -s}. Как узнать куда указывает символическая ссылка? Команда \texttt{readlink}.
+
+\begin{itemize}
+\item Что будет, если удалить исходный файл, на который указывает мягкая ссылка?
+\item Можно ли создать мягкую ссылку на директорию?
+\item Можно ли создать мягкую ссылку на файл, находящийся в другой файловой системе?
+\end{itemize}
+
+Работа стандартных команд с символическими ссылками:
+\begin{itemize}
+\item Команда \texttt{cp} копирует саму ссылку или файл на который она указывает? А команда \texttt{cp -a}?
+\item Команда \texttt{chmod} применяется к ссылке или к файлу на который она указывает?
+\item Команда \texttt{rm} применяется к ссылке или к файлу на который она указывает?
+\item Переходит ли \texttt{find} по симлинкам на директории? Опция \texttt{-L} команды \texttt{find}.
+\end{itemize}
 
 
-\item \textbf{Ссылки}\\
-Мягкие и жёсткие. Команда \texttt{ln} и её опция \texttt{-s}.
-Команды \texttt{ls -i} и \texttt{stat}. Зачем нужен счётчик жёстких ссылок в inode?
-Как узнать куда указывает мягкая ссылка?
-Что будет, если удалить исходный файл, на который указывает мягкая/жёсткая ссылка?
-Можно ли создать мягкую/жёсткую ссылку на директорию?
-Можно ли создать мягкую/жёсткую ссылку на файл, находящийся в другой файловой системе?
-
-\item \textbf{Файловые системы}\\
-Блоки. Суперблок. Таблица inode. Что хранится в inode-ах файлов разных типов?
-Переполнение таблицы inode.
+\item \textbf{Строение файловой системы ext4 (основы)}\\
+Блоки. Суперблок. Группы блоков. Таблица inode. Что хранится в inode-ах файлов разных типов?
+Переполнение таблицы inode. Журналирование.
 
 \item \textbf{Распространённые файловые системы}\\
-ext4, xfc, btrfs, FAT, NTFS. Особенности каждой из файловых систем.
+ext4, xfc, FAT, NTFS. Виртуальные файловые системы. Особенности каждой из этих файловых систем.
 
 \end{enumerate}
 
@@ -645,23 +756,30 @@ ext4, xfc, btrfs, FAT, NTFS. Особенности каждой из файло
 \item \textbf{Язык Bash}
 \begin{enumerate}[a.]
 
-\item \textbf{Основы}\\
-Интерпретатор Bash. Шебанг.
+\item \textbf{Интерпретатор Bash}\\
+Что такое терминал? Что такое оболочка? Оболочки \texttt{sh} и \texttt{bash}. Скрипты Bash. Шебанг.
 
 \item \textbf{Переменные Bash}\\
-Создание и использование переменных в bash. Переменные среды. Команды \texttt{unset} и \texttt{export}. Команда \texttt{source}. Файл \texttt{.bashrc}.
+Создание и использование переменных в bash. Команда \texttt{unset}. Переменные среды. Команда \texttt{export}. Команда \texttt{source}. Как задать переменную среды для одной команды? Как создать свою переменную среды? Файл \texttt{$\sim$/.bashrc}.
 
-\item \textbf{Переменная среды \texttt{PATH}}
+\item \textbf{Команды оболочки}\\
+Внутренние и внешние команды оболочки. Команда \texttt{type -a}. Команда \texttt{which}. Переменная среды \texttt{PATH}. Как создать свою команду?
+
+
+\item \textbf{Кавычки}\\
+Разница между одинарными и двойными кавычками в bash.
 
 \item \textbf{Аргументы}\\
-Передача аргументов в Bash.
-Переменные \texttt{\$1}, \texttt{\$2}, \texttt{\$0}, \texttt{\$*}, \texttt{\$@}.  
+Что такое аргументы командной строки? Как запустить скрипт, передав ему некоторые аргументы?
+Переменные \texttt{\$1}, \texttt{\$2}, \texttt{\$0}, \texttt{\$*}, \texttt{\$@}. Чем отличается \texttt{"\$*"} от \texttt{"\$@"}? Что выведет \texttt{echo "hello \$0"}, если запустить эту команду в терминале и почему?
 
 \item \textbf{Коды возврата}\\
-Как получить код возврата последней выполненной команды?
+Какой код возврата возвращается при успешном завершении программы. Как получить код возврата последней выполненной команды? Коды возврата скобочных команд. Команды \texttt{true} и \texttt{false}.
 
-\item \textbf{Управляющая конструкция \texttt{if fi}}\\
-Сравнение строк в конструкции \texttt{if}. Сравнение чисел в конструкции \texttt{if}. Операторы:
+\item \textbf{Условия \texttt{if}}\\
+Сравнение строк. Сравнение чисел. Операции проверки:
+\vspace{-3mm}
+\begin{multicols}{3}
 \begin{itemize}
 \item \texttt{-n}
 \item \texttt{-z}
@@ -673,31 +791,42 @@ ext4, xfc, btrfs, FAT, NTFS. Особенности каждой из файло
 \item \texttt{-w}
 \item \texttt{-x}
 \end{itemize}
+\end{multicols}
+\vspace{-3mm}
 Разница между  \texttt{[[ ... ]]} и \texttt{[ ... ]}. Проверка на совпадение с регулярным выражением \texttt{=$\sim$}.
+
+Использование операторов \texttt{\&\&} и \texttt{||} вместо условий \texttt{if}. 
+
+\item \textbf{Группировка команд и сабшеллы}
 
 \item \textbf{Управляющая конструкция \texttt{case esac}}\\
 Примеры конструкций \texttt{case esac}. Использование glob-шаблонов в этих конструкциях.
 
 
 \item \textbf{Циклы}\\
-Циклы \texttt{while} и \texttt{for}. Примеры циклов. Перенаправление из цикла и в цикл.
+Циклы \texttt{while} и \texttt{for}. Примеры циклов. Итерация от нуля до некоторого числа. Итерация по всем элементам из заданного набора. Итерация по всем файлам в директории. Итерация по всем аргументам/элементам массива. Переменная \texttt{IFS}. Перенаправление из цикла в файл и наоборот.
 
 \item \textbf{Манипуляции со строками}\\
 Что означают следующие выражения:
-\begin{verbatim}
-$var
-${var}
-${#var}
-${var:N}
-${var:N:K}
-${var:-default}
-${var:=default}
-${var#pattern}
-${var%pattern}
-${var/pattern/str}
-${var^^}
-${var„} 
-\end{verbatim}
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{\$var}
+\item \texttt{\$\{var\}}
+\item \texttt{\$\{\#var\}}
+\item \texttt{\$\{var:N\}}
+\item \texttt{\$\{var:N:K\}}
+\item \texttt{\$\{var:-default\}}
+\item \texttt{\$\{var:=default\}}
+\item \texttt{\$\{var\#pattern\}}
+\item \texttt{\$\{var\%pattern\}}
+\item \texttt{\$\{var/pattern/str\}}
+\item \texttt{\$\{var\textasciicircum\textasciicircum\}}
+\item \texttt{\$\{var,,\}}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+
 
 \item \textbf{Работа с целыми числами}\\
 Арифметические выражения \texttt{(( ... ))}. Чем \texttt{\$(( ... ))} отличается от \texttt{(( ... ))}?
@@ -710,7 +839,7 @@ ${var„}
 Уметь производить базовые операции с массивами: получение по индексу, изменение элемента, добавление элемента в конец массива.
 
 \item \textbf{Чтение из стандартного входа или из файла}\\
-Команда \texttt{read} и её опции \texttt{-p}, \texttt{-r}, \texttt{-a}, \texttt{-s}. Использование \texttt{read} вместе с \texttt{while} для чтения строк или слов из файла. Переменная \texttt{IFS}.
+Команда \texttt{read} и её опции \texttt{-p}, \texttt{-r}, \texttt{-a}, \texttt{-s}. Использование \texttt{read} вместе с \texttt{while} для чтения строк из файла. 
 
 \end{enumerate}
 
@@ -733,6 +862,8 @@ ${var„}
 
 \item \textbf{Сигнал}\\
 Что такое сигнал? Основные сигналы:
+\vspace{-3mm}
+\begin{multicols}{2}
 \begin{itemize}
 \item SIGTERM
 \item SIGHUP
@@ -743,6 +874,11 @@ ${var„}
 \item SIGCONT
 \item SIGCHLD
 \end{itemize}
+\end{multicols}
+\vspace{-3mm}
+
+
+
 Как послать сигнал процессу?
 
 \item \textbf{Перехват сигналов}\\
@@ -761,8 +897,63 @@ ${var„}
 \end{itemize}
 В каких случаях процесс попадает в то или иное состояние?
 
-\item \textbf{Мониторинг процессов}\\
-Команда \texttt{top} и \texttt{htop}. Директория \texttt{/proc}.
+\item \textbf{Мониторинг процессов, программа \texttt{top}}\\
+Команда \texttt{top}, что она показывает? Что означают значения \texttt{load average}?\\
+Что означают поля процентов занятого времени процессора (\texttt{\%CPU(s)}):
+\vspace{-3mm}
+\begin{multicols}{3}
+\begin{itemize}
+\item \texttt{us}
+\item \texttt{sy}
+\item \texttt{ni}
+\item \texttt{id}
+\item \texttt{wa}
+\item \texttt{hi}
+\item \texttt{st}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+
+Что означают поля:
+\vspace{-3mm}
+\begin{multicols}{3}
+\begin{itemize}
+\item \texttt{PID}
+\item \texttt{USER}
+\item \texttt{PR}
+\item \texttt{NI}
+\item \texttt{VIRT}
+\item \texttt{RES}
+\item \texttt{SHR}
+\item \texttt{S}
+\item \texttt{\%CPU}
+\item \texttt{\%MEM}
+\item \texttt{TIME+}
+\item \texttt{COMMAND}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+Программа \texttt{htop}.
+
+
+\item \textbf{Директория \texttt{/proc}}\\
+Директория \texttt{/proc} и файлы в этой директории:
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{cmdline}
+\item \texttt{environ}
+\item \texttt{maps}
+\item \texttt{cwd}
+\item \texttt{exe}
+\item \texttt{fd/1}
+\item \texttt{status}
+\item \texttt{stat}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
+
+
 
 \end{enumerate}
 
@@ -780,10 +971,13 @@ ${var„}
 \end{itemize}
 
 \item \textbf{Команда \texttt{systemctl}}\\
-Подкоманды:
+Команда \texttt{systemctl} и её подкоманды:
+\vspace{-3mm}
+\begin{multicols}{2}
 \begin{itemize}
 \item \texttt{systemctl start}
 \item \texttt{systemctl stop}
+\item \texttt{systemctl restart}
 \item \texttt{systemctl enable}
 \item \texttt{systemctl disable}
 \item \texttt{systemctl status}
@@ -792,6 +986,9 @@ ${var„}
 \item \texttt{systemctl daemon-reload}
 \item \texttt{systemctl list-units}
 \end{itemize}
+\end{multicols}
+\vspace{-3mm}
+
 
 
 \item \textbf{Юнит-файлы}\\
@@ -804,6 +1001,8 @@ ${var„}
 \end{itemize}
 
 Директивы секции \texttt{[Service]}:
+\vspace{-3mm}
+\begin{multicols}{2}
 \begin{itemize}
 \item \texttt{Type}, типы \texttt{simple}, \texttt{forking}, \texttt{oneshot}, \texttt{notify}.
 \item \texttt{ExecStart}
@@ -812,9 +1011,15 @@ ${var„}
 \item \texttt{User}/\texttt{Group}
 \item \texttt{Environment}/\texttt{EnvironmentFile}
 \item \texttt{PIDFile}
-\item \texttt{TimeoutStartSec}
+\item \texttt{TimeoutStartSec}/\texttt{TimeoutStopSec}
 \item \texttt{KillMode}
+\item \texttt{RemainAfterExit}
 \end{itemize} 
+\end{multicols}
+\vspace{-3mm}
+
+
+
 
 Директива секции \texttt{[Install]}:
 \begin{itemize}
@@ -833,6 +1038,8 @@ ${var„}
 
 \item \textbf{Таймеры}\\
 Зачем нужны timer юниты? Как создать timer unit, который бы запускал сервис по расписанию? Директивы:
+\vspace{-3mm}
+\begin{multicols}{2}
 \begin{itemize}
 \item \texttt{Unit}
 \item \texttt{OnBootSec}
@@ -841,6 +1048,11 @@ ${var„}
 \item \texttt{RandomizedDelaySec}
 \item \texttt{OnCalendar}
 \end{itemize}
+\end{multicols}
+\vspace{-3mm}
+
+
+
 
 \item \textbf{Path-юниты}\\
 Зачем нужны path-юниты? Директивы:
