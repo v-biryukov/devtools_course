@@ -770,8 +770,8 @@ ext4, xfc, FAT, NTFS. Виртуальные файловые системы. О
 Разница между одинарными и двойными кавычками в bash.
 
 \item \textbf{Аргументы}\\
-Что такое аргументы командной строки? Как запустить скрипт, передав ему некоторые аргументы?
-Переменные \texttt{\$1}, \texttt{\$2}, \texttt{\$0}, \texttt{\$*}, \texttt{\$@}. Чем отличается \texttt{"\$*"} от \texttt{"\$@"}? Что выведет \texttt{echo "hello \$0"}, если запустить эту команду в терминале и почему?
+Aргументы командной строки. Как запустить скрипт, передав ему некоторые аргументы?
+Переменные \texttt{\$1}, \texttt{\$2}, \texttt{\$0}, \texttt{\$*}, \texttt{\$@}. Чем отличается \texttt{"\$*"} от \texttt{"\$@"}? Проход по аргументам в цикле. Команда \texttt{shift}.
 
 \item \textbf{Коды возврата}\\
 Какой код возврата возвращается при успешном завершении программы. Как получить код возврата последней выполненной команды? Коды возврата скобочных команд. Команды \texttt{true} и \texttt{false}.
@@ -779,14 +779,13 @@ ext4, xfc, FAT, NTFS. Виртуальные файловые системы. О
 \item \textbf{Условия \texttt{if}}\\
 Сравнение строк. Сравнение чисел. Операции проверки:
 \vspace{-3mm}
-\begin{multicols}{3}
+\begin{multicols}{4}
 \begin{itemize}
 \item \texttt{-n}
 \item \texttt{-z}
 \item \texttt{-e}
 \item \texttt{-f}
 \item \texttt{-d}
-\item \texttt{-L}
 \item \texttt{-r}
 \item \texttt{-w}
 \item \texttt{-x}
@@ -819,10 +818,12 @@ ext4, xfc, FAT, NTFS. Виртуальные файловые системы. О
 \item \texttt{\$\{var:-default\}}
 \item \texttt{\$\{var:=default\}}
 \item \texttt{\$\{var\#pattern\}}
+\item \texttt{\$\{var\#\#pattern\}}
 \item \texttt{\$\{var\%pattern\}}
+\item \texttt{\$\{var\%\%pattern\}}
 \item \texttt{\$\{var/pattern/str\}}
 \item \texttt{\$\{var\textasciicircum\textasciicircum\}}
-\item \texttt{\$\{var,,\}}
+\item \texttt{\$\{var,{},\}}
 \end{itemize}
 \end{multicols}
 \vspace{-3mm}
@@ -839,7 +840,8 @@ ext4, xfc, FAT, NTFS. Виртуальные файловые системы. О
 Уметь производить базовые операции с массивами: получение по индексу, изменение элемента, добавление элемента в конец массива.
 
 \item \textbf{Чтение из стандартного входа или из файла}\\
-Команда \texttt{read} и её опции \texttt{-p}, \texttt{-r}, \texttt{-a}, \texttt{-s}. Использование \texttt{read} вместе с \texttt{while} для чтения строк из файла. 
+Команда \texttt{read} и её опции \texttt{-p}, \texttt{-r}, \texttt{-a}, \texttt{-s}. Использование \texttt{read} вместе с \texttt{while} для чтения строк из файла.
+Команда \texttt{readarray}.
 
 \end{enumerate}
 
@@ -847,21 +849,40 @@ ext4, xfc, FAT, NTFS. Виртуальные файловые системы. О
 \item \textbf{Процессы}
 \begin{enumerate}[a.]
 
-\item \textbf{Основные определения}\\
-Что такое программа? Что такое процесс? 
+\item \textbf{Основные понятия, связанные с процессами}\\
+Программа. Процесс. Родительский и дочерний процесс. Системные вызовы \texttt{fork} и \texttt{exec}. Идентификатор процесса. PID. PPID. Контекст процесса. Переключение контекста. Потоки. Разница между процессами и потоками. Квант процессорного времени. Планировщик.
 
-\item \textbf{Управление заданиями}\\
-Фоновый и передний режим. Как запустить процесс в фоновом режиме? Команды \texttt{jobs}, \texttt{fg}, \texttt{bg}. Использование \texttt{kill} для того, чтобы посылать сигналы процессам из \texttt{jobs}. Как остановить и возобновить процесс?
+
 
 \item \textbf{Просмотр информации о процессах}\\
-Команда \texttt{ps} и её опции \texttt{-e}, \texttt{-f}, \texttt{aux}, \texttt{-u}, \texttt{-o}. Команда \texttt{pstree}.
+Команда \texttt{ps} и её опции  \texttt{aux}, \texttt{-e}, \texttt{-f}, \texttt{-u}, \texttt{-p}, \texttt{-C}, \texttt{-{}-ppid}, \texttt{-{}-sort}, \texttt{-o}. Поля в выводе команды \texttt{ps}:
+\vspace{-3mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{pid}
+\item \texttt{uid} / \texttt{user}
+\item \texttt{gid} / \texttt{group}
+\item \texttt{comm}
+\item \texttt{cmd}
+\item \texttt{args}
+\item \texttt{stat}
+\item \texttt{\%cpu}
+\item \texttt{\%mem}
+\item \texttt{rss}
+\item \texttt{vsz}
+\item \texttt{etime}
+\end{itemize}
+\end{multicols}
+\vspace{-3mm}
 
-\item \textbf{Идентификаторы}\\
-Идентификатор процесса PID. Как узнать идентификатор процесса? Как узнать идентификатор дочернего процесса? Группа процессов. Сессия.
+Команда \texttt{pstree}.
+
+\item \textbf{Идентификаторы процессов}\\
+PID. PPID. Как узнать идентификатор процесса? Как узнать идентификатор родительского процесса? Как узнать идентификатор дочерних процессов? Переменные \texttt{\$\$} и \texttt{\$!}. Переменная \texttt{\$PPID}.
 
 
 \item \textbf{Сигнал}\\
-Что такое сигнал? Основные сигналы:
+Что такое сигнал? Номер сигнала. Основные сигналы:
 \vspace{-3mm}
 \begin{multicols}{2}
 \begin{itemize}
@@ -877,25 +898,39 @@ ext4, xfc, FAT, NTFS. Виртуальные файловые системы. О
 \end{multicols}
 \vspace{-3mm}
 
+Команда \texttt{kill}. Как послать определённый сигнал процессу?
+Команды \texttt{killall} и \texttt{pkill}.
 
+\item \textbf{Команда \texttt{trap}}\\
+Перехват сигналов с помощью \texttt{trap}. Игнорирование сигналов. Какие сигналы нельзя перехватить и игнорировать? Обработка выхода из скрипта (\texttt{EXIT}). Обработка ошибок (\texttt{ERR}).
 
-Как послать сигнал процессу?
-
-\item \textbf{Перехват сигналов}\\
-Команда \texttt{trap}. Перехват сигналов. Игнорирование сигналов.
-
-\item \textbf{Отсоединённый процесс}\\
-Отсоединение процесса. Команда \texttt{nohup}. 
+\item \textbf{Группы процессов и сессии}\\
+Группа процессов. PGID. Какие процессы входят в группу процессов? Как послать сигнал всем процессам в группе? Лидер группы. Сессия. SID. Лидер сессии.
 
 \item \textbf{Состояния процессов}
 \begin{itemize}
-\item Running
+\item Running / Runnable
 \item Sleeping
 \item Uninterruptible sleep
 \item Stopped
 \item Zombie
 \end{itemize}
-В каких случаях процесс попадает в то или иное состояние?
+В каких случаях процесс попадает в то или иное состояние? Процессы в каких состояниях нельзя завершить, послав им сигналы, в том числе сигнал SIGKILL?
+
+\item \textbf{Управление заданиями}\\
+Фоновый и передний режим. Как запустить процесс в фоновом режиме? Команды \texttt{jobs}, \texttt{fg}, \texttt{bg}. Использование \texttt{kill} для того, чтобы посылать сигналы процессам из \texttt{jobs}. Как остановить и возобновить процесс? Какой сигнал и каким процессам посылается при:
+\begin{itemize}
+\item Нажатии \texttt{Ctrl-C} в терминале
+\item Нажатии \texttt{Ctrl-Z} в терминале
+\item Закрытии окна терминала
+\end{itemize}
+
+\item \textbf{Отсоединённый процесс}\\
+Отсоединение процесса. Команда \texttt{nohup}. Команда \texttt{disown}. Команда \texttt{setsid}. Демоны. Как написать скрипт, при запуске которого создавался бы процесс-демон?
+
+
+\item \textbf{Приоритет процессов}\\
+Приоритет и niceness. Какие значения может принимать niceness? Команда \texttt{nice} и её опция \texttt{-n}. Команда \texttt{renice} и её опции \texttt{-n} и \texttt{-p}.
 
 \item \textbf{Мониторинг процессов, программа \texttt{top}}\\
 Команда \texttt{top}, что она показывает? Что означают значения \texttt{load average}?\\
@@ -909,7 +944,6 @@ ext4, xfc, FAT, NTFS. Виртуальные файловые системы. О
 \item \texttt{id}
 \item \texttt{wa}
 \item \texttt{hi}
-\item \texttt{st}
 \end{itemize}
 \end{multicols}
 \vspace{-3mm}
@@ -937,7 +971,7 @@ ext4, xfc, FAT, NTFS. Виртуальные файловые системы. О
 
 
 \item \textbf{Директория \texttt{/proc}}\\
-Директория \texttt{/proc} и файлы в этой директории:
+Директория \texttt{/proc/<PID>/} и файлы в этой директории:
 \vspace{-3mm}
 \begin{multicols}{2}
 \begin{itemize}
