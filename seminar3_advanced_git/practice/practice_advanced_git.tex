@@ -526,51 +526,111 @@ $ xxd a.txt
 
 
 \subsection{Хуки}
-Напишите pre-commit хук, который будет проверять, что все файлы имеют расширение \texttt{.txt}. Проверьте работу этого хука, закоммитив файл с другим расширением.
+\begin{enumerate}[a.]
+\item \textbf{Проверка расширений}\\
+Напишите pre-commit хук, который будет проверять, что все файлы коммита имеют расширение \texttt{.py}, используя язык Bash. Поместите скрипт в \texttt{.git/hooks/pre-commit}  и проверьте работу этого хука, попытавшись закоммитить файл с другим расширением.
 
+\item \textbf{Проверка размера файлов}\\
+Напишите pre-commit хук, который будет проверять, что все файлы коммита имеют размер меньше, чем 1 мегабайт. Проверьте работу этого хука, создав коммит, попытавшись создать коммит, содержащий файлы большого размера.
+
+\item \textbf{Проверка форматирования сообщения коммита}\\
+Напишите \texttt{commit-msg}, который бы проверял, что сообщение коммита соответствует стандарту оформления Conventional Commits.
+\end{enumerate}
 
 \subsection{Низкоуровневые команды Git}
-В этом задании нельзя использовать команды, которые мы изучали прежде (кроме \texttt{git init}). Можно использовать только следующие низкоуровневые команды:
+В этом задании можно использовать только низкоуровневые команды Git, такие как:
+\vspace{-2mm}
+\begin{multicols}{2}
 \begin{itemize}
-\item git init
-\item git hash-object
-\item git cat-file
-\item git ls-files
-\item git mktree
-\item git commit-tree
-\item git update-ref 
-\item git ls-tree
-\item git rev-list
+\item \texttt{git init}
+\item \texttt{git hash-object}
+\item \texttt{git cat-file}
+\item \texttt{git ls-files}
+\item \texttt{git mktree}
+\item \texttt{git commit-tree}
+\item \texttt{git update-ref} 
+\item \texttt{git ls-tree}
+\item \texttt{git rev-list}
 \end{itemize}
-А также команды для проверки результатов:
+\vspace{-2mm}
+\end{multicols}
+\noindent А также команды для проверки результатов:
+\vspace{-2mm}
+\begin{multicols}{2}
 \begin{itemize}
-\item git status
-\item git log
-\item git show
-\item git diff
+\item \texttt{git status}
+\item \texttt{git log}
+\item \texttt{git show}
+\item \texttt{git diff}
 \end{itemize}
-Создайте репозиторий, состоящий из 3-х коммитов и 2-х веток, используя только эти команды.
+\end{multicols}
+\vspace{-2mm}
+\noindent Создайте репозиторий, граф которого изображён на рисунке, используя только эти команды.
+\begin{center}
+\includegraphics[width=0.4\linewidth]{../images/08plumbing.pdf}
+\end{center}
+При этом каждый коммит должен добавлять в репозиторий хотя бы один непустой, отличный от других файл. А коммит \texttt{CA} должен добавлять новую директорию и новый непустой файл в этой директории.
 
 
 
-
-\subsection{Ещё более низкоуровневый git}
-Решите предыдущую задачу вообще без использования команд git. Можно только использовать команды для проверки результатов:
+\subsection{Внутренее устройство Git}
+Ответьте на следующие вопросы о внутреннем устройстве Git репозитория.
+\begin{enumerate}[a.]
+\item Что такое объект в Git? Какие типы объектов существуют в Git?
+\item Что хранится в директории \texttt{.git}? Для чего нужны следующие файлы этой директории:
+\vspace{-2mm}
+\begin{multicols}{2}
 \begin{itemize}
-\item git status
-\item git log
-\item git show
-\item git diff
+\item \texttt{config}
+\item \texttt{HEAD}
+\item \texttt{ORIG\_HEAD}
+\item \texttt{index}
 \end{itemize}
+\end{multicols}
+\vspace{-2mm}
+Что хранится в следующих директориях внутри папки \texttt{.git}:
+\vspace{-2mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{objects}
+\item \texttt{refs}
+\item \texttt{hooks}
+\item \texttt{info}
+\end{itemize}
+\end{multicols}
+\vspace{-2mm}
+
+\item При клонировании репозитория копируется весь репозиторий или только последнее состояние?
+
+\item Если в двух разных коммитах содержится одинаковый файл, то содержимое этого файла хранится дважды в репозитории?
+
+\item Если в проекте хранятся две копии одного и того же файла, то в репозитории этого проекта содержимое этого файла хранится дважды или в единственном экземпляре?
+
+\item Представьте, что в одном коммите мы добавили большой файл, а в следующем коммите изменили в нём всего один байт. Будет ли Git хранить обе версии файла целиком и дважды занимать место, или он умеет сохранять только различия между версиями, чтобы избежать дублирования?
+\end{enumerate}
 
 
 
-
-
-
-
-\iffalse
+\newpage
+~
+\newpage
 \section*{Необязательные задачи (не будут учитываться при оценивании)}
-\fi
+\subsection{Ещё более низкоуровневый git}
+Создайте репозиторий, граф которого изображён на рисунке, вообще без использования команд Git.
+\begin{center}
+\includegraphics[width=0.4\linewidth]{../images/08plumbing.pdf}
+\end{center}
+Можно только использовать команды для проверки результатов:
+\vspace{-2mm}
+\begin{multicols}{2}
+\begin{itemize}
+\item \texttt{git status}
+\item \texttt{git log}
+\item \texttt{git show}
+\item \texttt{git diff}
+\end{itemize}
+\end{multicols}
+\vspace{-2mm}
+
 
 \end{document}
