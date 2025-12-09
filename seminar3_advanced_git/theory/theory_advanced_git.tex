@@ -1,0 +1,183 @@
+\documentclass[10pt]{article}
+\usepackage[english,russian]{babel}
+\usepackage{textcomp}
+\usepackage{geometry}
+  \geometry{left=2.1cm}
+  \geometry{right=2.1cm}
+  \geometry{top=1.5cm}
+  \geometry{bottom=2cm}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pmboxdraw}
+\usepackage{fancyvrb}
+\usepackage[shortlabels]{enumitem}
+\pagenumbering{gobble}
+
+\lstdefinestyle{csMiptCStyle}{
+  language=C,
+  basicstyle=\linespread{1.1}\ttfamily,
+  columns=fixed,
+  fontadjust=true,
+  basewidth=0.5em,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  texcl=true,
+  stringstyle=\ttfamily\color{orange!50!black},
+  showstringspaces=false,
+  numbersep=5pt,
+  numberstyle=\tiny\color{black},
+  numberfirstline=true,
+  stepnumber=1,      
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  captionpos=b,
+  breaklines=true
+  breakatwhitespace=true,
+  xleftmargin=.2in,
+  extendedchars=\true,
+  keepspaces = true,
+  tabsize=4,
+  upquote=true,
+}
+
+
+\lstdefinestyle{csMiptCLinesStyle}{
+  style=csMiptCStyle,
+  frame=lines,
+}
+
+\lstdefinestyle{csMiptCBorderStyle}{
+  style=csMiptCStyle,
+  framexleftmargin=5mm, 
+  frame=shadowbox, 
+  rulesepcolor=\color{gray}
+}
+
+
+\lstdefinestyle{csMiptBash}{
+  	style=csMiptCStyle,
+	breaklines=true,
+	frame=tb,
+	language=bash,
+	breakatwhitespace=true,
+	alsoletter={*()"'0123456789.},
+	alsoother={\{\=\}},
+	basicstyle={\ttfamily},
+	keywordstyle={\bfseries},
+	literate={{=}{{{=}}}1},
+	prebreak={\textbackslash},
+	sensitive=true,
+	stepnumber=1,
+	tabsize=4,
+	morekeywords={echo, function},
+	otherkeywords={-},
+	literate={\$\{}{{{{\bfseries{}\$\{}}}}2,
+	upquote=true,
+	frame=none
+}
+
+\lstset{style=csMiptBash}
+\lstset{
+        literate={~}{{\raisebox{0.5ex}{\texttildelow}}}{1}
+}
+
+
+\renewcommand{\thesection}{\arabic{section}}
+\makeatletter
+\def\@seccntformat#1{\@ifundefined{#1@cntformat}%
+   {\csname the#1\endcsname\quad}
+   {\csname #1@cntformat\endcsname}}
+\newcommand\section@cntformat{Часть \thesection:\space}
+\makeatother
+
+\renewcommand{\arraystretch}{1.3}
+
+\begin{document}
+\title{Семинар \#3: Продвинутый \texttt{git} \vspace{-5ex}}\date{}\maketitle
+
+\section*{Диапазоны коммитов}
+
+
+\section*{Виды слияния}
+\subsection*{Обычное слияние}
+\subsection*{Стратегии слияния}
+\subsection*{Слияние перемоткой}
+\subsection*{Слияние \texttt{merge -{}-squash}}
+\subsection*{Octopus merge}
+
+
+\section*{Дополнительные команды}
+
+\newpage
+\section*{Атрибуты в файле \texttt{.gitattributes}}
+\begin{itemize}
+\item \textbf{Атрибуты для строковых окончаний}
+\begin{itemize}[label=$\diamond$]
+
+\item \texttt{text=true} или просто \texttt{text}\\
+Файл считается текстовым. Преобразует файл к LF-окончанием при добавлении. Поведение при извлечении определяется атрибутом \texttt{eol}.
+
+\item \texttt{text=false} или просто \texttt{-text}\\
+Файл считается бинарным. Git не изменяет окончания строк.
+
+\item \texttt{text=auto}\\
+Git сам определяет, является ли файл текстовым. Если файл текстовый, то преобразует его к LF-окончанием при добавлении. Поведение при извлечении определяется атрибутом \texttt{eol}.
+
+\item Атрибут \texttt{text} не установлен\\
+Git сам определяет, является ли файл текстовым. Если файл текстовый, то поведение при добавлении/извлечении определяется атрибутом \texttt{eol}.
+
+\item \texttt{eol=lf}\\
+Работает только если файл текстовый. При добавлении файла все CRLF-окончания строк будут заменяться на LF-окончания. При извлечении файла из репозитория все окончания строк будут оставаться в формате LF.
+
+\item \texttt{eol=crlf}\\
+Работает только если файл текстовый. При добавлении файла все CRLF-окончания строк будут заменяться на LF-окончания. При извлечении файла из репозитория все LF-окончания строк будут преобразовываться в CRLF-окончания.
+
+\item Атрибут \texttt{eol} не установлен\\
+Если файл текстовый, то используется следующий алгоритм. Применяется настройка \texttt{core.autocrlf}. Если эта настройка не задана, то используется настройка \texttt{core.eol}. Если и эта настройка не задана, то строковые окончания не преобразуются.
+\end{itemize}
+
+\item \textbf{Атрибуты для нахождения разницы между файлами}
+\begin{itemize}[label=$\diamond$]
+\item \texttt{diff}\\
+Используется обычное построчное сравнение текста.
+
+\item \texttt{-diff}\\
+Отключает нахождение разницы для файла. Будет отображать только факт различия файлов.
+
+\item \texttt{diff=<драйвер>}\\
+Использовать указанный драйвер для нахождения разницы между файлами. Например, \texttt{diff=cpp} означает, что для всех файлов с расширением \texttt{.cpp} Git будет использовать дифф-драйвер \texttt{cpp}, вместо обычного diff. В результате, при нахождении разницы файлов Git применяет правила, специфичные для C++ кода, например, может показывать изменения по функциям. Многие diff-драйверы встроены в Git. Создать собственный можно в файле конфига (например, в \texttt{.git/config}).
+
+\item Атрибут \texttt{diff} не установлен\\
+Для текстовых файлов -- построчное сравнение текста, для бинарных только факт различия.
+\end{itemize}
+
+
+\item \textbf{Атрибуты для слияния}
+\begin{itemize}[label=$\diamond$]
+\item \texttt{merge}\\
+Используется стандартное трёхстороннее слияние. Если изменения не пересекаются, Git объединяет их автоматически. Если есть конфликты, Git помечает их для ручного разрешения.
+
+\item \texttt{-merge}\\
+Git не пытается автоматически сливать эти файлы. Любые различия файлов вызывают конфликт.
+
+\item \texttt{merge=<драйвер>}\\
+Позволяет использовать кастомный merge-драйвер для слияния конкретных файлов. Некоторые merge-драйверы встроены в Git (например драйверы \texttt{ours}, \texttt{union}). Создать собственный merge-драйвер можно в файле конфига (например, в \texttt{.git/config}).
+
+\item Атрибут \texttt{merge} не установлен\\
+Для текстовых файлов -- стандартное трёхстороннее слияние, бинарные файлы не сливаются.
+\end{itemize}
+
+\item \textbf{Атрибут \texttt{binary}}\\
+Атрибут \texttt{binary} является комбинацией атрибутов \texttt{-text -diff}.
+\end{itemize}
+
+
+
+
+
+\section*{Внутреннее устройство git}
+
+\end{document}

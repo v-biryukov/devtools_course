@@ -504,7 +504,7 @@ $ echo $?
 \item \texttt{[[ \$x -gt 200 ]]}
 \item \texttt{[[ 0 == -0 ]]}
 \item \texttt{[[ 0 -eq -0 ]]}
-\item \texttt{[[ \$x < 50 || \$x > 100 ]]}
+\item \texttt{[[ \$x -lt 50 || \$x -gt 100 ]]}
 \end{enumerate}
 \vfill\null
 \columnbreak
@@ -595,37 +595,6 @@ $ ./script.sh bash
 $ echo $?
 1
 \end{lstlisting}
-
-
-\iffalse
-\subsection{Это dog?}
-Напишите программу, которая будет принимать 1 аргумент и печатать \texttt{"Yes"}, если аргумент равен строке \texttt{"dog"}. В ином случае программа должна печатать \texttt{"No"}. В случае, если количество аргументов, передающихся программе не равно 1, программа должна напечатать \texttt{"Wrong number of arguments"}.
-
-Если программа была использована корректно (ей был передан ровно один аргумент), она должна вернуть код возврата \texttt{0}. Если же программа завершилась некорректно она должна вернуть код возврата 1.
-
-\begin{lstlisting}
-$ ./script.sh apple
-No
-$ echo $?
-1 
-$ ./script.sh dog
-Yes
-$ echo $?
-0 
-$ ./script.sh Dog
-No
-$ echo $?
-1 
-$ ./script.sh
-Wrong number of arguments
-$ echo $?
-2 
-$ ./script.sh dog apple
-Wrong number of arguments
-$ echo $?
-2 
-\end{lstlisting}
-\fi
 
 
 
@@ -978,7 +947,13 @@ Dog barks very loudly.
 Решите эту задачу, используя цикл \texttt{while} и команду \texttt{read}.
  
 
-\iffalse
+
+
+~
+\newpage
+~
+\newpage
+
 \section{Дополнения}
 \begin{enumerate}
 \item Пустая команда ":"
@@ -988,16 +963,18 @@ Dog barks very loudly.
 \end{lstlisting}
 
 \item Задача на массивы + проверку строки на пустоту.
+\item В 17 добавить проверку на Failed to delete file
+\item ls как проверка на существование, доработать
+\item \texttt{"\$\{!i\}"}
 \end{enumerate}
 
 
 
-\section{Сложные}
+\section{Необязательные задачи}
 \subsection{Бэкап всех файлов в текущей директории}
 Создать backup копию для каждого файла в этой директории в скрытой папке. Делает новый backup только есть файл изменился. Названия файлов \texttt{.backup/file.txt.0}, \texttt{.backup/file.txt.1}, и т.д.
 
 \subsection{Проверка пользователя 2}
 Напишите программу, которая проверяет существует ли пользователь и имеет ли он полные права для \texttt{sudo}. Программа должна принимать имя пользователя и возвращать \texttt{0} если пользователь имеет полные права и \texttt{1} иначе.  Используйте программу \texttt{grep} и файл \texttt{/etc/passwd}.
-\fi
 
 \end{document}
